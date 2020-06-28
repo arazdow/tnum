@@ -1,4 +1,4 @@
-#' Truenumber utility functions
+#' Truenumber utility functions for R
 #' @author True Engineering Technology, LLC Boston, MA USA
 #' @references \url{http://www.truenum.com}
 
