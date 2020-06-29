@@ -209,3 +209,55 @@ tnum.simplify_result <- function(result, max) {
 
   returnValue(retdf)
 }
+
+# Truenumber creation functions
+
+
+#' Title
+#'
+#' @param subject
+#' @param property
+#' @param value
+#' @param error
+#' @param units
+#' @param tags
+#'
+#' @return
+#' @export
+#'
+#' @examples
+tnum.make_truenumber <- function(
+  subject = "something",
+  property = "property",
+  value = "0",
+  error = "0",
+  units = "",
+  tags = vector()
+  )
+ {
+
+  if(mode(value) == "numeric"){
+    if(error != 0){
+      numval <- strtrim(paste0(value," +/- ",error," ",units))
+    } else {
+      numval <- strtrim(paste0(value," ",units))
+    }
+  } else {
+    numval <- strtrim(value)
+  }
+  thenumber <- paste0(subject," has ",property," = ",numval)
+  message(thenumber)
+  args <-
+    list(
+      numberspace = tnum.var.nspace,
+    )
+  result <- POST(
+    paste0("http://", ip, "/v1/numberspace/numbers"),query = args,
+    add_headers(Authorization = paste0("Bearer ", tnum.var.token)),
+    body = paste0('{"truenumbers":["',thenumber,'"]}'),
+    accept("application/json"),
+    content_type("application/json")
+  )
+
+  returnValue(content(result))
+}
