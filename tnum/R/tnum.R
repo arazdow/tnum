@@ -130,8 +130,6 @@ tnum.query <- function(query = "* has *",
 #' @examples
 tnum.simplify_result <- function(result, max) {
   decodenumber <- function(tn) {
-    ##data.frame(subjects, properties, Cvalues, Nvalues, Nerror, units,guids,dates)
-
     subj <- tn$subject[[1]]
     prop <- tn$property[[1]]
     taglist <- list()
@@ -152,18 +150,18 @@ tnum.simplify_result <- function(result, max) {
       Cval <- NA
       posuns <- ""
       neguns <- ""
-      for (unitpwr in tn$unitPowers) {
+      for (unitpwr in tn$value$unitPowers) {
         if (unitpwr$p < 0) {
           if (unitpwr$p < -1) {
-            neguns <- append(neguns, paste0(unitpwr$u, "^",-unitpwr$p), " ")
+            neguns <- paste0(neguns,unitpwr$u, "^", -unitpwr$p," ")
           } else {
-            neguns <- append(neguns, paste0(unitpwr$u, " "))
+            neguns <- paste0(neguns,unitpwr$u, " ")
           }
         } else {
           if (unitpwr$p > 1) {
-            posuns <- append(posuns, paste0(" ", unitpwr$u, "^", unitpwr$p))
+            posuns <- paste0(posuns," ", unitpwr$u, "^", unitpwr$p)
           } else {
-            posuns <- append(posuns, paste0(" ", unitpwr$u))
+            posuns <- paste0(" ", unitpwr$u)
           }
         }
       }
@@ -174,7 +172,7 @@ tnum.simplify_result <- function(result, max) {
         uns <- paste0(posuns, "/", neguns)
       }
 
-      if (nchar(uns) == 0) {
+      if(nchar(uns) == 0 || uns==" unity"){
         uns <- NA
       }
 
@@ -204,6 +202,8 @@ tnum.simplify_result <- function(result, max) {
     returnValue(rdf)
   }
 
+  #END local function
+
   retdf <- NULL
 
   if (is.null(result$data$truenumbers[[1]]$truenumbers)) {
@@ -221,21 +221,23 @@ tnum.simplify_result <- function(result, max) {
     count <- max
     for (tnList in result$data$truenumbers) {
       tnGroup <- tnList$truenumbers
-      rowdf <- decodenumber(tnGroup)
-      if (is.null(retdf)) {
-        retdf <- rowdf
-      } else {
-        retdf <- rbind(retdf, rowdf)
-      }
+      for (tn in tnGroup) {
+        rowdf <- decodenumber(tn)
+        if (is.null(retdf)) {
+          retdf <- rowdf
+        } else {
+          retdf <- rbind(retdf, rowdf)
+        }
 
-      count <- count - 1
+        count <- count - 1
+        if (count == 0) {
+          break
+        }
+      }
       if (count == 0) {
         break
-      }
-    }
-    if (count == 0) {
-      break
 
+      }
     }
   }
 
