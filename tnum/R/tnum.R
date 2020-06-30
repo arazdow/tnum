@@ -101,7 +101,7 @@ tnum.query <- function(query = "* has *",
       add_headers(Authorization = paste0("Bearer ", tnum.var.token))
     ))
   numReturned <- length(result$data$truenumbers)
-  if(numReturned > max){
+  if (numReturned > max) {
     numReturned <- max
   }
   message(
@@ -117,7 +117,7 @@ tnum.query <- function(query = "* has *",
   )
 
   assign("tnum.var.result", result, envir = .GlobalEnv)
-  returnValue(tnum.simplify_result(result,max))
+  returnValue(tnum.simplify_result(result, max))
 }
 
 #' Title
@@ -129,38 +129,91 @@ tnum.query <- function(query = "* has *",
 #'
 #' @examples
 tnum.simplify_result <- function(result, max) {
-  subjects <- vector()
-  properties <- vector()
-  Nvalues <- vector()
-  Cvalues <- vector()
-  units <- vector()
-  tags <- list()
+  decodenumber <- function(tn) {
+    ##data.frame(subjects, properties, Cvalues, Nvalues, Nerror, units,guids,dates)
+
+    subj <- tn$subject[[1]]
+    prop <- tn$property[[1]]
+    taglist <- list()
+    for (tag in tn$tags) {
+      if (!startsWith(tag[[1]], '_')) {
+        taglist <- append(taglist, tag$srd)
+      }
+    }
+
+    if (tn$value$type == "numeric") {
+      Nval <- tn$value$magnitude[[1]]
+      tol <- tn$value$tolerance[[1]]
+      if (tol != 0) {
+        Nerr <- tol
+      } else{
+        Nerr <- NA
+      }
+      Cval <- NA
+      posuns <- ""
+      neguns <- ""
+      for (unitpwr in tn$unitPowers) {
+        if (unitpwr$p < 0) {
+          if (unitpwr$p < -1) {
+            neguns <- append(neguns, paste0(unitpwr$u, "^",-unitpwr$p), " ")
+          } else {
+            neguns <- append(neguns, paste0(unitpwr$u, " "))
+          }
+        } else {
+          if (unitpwr$p > 1) {
+            posuns <- append(posuns, paste0(" ", unitpwr$u, "^", unitpwr$p))
+          } else {
+            posuns <- append(posuns, paste0(" ", unitpwr$u))
+          }
+        }
+      }
+      uns <- posuns
+      if (nchar(posuns) == 0 && nchar(neguns) > 0) {
+        uns <- paste0("1/", neguns)
+      } else if (nchar(posuns) > 0 && nchar(neguns) > 0) {
+        uns <- paste0(posuns, "/", neguns)
+      }
+
+      if (nchar(uns) == 0) {
+        uns <- NA
+      }
+
+    } else {
+      Cval <- tn$value$value[[1]]
+      Nval <- NA
+      Nerr <- NA
+      uns <- NA
+    }
+    gid <- as.character(tn[["_id"]])
+
+    dat <- as.Date(tn$agent$dateCreated)
+
+    rdf <-
+      data.frame(
+        subject = subj,
+        property = prop,
+        string.value = Cval,
+        numeric.value = Nval,
+        numeric.error = Nerr,
+        units = uns,
+        guid = gid,
+        date = dat
+      )
+    rdf$tags <- list(taglist)
+
+    returnValue(rdf)
+  }
+
+  retdf <- NULL
 
   if (is.null(result$data$truenumbers[[1]]$truenumbers)) {
     for (tn in result$data$truenumbers) {
-      subjects <- append(subjects, tn$subject[[1]])
-      properties <- append(properties, tn$property[[1]])
-      taglist <- vector()
-      for (tag in tn$tags) {
-        taglist <- append(taglist, tag$srd)
-      }
+      rowdf <- decodenumber(tn)
 
-      tags <- append(tags, list(taglist))
-
-      if (tn$value$type == "numeric") {
-        Nvalues <- append(Nvalues, tn$value$magnitude[[1]])
-        Cvalues <- append(Cvalues, NA)
-        split_value <- strsplit(tn$value$value, " ")
-        if (length(split_value) == 2) {
-          units <- append(units, split_value[[2]])
-        } else {
-          units <- append(units, "")
-        }
-
+      if (is.null(retdf)) {
+        retdf <- rowdf
       } else {
-        Cvalues <- append(Cvalues, tn$value$value[[1]])
-        Nvalues <- append(Nvalues, NA)
-        units <- append(units, NA)
+        retdf <- rbind(retdf, rowdf)
       }
     }
 
@@ -168,44 +221,23 @@ tnum.simplify_result <- function(result, max) {
     count <- max
     for (tnList in result$data$truenumbers) {
       tnGroup <- tnList$truenumbers
-      for (tn in tnGroup) {
-        subjects <- append(subjects, tn$subject[[1]])
-        properties <- append(properties, tn$property[[1]])
-        taglist <- vector()
-        for (tag in tn$tags) {
-          taglist <- append(taglist, tag$srd)
-        }
-
-        tags <- append(tags, list(taglist))
-
-        if (tn$value$type == "numeric") {
-          Nvalues <- append(Nvalues, tn$value$magnitude[[1]])
-          Cvalues <- append(Cvalues, NA)
-          split_value <- strsplit(tn$value$value, " ")
-          if (length(split_value) == 2) {
-            units <- append(units, split_value[[2]])
-          } else {
-            units <- append(units, "")
-          }
-
-        } else {
-          Cvalues <- append(Cvalues, tn$value$value[[1]])
-          Nvalues <- append(Nvalues, NA)
-          units <- append(units, NA)
-        }
-        count <- count - 1
-        if(count == 0){
-          break;
-        }
+      rowdf <- decodenumber(tnGroup)
+      if (is.null(retdf)) {
+        retdf <- rowdf
+      } else {
+        retdf <- rbind(retdf, rowdf)
       }
-      if(count == 0){
-        break;
+
+      count <- count - 1
+      if (count == 0) {
+        break
       }
     }
-  }
+    if (count == 0) {
+      break
 
-  retdf <- data.frame(subjects, properties, Cvalues, Nvalues, units)
-  retdf$tags <- tags
+    }
+  }
 
   returnValue(retdf)
 }
@@ -226,35 +258,49 @@ tnum.simplify_result <- function(result, max) {
 #' @export
 #'
 #' @examples
-tnum.make_truenumber <- function(
-  subject = "something",
-  property = "property",
-  value = "0",
-  error = "0",
-  units = "",
-  tags = vector()
-  )
- {
-
-  if(mode(value) == "numeric"){
-    if(error != 0){
-      numval <- strtrim(paste0(value," +/- ",error," ",units))
+tnum.maketruenumber <- function(subject = "something",
+                                property = "property",
+                                value = "0",
+                                error = "0",
+                                units = "",
+                                tags = c())
+{
+  if (mode(value) == "numeric") {
+    if (error != 0) {
+      numval <- paste0(value, " +/- ", error, " ", units)
     } else {
-      numval <- strtrim(paste0(value," ",units))
+      numval <- paste0(value, " ", units)
     }
   } else {
-    numval <- strtrim(value)
+    numval <- value
   }
-  thenumber <- paste0(subject," has ",property," = ",numval)
+  tagstr <- ""
+  for (tag in tags) {
+    if (nchar(tagstr) > 0) {
+      tagstr <- paste0(tagstr, ",")
+    }
+    tagstr <- paste0(tagstr, '"', tag, '"')
+  }
+  thenumber <-
+    paste0(
+      '{"truenumbers":[{"subject":"',
+      subject,
+      '","property":"',
+      property,
+      '","value":"',
+      numval,
+      '","tags":[',
+      tagstr,
+      ']}]}'
+    )
   message(thenumber)
   args <-
-    list(
-      numberspace = tnum.var.nspace,
-    )
+    list(numberspace = tnum.var.nspace)
   result <- POST(
-    paste0("http://", ip, "/v1/numberspace/numbers"),query = args,
+    paste0("http://", tnum.var.ip, "/v1/numberspace/numbers"),
+    query = args,
     add_headers(Authorization = paste0("Bearer ", tnum.var.token)),
-    body = paste0('{"truenumbers":["',thenumber,'"]}'),
+    body = thenumber,
     accept("application/json"),
     content_type("application/json")
   )
