@@ -262,8 +262,8 @@ tnum.simplify_result <- function(result, max) {
 #' @examples
 tnum.maketruenumber <- function(subject = "something",
                                 property = "property",
-                                value = "0",
-                                error = "0",
+                                value = 0,
+                                error = 0,
                                 units = "",
                                 tags = c())
 {
