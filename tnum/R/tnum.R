@@ -244,6 +244,7 @@ tnum.simplify_result <- function(result, max) {
   returnValue(retdf)
 }
 
+
 # Truenumber creation functions
 
 
@@ -295,7 +296,7 @@ tnum.maketruenumber <- function(subject = "something",
       tagstr,
       ']}]}'
     )
-  message(thenumber)
+  #message(thenumber)
   args <-
     list(numberspace = tnum.var.nspace)
   result <- POST(
@@ -309,3 +310,35 @@ tnum.maketruenumber <- function(subject = "something",
 
   returnValue(content(result))
 }
+
+#' Title
+#'
+#' @param gid
+#' @param adds
+#' @param removes
+#'
+#' @return
+#' @export
+#'
+#' @examples
+tnum.add_remove_tags <- function(gid,adds=c(),removes=c()){
+  addstr <- paste0('"', paste(adds, collapse='", "'), '"')
+  remstr <- paste0('"', paste(removes, collapse='", "'), '"')
+  if(addstr == '""')addstr <- ""
+  if(remstr == '""')remstr <- ""
+
+  bodystr <- paste0('{"tags":[',addstr,'],"remove":[',remstr,']}')
+  message(bodystr)
+  theurl <- paste0("http://", tnum.var.ip, "/v1/numberspace/numbers/",gid)
+  message(theurl)
+  result <- PATCH(
+    theurl,
+    query = paste0("numberspace=",tnum.var.nspace),
+    add_headers(Authorization = paste0("Bearer ", tnum.var.token)),
+    body = bodystr,
+    accept("application/json"),
+    content_type("application/json")
+  )
+  returnValue(content(result))
+}
+
