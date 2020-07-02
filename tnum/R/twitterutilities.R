@@ -24,8 +24,12 @@ twitter_token <- setup_twitter_oauth(
 #'
 #'
 #' @examples
-tnum.twt.tweets2tnum <- function(tnumdf){
-
+tnum.twt.tweeteR2tnums <- function(tweetList){
+ tf <- twListToDF(tweetList)
+ subj.vector <- paste0("twitter/user:",tf$screenName,"/tweet:",tf$id)
+ users <- unique(tf$screenName)
+ profiles <- lookupUsers(users,TRUE)
+ returnValue(profiles)
 }
 
 
