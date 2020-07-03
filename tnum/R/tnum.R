@@ -261,21 +261,23 @@ tnum.simplify_result <- function(result, max) {
 #' @export
 #'
 #' @examples
+#'
 tnum.maketruenumber <- function(subject = "something",
                                 property = "property",
-                                value = 0,
-                                error = 0,
+                                Cvalue = NA,
+                                Nvalue = 0,
+                                error = NA,
                                 units = "",
-                                tags = c())
+                                tags = list())
 {
-  if (mode(value) == "numeric") {
-    if (error != 0) {
-      numval <- paste0(value, " +/- ", error, " ", units)
+  if (!is.na(Nvalue)) {
+    if (!is.na(error)) {
+      numval <- paste0(Nvalue, " +/- ", error, " ", units)
     } else {
-      numval <- paste0(value, " ", units)
+      numval <- paste0(Nvalue, " ", units)
     }
   } else {
-    numval <- value
+    numval <- Cvalue
   }
   tagstr <- ""
   for (tag in tags) {
@@ -286,7 +288,7 @@ tnum.maketruenumber <- function(subject = "something",
   }
   thenumber <-
     paste0(
-      '{"truenumbers":[{"subject":"',
+      '{"subject":"',
       subject,
       '","property":"',
       property,
@@ -294,16 +296,23 @@ tnum.maketruenumber <- function(subject = "something",
       numval,
       '","tags":[',
       tagstr,
-      ']}]}'
+      ']}'
     )
-  #message(thenumber)
+  returnValue(thenumber)
+}
+
+  tnum.maketruenumbers <- function(subject,property,Cvalue,Nvalue,error,units,tags){
+
+    jsonnums <- mapply(tnum.maketruenumber,subject,property,Cvalue,Nvalue,error,units,tags)
+    jsonnums <- paste(jsonnums, collapse=', ')
+    print(jsonnums)
   args <-
     list(numberspace = tnum.var.nspace)
   result <- POST(
     paste0("http://", tnum.var.ip, "/v1/numberspace/numbers"),
     query = args,
     add_headers(Authorization = paste0("Bearer ", tnum.var.token)),
-    body = thenumber,
+    body = paste0('{"truenumbers":[',jsonnums,']}'),
     accept("application/json"),
     content_type("application/json")
   )
