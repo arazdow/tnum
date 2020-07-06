@@ -54,7 +54,7 @@ tnum.twitteR.post_enriched_tnums <- function(tweetList) {
   }
 
   escapequotes <- function(strng) {
-    returnValue(gsub( '"', '%22',strng))
+    returnValue(gsub("\n","",gsub( '"', '\\\\"',strng)))
   }
 
   tagboolean <- function(boolVal,theTag) {
@@ -79,7 +79,7 @@ tnum.twitteR.post_enriched_tnums <- function(tweetList) {
   tweet.subj.vector <-
     paste0("twitter/user:", tf$screenName, "/tweet:", tf$id)
   tweet.prop.vector <- rep("text", length(tweet.subj.vector))
-  tweet.cvalue.vector <- paste0('"', lapply(tf$text, escapequotes), '"')
+  tweet.cvalue.vector <- lapply(tf$text, escapequotes)
 
   tweet.tags.platforms <-
     paste0("tweet/platform:",
