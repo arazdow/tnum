@@ -104,10 +104,14 @@ tnum.query <- function(query = "* has *",
   if (numReturned > max) {
     numReturned <- max
   }
+  first <- 0
+  if (numReturned > 0) {
+    first <- start + 1
+  }
   message(
     paste0(
       "Returned ",
-      start + 1,
+      first,
       " thru ",
       start + numReturned,
       " of ",
@@ -117,7 +121,11 @@ tnum.query <- function(query = "* has *",
   )
 
   assign("tnum.var.result", result, envir = .GlobalEnv)
-  returnValue(tnum.simplify_result(result, max))
+  if (numReturned > 0) {
+    returnValue(tnum.simplify_result(result, max))
+  } else {
+    returnValue()
+  }
 }
 
 #' Title
@@ -153,13 +161,13 @@ tnum.simplify_result <- function(result, max) {
       for (unitpwr in tn$value$unitPowers) {
         if (unitpwr$p < 0) {
           if (unitpwr$p < -1) {
-            neguns <- paste0(neguns,unitpwr$u, "^", -unitpwr$p," ")
+            neguns <- paste0(neguns, unitpwr$u, "^",-unitpwr$p, " ")
           } else {
-            neguns <- paste0(neguns,unitpwr$u, " ")
+            neguns <- paste0(neguns, unitpwr$u, " ")
           }
         } else {
           if (unitpwr$p > 1) {
-            posuns <- paste0(posuns," ", unitpwr$u, "^", unitpwr$p)
+            posuns <- paste0(posuns, " ", unitpwr$u, "^", unitpwr$p)
           } else {
             posuns <- paste0(" ", unitpwr$u)
           }
@@ -172,7 +180,7 @@ tnum.simplify_result <- function(result, max) {
         uns <- paste0(posuns, "/", neguns)
       }
 
-      if(nchar(uns) == 0 || uns==" unity"){
+      if (nchar(uns) == 0 || uns == " unity") {
         uns <- NA
       }
 
@@ -265,7 +273,7 @@ tnum.simplify_result <- function(result, max) {
 tnum.maketruenumber <- function(subject = "something",
                                 property = "property",
                                 Cvalue = NA,
-                                Nvalue = 0,
+                                Nvalue = NA,
                                 error = NA,
                                 units = "",
                                 tags = list())
@@ -281,10 +289,12 @@ tnum.maketruenumber <- function(subject = "something",
   }
   tagstr <- ""
   for (tag in tags) {
-    if (nchar(tagstr) > 0) {
-      tagstr <- paste0(tagstr, ",")
+    if (nchar(tag) > 0 && !is.na(tag)) {
+      if (nchar(tagstr) > 0) {
+        tagstr <- paste0(tagstr, ",")
+      }
+      tagstr <- paste0(tagstr, '"', tag, '"')
     }
-    tagstr <- paste0(tagstr, '"', tag, '"')
   }
   thenumber <-
     paste0(
@@ -301,24 +311,38 @@ tnum.maketruenumber <- function(subject = "something",
   returnValue(thenumber)
 }
 
-  tnum.maketruenumbers <- function(subject,property,Cvalue,Nvalue,error,units,tags){
-
-    jsonnums <- mapply(tnum.maketruenumber,subject,property,Cvalue,Nvalue,error,units,tags)
-    jsonnums <- paste(jsonnums, collapse=', ')
+tnum.maketruenumbers <-
+  function(subject,
+           property,
+           Cvalue,
+           Nvalue,
+           error,
+           units,
+           tags) {
+    jsonnums <-
+      mapply(tnum.maketruenumber,
+             subject,
+             property,
+             Cvalue,
+             Nvalue,
+             error,
+             units,
+             tags)
+    jsonnums <- paste(jsonnums, collapse = ', ')
     print(jsonnums)
-  args <-
-    list(numberspace = tnum.var.nspace)
-  result <- POST(
-    paste0("http://", tnum.var.ip, "/v1/numberspace/numbers"),
-    query = args,
-    add_headers(Authorization = paste0("Bearer ", tnum.var.token)),
-    body = paste0('{"truenumbers":[',jsonnums,']}'),
-    accept("application/json"),
-    content_type("application/json")
-  )
+    args <-
+      list(numberspace = tnum.var.nspace)
+    result <- POST(
+      paste0("http://", tnum.var.ip, "/v1/numberspace/numbers"),
+      query = args,
+      add_headers(Authorization = paste0("Bearer ", tnum.var.token)),
+      body = paste0('{"truenumbers":[', jsonnums, ']}'),
+      accept("application/json"),
+      content_type("application/json")
+    )
 
-  returnValue(content(result))
-}
+    returnValue(content(result))
+  }
 
 #' Title
 #'
@@ -330,19 +354,24 @@ tnum.maketruenumber <- function(subject = "something",
 #' @export
 #'
 #' @examples
-tnum.add_remove_tags <- function(gid,adds=c(),removes=c()){
-  addstr <- paste0('"', paste(adds, collapse='", "'), '"')
-  remstr <- paste0('"', paste(removes, collapse='", "'), '"')
-  if(addstr == '""')addstr <- ""
-  if(remstr == '""')remstr <- ""
+tnum.add_remove_tags <- function(gid,
+                                 adds = c(),
+                                 removes = c()) {
+  addstr <- paste0('"', paste(adds, collapse = '", "'), '"')
+  remstr <- paste0('"', paste(removes, collapse = '", "'), '"')
+  if (addstr == '""')
+    addstr <- ""
+  if (remstr == '""')
+    remstr <- ""
 
-  bodystr <- paste0('{"tags":[',addstr,'],"remove":[',remstr,']}')
+  bodystr <- paste0('{"tags":[', addstr, '],"remove":[', remstr, ']}')
   message(bodystr)
-  theurl <- paste0("http://", tnum.var.ip, "/v1/numberspace/numbers/",gid)
+  theurl <-
+    paste0("http://", tnum.var.ip, "/v1/numberspace/numbers/", gid)
   message(theurl)
   result <- PATCH(
     theurl,
-    query = paste0("numberspace=",tnum.var.nspace),
+    query = paste0("numberspace=", tnum.var.nspace),
     add_headers(Authorization = paste0("Bearer ", tnum.var.token)),
     body = bodystr,
     accept("application/json"),
@@ -350,4 +379,3 @@ tnum.add_remove_tags <- function(gid,adds=c(),removes=c()){
   )
   returnValue(content(result))
 }
-

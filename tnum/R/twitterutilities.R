@@ -7,7 +7,7 @@ library(twitteR)
 #' Authenticate twitteR package with Twitter account
 #'
 
-tnum.twt.authorize <- function() {
+tnum.twitteR.authorize <- function() {
   twitter_token <- setup_twitter_oauth(
     consumer_key = "EJJSOPMbniEdgyxhD9Q6rZDp1",
     consumer_secret = "tcMRH9XTmXd6nq9hAFsYtsHW5cwsymN32duLCNmQIoqb3amwja",
@@ -38,6 +38,41 @@ tnum.twt.authorize <- function() {
 #'
 
 tnum.twitteR.post_enriched_tnums <- function(tweetList) {
+# Functions needed for apply() processing of tweet vectors ##########
+  getTweetPlatform <- function(atag) {
+    if (grepl("ipad", atag, ignore.case = TRUE)) {
+      returnValue("iPad")
+    } else if (grepl("android", atag, ignore.case = TRUE)) {
+      returnValue("Android")
+    } else if (grepl("web", atag, ignore.case = TRUE)) {
+      returnValue("Web")
+    } else if (grepl("iphone", atag, ignore.case = TRUE)) {
+      returnValue("iPhone")
+    } else if (grepl("linkedin", atag, ignore.case = TRUE)) {
+      returnValue("LinkedIn")
+    }
+  }
+
+  escapequotes <- function(strng) {
+    returnValue(gsub( '"', '%22',strng))
+  }
+
+  tagboolean <- function(boolVal,theTag) {
+    if (boolVal) {
+      returnValue(theTag)
+    } else {
+      returnValue(NA)
+    }
+  }
+
+  pairwise <- function(a,b){
+    pair <- c(a,b)
+    returnValue(pair)
+  }
+
+  ## end of apply() functions ######################################
+
+
   tf <- twitteR::twListToDF(tweetList)  #create data.frame from list
 
   # make vectors for tnum parts
@@ -49,37 +84,16 @@ tnum.twitteR.post_enriched_tnums <- function(tweetList) {
   tweet.tags.platforms <-
     paste0("tweet/platform:",
            lapply(tf$statusSource, getTweetPlatform))
+
   tweet.tags.truncated <-
-    paste0("tweet:truncated", lapply(tf$truncated, tagtruncated))
+   lapply(tf$truncated, tagboolean,theTag="tweet:truncated")
 
   users <- unique(tf$screenName)
   profiles <- lookupUsers(users, TRUE)
-  returnValue(profiles)
 
-  getTweetPlatform <- function(atag) {
-    if (str_contains(atag, "ipad", ignore.case = TRUE)) {
-      returnValue("iPad")
-    } else if (str_contains(atag, "android", ignore.case = TRUE)) {
-      returnValue("Android")
-    } else if (str_contains(atag, "web", ignore.case = TRUE)) {
-      returnValue("Web")
-    } else if (str_contains(atag, "iphone", ignore.case = TRUE)) {
-      returnValue("iPhone")
-    } else if (str_contains(atag, "linkedin", ignore.case = TRUE)) {
-      returnValue("LinkedIn")
-    }
-  }
+  tagList <- mapply(pairwise,tweet.tags.platforms,tweet.tags.truncated)
 
-  escapequotes <- function(strng) {
-    returnValue(gsub( '"', '\\"',strng))
-  }
+  retVal <- tnum.maketruenumbers(tweet.subj.vector,tweet.prop.vector,tweet.cvalue.vector,NA,NA,NA,tagList)
 
-  tagtruncated <- function(istrunc) {
-    if (istrunc) {
-      returnValue("tweet:truncated")
-    } else {
-      returnValue(NA)
-    }
-  }
-
+  returnValue(retVal)
 }
