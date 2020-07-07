@@ -37,20 +37,25 @@ tnum.twitteR.authorize <- function() {
 #' @export N/A
 #'
 
-tnum.twitteR.post_enriched_tnums <- function(tweetList) {
+tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
 # Functions needed for apply() processing of tweet vectors ##########
+
   getTweetPlatform <- function(atag) {
+    platName <- "unknown"
     if (grepl("ipad", atag, ignore.case = TRUE)) {
-      returnValue("iPad")
+      platName <- "iPad"
     } else if (grepl("android", atag, ignore.case = TRUE)) {
-      returnValue("Android")
+      platName <- "Android"
     } else if (grepl("web", atag, ignore.case = TRUE)) {
-      returnValue("Web")
+      platName <- "Web"
     } else if (grepl("iphone", atag, ignore.case = TRUE)) {
-      returnValue("iPhone")
+      platName <- "iPhone"
     } else if (grepl("linkedin", atag, ignore.case = TRUE)) {
-      returnValue("LinkedIn")
+      platName <- "LinkedIn"
+    } else if (grepl("tweetdeck", atag, ignore.case = TRUE)) {
+      platName <- "TweetDeck"
     }
+    returnValue(paste0("tweet/platform:",platName))
   }
 
   escapequotes <- function(strng) {
@@ -65,9 +70,9 @@ tnum.twitteR.post_enriched_tnums <- function(tweetList) {
     }
   }
 
-  pairwise <- function(a,b){
-    pair <- c(a,b)
-    returnValue(pair)
+  listTags <- function(a,b){
+    tags <- c(a,b)
+    returnValue(tags)
   }
 
   ## end of apply() functions ######################################
@@ -82,8 +87,7 @@ tnum.twitteR.post_enriched_tnums <- function(tweetList) {
   tweet.cvalue.vector <- lapply(tf$text, escapequotes)
 
   tweet.tags.platforms <-
-    paste0("tweet/platform:",
-           lapply(tf$statusSource, getTweetPlatform))
+    lapply(tf$statusSource, getTweetPlatform)
 
   tweet.tags.truncated <-
    lapply(tf$truncated, tagboolean,theTag="tweet:truncated")
@@ -91,7 +95,10 @@ tnum.twitteR.post_enriched_tnums <- function(tweetList) {
   users <- unique(tf$screenName)
   profiles <- lookupUsers(users, TRUE)
 
-  tagList <- mapply(pairwise,tweet.tags.platforms,tweet.tags.truncated)
+  tagList <- list()
+  for(i in 1:length(tweet.subj.vector)){
+    tagList[[i]] <- list(tweet.tags.platforms[[i]],tweet.tags.truncated[[i]])
+  }
 
   retVal <- tnum.maketruenumbers(tweet.subj.vector,tweet.prop.vector,tweet.cvalue.vector,NA,NA,NA,tagList)
 

@@ -2,8 +2,8 @@
 #' @author True Engineering Technology, LLC Boston, MA USA
 #' @references \url{http://www.truenum.com}
 
-require(httr)
-require(jsonlite)
+library(httr)
+library(jsonlite)
 
 tnum.var.nspace <- ""
 tnum.var.nspaces <- ""
@@ -288,6 +288,7 @@ tnum.maketruenumber <- function(subject = "something",
     numval <- Cvalue
   }
   tagstr <- ""
+
   for (tag in tags) {
     if (nchar(tag) > 0 && !is.na(tag)) {
       if (nchar(tagstr) > 0) {
@@ -329,7 +330,7 @@ tnum.maketruenumbers <-
              units,
              tags)
     jsonnums <- paste(jsonnums, collapse = ', ')
-    print(jsonnums)
+    assign("tnum.var.postedJSON", jsonnums, envir = .GlobalEnv)
     args <-
       list(numberspace = tnum.var.nspace)
     result <- POST(
