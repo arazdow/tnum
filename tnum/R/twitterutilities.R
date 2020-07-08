@@ -38,8 +38,9 @@ tnum.twitteR.authorize <- function() {
 #'
 
 tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
-# Functions needed for apply() processing of tweet vectors ##########
+  # Functions needed for apply() processing of tweet vectors ##########
 
+  # Pull out a platform name from the HTML source field of the tweet
   getTweetPlatform <- function(atag) {
     platName <- "unknown"
     if (grepl("ipad", atag, ignore.case = TRUE)) {
@@ -55,14 +56,16 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
     } else if (grepl("tweetdeck", atag, ignore.case = TRUE)) {
       platName <- "TweetDeck"
     }
-    returnValue(paste0("tweet/platform:",platName))
+    returnValue(paste0("tweet/platform:", platName))
   }
 
+  #  clean up tweet text so it works as a JSON string
   escapequotes <- function(strng) {
-    returnValue(gsub("\n","",gsub( '"', '\\\\"',strng)))
+    returnValue(gsub("\n", "", gsub('"', '\\\\"', strng)))
   }
 
-  tagboolean <- function(boolVal,theTag) {
+  # for boolean fields, if true, a tag is generated; no tag if false.
+  tagboolean <- function(boolVal, theTag) {
     if (boolVal) {
       returnValue(theTag)
     } else {
@@ -70,37 +73,45 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
     }
   }
 
-  listTags <- function(a,b){
-    tags <- c(a,b)
-    returnValue(tags)
-  }
-
   ## end of apply() functions ######################################
 
 
   tf <- twitteR::twListToDF(tweetList)  #create data.frame from list
+  numTweets <- nrow(tf)  # number of tweets
 
-  # make vectors for tnum parts
+  # get user profiles for enriching tweet data
+  users <- unique(tf$screenName)
+  profiles <- twitteR::lookupUsers(users, TRUE)
+
+  # make subject vector for all rows (tweets)
   tweet.subj.vector <-
     paste0("twitter/user:", tf$screenName, "/tweet:", tf$id)
-  tweet.prop.vector <- rep("text", length(tweet.subj.vector))
-  tweet.cvalue.vector <- lapply(tf$text, escapequotes)
 
+  # make property, value and tag vectors for each truenum, and post for all rows
+
+  # tags, common to all tnums of a tweet
   tweet.tags.platforms <-
     lapply(tf$statusSource, getTweetPlatform)
 
   tweet.tags.truncated <-
-   lapply(tf$truncated, tagboolean,theTag="tweet:truncated")
-
-  users <- unique(tf$screenName)
-  profiles <- lookupUsers(users, TRUE)
+    lapply(tf$truncated, tagboolean, theTag = "tweet:truncated")
 
   tagList <- list()
-  for(i in 1:length(tweet.subj.vector)){
-    tagList[[i]] <- list(tweet.tags.platforms[[i]],tweet.tags.truncated[[i]])
+  for (i in 1:numTweets) {
+    tagList[[i]] <-
+      list(tweet.tags.platforms[[i]], tweet.tags.truncated[[i]])
   }
 
-  retVal <- tnum.maketruenumbers(tweet.subj.vector,tweet.prop.vector,tweet.cvalue.vector,NA,NA,NA,tagList)
+  # ... property and value for tweet's text:
+  tweet.prop.vector <- rep("text", length(tweet.subj.vector))
+  tweet.cvalue.vector <- lapply(tf$text, escapequotes)
 
-  returnValue(retVal)
+  retVal <-   # write the text tnums to the server
+    tnum.maketruenumbers(tweet.subj.vector,
+                         tweet.prop.vector,
+                         tweet.cvalue.vector,
+                         NA,
+                         NA,
+                         NA,
+                         tagList)
 }
