@@ -285,7 +285,11 @@ tnum.maketruenumber <- function(subject = "something",
       numval <- paste0(Nvalue, " ", units)
     }
   } else {
+    if(is.na(Cvalue)){ #if both values are NA return empty tnum
+      returnValue("{}")
+    } else {
     numval <- Cvalue
+    }
   }
   tagstr <- ""
 
@@ -330,6 +334,10 @@ tnum.maketruenumbers <-
              units,
              tags)
     jsonnums <- paste(jsonnums, collapse = ', ')
+    jsonnums <- gsub(",\\{\\},",",",jsonnums)
+    jsonnums <- gsub("\\{\\},","",jsonnums)
+    jsonnums <- gsub(",\\{\\}","",jsonnums)
+
     assign("tnum.var.postedJSON", jsonnums, envir = .GlobalEnv)
     args <-
       list(numberspace = tnum.var.nspace)

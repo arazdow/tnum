@@ -73,6 +73,15 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
     }
   }
 
+  # for numeric fields, NA instead of a value if = zero
+  NAifZero <- function(num){
+    if(num == 0){
+      returnValue(NA)
+    } else {
+      returnValue(num)
+    }
+  }
+
   ## end of apply() functions ######################################
 
 
@@ -103,10 +112,36 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
   }
 
   # ... property and value for tweet's text:
-  tweet.prop.vector <- rep("text", length(tweet.subj.vector))
+  tweet.prop.vector <- rep("text", numTweets)
   tweet.cvalue.vector <- lapply(tf$text, escapequotes)
 
   retVal <-   # write the text tnums to the server
+    tnum.maketruenumbers(tweet.subj.vector,
+                         tweet.prop.vector,
+                         tweet.cvalue.vector,
+                         NA,
+                         NA,
+                         NA,
+                         tagList)
+
+  # ... property and value for tweet's likes:
+  tweet.prop.vector <- rep("likes", numTweets)
+  tweet.nvalue.vector <- tf$favoriteCount
+
+  retVal <-   # write the likes tnums to the server
+    tnum.maketruenumbers(tweet.subj.vector,
+                         tweet.prop.vector,
+                         NA,
+                         tweet.nvalue.vector,
+                         NA,
+                         "",
+                         tagList)
+
+  # ... property and value for tweet's creation data:
+  tweet.prop.vector <- rep("date:creation", numTweets)
+  tweet.cvalue.vector <- tf$created
+
+  retVal <-   # write the creation date tnums to the server
     tnum.maketruenumbers(tweet.subj.vector,
                          tweet.prop.vector,
                          tweet.cvalue.vector,
