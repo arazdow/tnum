@@ -2,17 +2,20 @@
 #' @author True Engineering Technology, LLC Boston, MA USA
 #' @references \url{http://www.truenum.com}
 #'
-library(twitteR)
+library(rtweet)
+library(tidyverse)
 
 #' Authenticate twitteR package with Twitter account
 #'
 
-tnum.twitteR.authorize <- function() {
+tnum.rtweet.authorize <- function() {
   require(httr)
   require(jsonlite)
   require(data.tree)
-  require(twitteR)
-  twitter_token <- setup_twitter_oauth(
+  require(rtweet)
+  require(tidyverse)
+
+  twitter_token <- rtweet::create_token(
     consumer_key = "EJJSOPMbniEdgyxhD9Q6rZDp1",
     consumer_secret = "tcMRH9XTmXd6nq9hAFsYtsHW5cwsymN32duLCNmQIoqb3amwja",
     access_token = "1274782526926700546-PJpruW5N5CTkzycTj9gsZSePBdHv97",
@@ -20,7 +23,7 @@ tnum.twitteR.authorize <- function() {
   )
 }
 
-#' @title Post new tnums from twitteR query result
+#' @title Post new tnums from rtweet search result
 #'
 #' tnums for each tweet:
 #'  1. tnum for full text
@@ -35,13 +38,13 @@ tnum.twitteR.authorize <- function() {
 #'  2. tagged if truncated
 #'  3. tagged with user device
 #'
-#' @param tweetList List of tweets as returned from twitteR::Search()
+#' @param tweetTibble table of tweets as returned from rtweet::search_tweets()
 #'
 #' @return return code of tnum.maketruenumbers call
 #' @export N/A
 #'
 
-tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
+tnum.rtweet.post_tweets_as_tnums <- function(tweetList) {
   # Functions needed for apply() processing of tweet vectors ##########
 
   # Pull out a platform name from the HTML source field of the tweet

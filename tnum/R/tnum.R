@@ -161,7 +161,7 @@ tnum.simplify_result <- function(result, max) {
       for (unitpwr in tn$value$unitPowers) {
         if (unitpwr$p < 0) {
           if (unitpwr$p < -1) {
-            neguns <- paste0(neguns, unitpwr$u, "^",-unitpwr$p, " ")
+            neguns <- paste0(neguns, unitpwr$u, "^", -unitpwr$p, " ")
           } else {
             neguns <- paste0(neguns, unitpwr$u, " ")
           }
@@ -278,17 +278,23 @@ tnum.maketruenumber <- function(subject = "something",
                                 units = "",
                                 tags = list())
 {
+  numval <- NA
   if (!is.na(Nvalue)) {
+    unitSuffix <- ""
+    if (!is.na(units) && nchar(units) > 0) {
+      unitSuffix <- paste0(" ", units)
+    }
     if (!is.na(error)) {
-      numval <- paste0(Nvalue, " +/- ", error, " ", units)
+      numval <- paste0(Nvalue, " +/- ", error, unitSuffix)
     } else {
-      numval <- paste0(Nvalue, " ", units)
+      numval <- paste0(Nvalue, unitSuffix)
     }
   } else {
-    if(is.na(Cvalue)){ #if both values are NA return empty tnum
+    if (is.na(Cvalue)) {
+      #if both values are NA return empty tnum
       returnValue("{}")
     } else {
-    numval <- Cvalue
+      numval <- Cvalue
     }
   }
   tagstr <- ""
@@ -324,7 +330,7 @@ tnum.maketruenumbers <-
            error,
            units,
            tags) {
-    jsonnums <-
+    alljsonnums <-
       mapply(tnum.maketruenumber,
              subject,
              property,
@@ -333,24 +339,39 @@ tnum.maketruenumbers <-
              error,
              units,
              tags)
-    jsonnums <- paste(jsonnums, collapse = ', ')
-    jsonnums <- gsub(",\\{\\},",",",jsonnums)
-    jsonnums <- gsub("\\{\\},","",jsonnums)
-    jsonnums <- gsub(",\\{\\}","",jsonnums)
+    numnums <- length(alljsonnums)
+    chunkcount <- 1
+    chunksize <- 500
+    chunks <- (numnums %/% chunksize) + 1
+    remainder <- numnums %% chunksize
+    for (i in 1:chunks) {
+      startinx <- (i - 1) * chunksize + 1
+      endinx <- startinx + chunksize -1
+      if (endinx > numnums) {
+        endinx <- startinx + remainder -1
+      }
 
-    assign("tnum.var.postedJSON", jsonnums, envir = .GlobalEnv)
-    args <-
-      list(numberspace = tnum.var.nspace)
-    result <- POST(
-      paste0("http://", tnum.var.ip, "/v1/numberspace/numbers"),
-      query = args,
-      add_headers(Authorization = paste0("Bearer ", tnum.var.token)),
-      body = paste0('{"truenumbers":[', jsonnums, ']}'),
-      accept("application/json"),
-      content_type("application/json")
-    )
+      jsonnums <- alljsonnums[startinx:endinx]
 
-    returnValue(content(result))
+      jsonnums <- paste(jsonnums, collapse = ', ')
+      jsonnums <- gsub(",\\{\\},", ",", jsonnums)
+      jsonnums <- gsub("\\{\\},", "", jsonnums)
+      jsonnums <- gsub(",\\{\\}", "", jsonnums)
+
+      assign("tnum.var.postedJSON", jsonnums, envir = .GlobalEnv)
+      args <-
+        list(numberspace = tnum.var.nspace)
+      result <- POST(
+        paste0("http://", tnum.var.ip, "/v1/numberspace/numbers"),
+        query = args,
+        add_headers(Authorization = paste0("Bearer ", tnum.var.token)),
+        body = paste0('{"truenumbers":[', jsonnums, ']}'),
+        accept("application/json"),
+        content_type("application/json")
+      )
+      message(paste0("written ",startinx," to ",endinx, " of ",numnums))
+    }
+
   }
 
 #' Title
@@ -373,7 +394,8 @@ tnum.add_remove_tags <- function(gid,
   if (remstr == '""')
     remstr <- ""
 
-  bodystr <- paste0('{"tags":[', addstr, '],"remove":[', remstr, ']}')
+  bodystr <-
+    paste0('{"tags":[', addstr, '],"remove":[', remstr, ']}')
   message(bodystr)
   theurl <-
     paste0("http://", tnum.var.ip, "/v1/numberspace/numbers/", gid)
