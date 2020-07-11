@@ -290,9 +290,10 @@ tnum.maketruenumber <- function(subject = "something",
       numval <- paste0(Nvalue, unitSuffix)
     }
   } else {
+
     if (is.na(Cvalue)) {
       #if both values are NA return empty tnum
-      returnValue("{}")
+      return("{}")
     } else {
       numval <- Cvalue
     }
