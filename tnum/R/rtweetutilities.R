@@ -14,13 +14,16 @@ tnum.rtweet.authorize <- function() {
   require(data.tree)
   require(rtweet)
   require(tidyverse)
+  if (nchar(get_token()) < 5) {
+    twitter_token <- rtweet::create_token(
+      consumer_key = "EJJSOPMbniEdgyxhD9Q6rZDp1",
+      consumer_secret = "tcMRH9XTmXd6nq9hAFsYtsHW5cwsymN32duLCNmQIoqb3amwja",
+      access_token = "1274782526926700546-PJpruW5N5CTkzycTj9gsZSePBdHv97",
+      access_secret = "pfUowEnIFZRWOzJ8DDETiCNtIkT0PheEBuJnOE4O6bZvl"
+    )
+  }
 
-  twitter_token <- rtweet::create_token(
-    consumer_key = "EJJSOPMbniEdgyxhD9Q6rZDp1",
-    consumer_secret = "tcMRH9XTmXd6nq9hAFsYtsHW5cwsymN32duLCNmQIoqb3amwja",
-    access_token = "1274782526926700546-PJpruW5N5CTkzycTj9gsZSePBdHv97",
-    access_secret = "pfUowEnIFZRWOzJ8DDETiCNtIkT0PheEBuJnOE4O6bZvl"
-  )
+  return(get_token())
 }
 
 #' @title Post new tnums from rtweet search result
@@ -44,7 +47,7 @@ tnum.rtweet.authorize <- function() {
 #' @export N/A
 #'
 
-tnum.rtweet.post_tweets_as_tnums <- function(tweetList) {
+tnum.rtweet.post_tweets_as_tnums <- function(tweetTibble) {
   # Functions needed for apply() processing of tweet vectors ##########
 
   # Pull out a platform name from the HTML source field of the tweet
@@ -81,8 +84,8 @@ tnum.rtweet.post_tweets_as_tnums <- function(tweetList) {
   }
 
   # for numeric fields, NA instead of a value if = zero
-  NAifZero <- function(num){
-    if(num == 0){
+  NAifZero <- function(num) {
+    if (num == 0) {
       returnValue(NA)
     } else {
       returnValue(num)
@@ -90,8 +93,8 @@ tnum.rtweet.post_tweets_as_tnums <- function(tweetList) {
   }
 
   # make reply tweet subject to use as value. If not a reply - return empty TN
-  replyTweetIfReply <- function(sname, sid){
-    if(is.na(sname)){
+  replyTweetIfReply <- function(sname, sid) {
+    if (is.na(sname)) {
       return(NA)
     } else {
       returnValue(paste0("twitter/user:", sname, "/tweet:", sid))
@@ -101,7 +104,7 @@ tnum.rtweet.post_tweets_as_tnums <- function(tweetList) {
   ## end of apply() functions ######################################
 
 
-  tf <- twitteR::twListToDF(tweetList)  #create data.frame from list
+  tf <- tweetTibble
   numTweets <- nrow(tf)  # number of tweets
 
   # get user profiles for enriching tweet data
@@ -168,7 +171,8 @@ tnum.rtweet.post_tweets_as_tnums <- function(tweetList) {
 
   # ... property and value for tweet's replied-to tweet:
   tweet.prop.vector <- rep("tweet:replied-to", numTweets)
-  tweet.cvalue.vector <- mapply(replyTweetIfReply,tf$replyToSN,tf$replyToSID)
+  tweet.cvalue.vector <-
+    mapply(replyTweetIfReply, tf$replyToSN, tf$replyToSID)
   retVal <-   # write the tweet replied to tnum to the server
     tnum.maketruenumbers(tweet.subj.vector,
                          tweet.prop.vector,

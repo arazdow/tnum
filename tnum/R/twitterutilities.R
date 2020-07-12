@@ -104,6 +104,7 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
   # get user profiles for enriching tweet data
   users <- unique(tf$screenName)
   profiles <- twitteR::lookupUsers(users, TRUE)
+  profilesdf <- twitteR::twListToDF(profiles)
 
   # make subject vector for all rows (tweets)
   tweet.subj.vector <-
@@ -171,6 +172,88 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
                          tweet.prop.vector,
                          tweet.cvalue.vector,
                          NA,
+                         NA,
+                         NA,
+                         tagList)
+
+  ##  add user profile information
+  # ...
+  numUsers <- length(users)
+  user.tags.verified <-
+    lapply(profilesdf$verified, tagboolean, theTag = "twitter/user:verified")
+  tagList <- list()
+
+  for (i in 1:numUsers) {
+    tagList[[i]] <-
+     list(user.tags.verified[[i]])
+  }
+
+  user.subj.vector <- paste0("twitter/user:", profilesdf$screenName, "/profile")
+
+  user.prop.vector <- rep("date:creation", numUsers)
+  user.cvalue.vector <- profilesdf$created
+  retVal <-   # write the user's creation date
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         user.cvalue.vector,
+                         NA,
+                         NA,
+                         NA,
+                         tagList)
+
+  user.prop.vector <- rep("location", numUsers)
+  user.cvalue.vector <- lapply(profilesdf$location, escapequotes)
+  retVal <-   # write the user's location
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         user.cvalue.vector,
+                         NA,
+                         NA,
+                         NA,
+                         tagList,
+                         FALSE)
+
+  user.prop.vector <- rep("description", numUsers)
+  user.cvalue.vector <- lapply(profilesdf$description, escapequotes)
+  retVal <-   # write the user's description
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         user.cvalue.vector,
+                         NA,
+                         NA,
+                         NA,
+                         tagList,
+                         FALSE)
+
+  user.prop.vector <- rep("followers", numUsers)
+  user.nvalue.vector <- profilesdf$followersCount
+  retVal <-   # write the user's followers
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         NA,
+                         user.nvalue.vector,
+                         NA,
+                         NA,
+                         tagList)
+
+  user.prop.vector <- rep("friends", numUsers)
+  user.nvalue.vector <- profilesdf$friendsCount
+  retVal <-   # write the user's followers
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         NA,
+                         user.nvalue.vector,
+                         NA,
+                         NA,
+                         tagList)
+
+  user.prop.vector <- rep("likes", numUsers)
+  user.nvalue.vector <- profilesdf$favoritesCount
+  retVal <-   # write the user's followers
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         NA,
+                         user.nvalue.vector,
                          NA,
                          NA,
                          tagList)

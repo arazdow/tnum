@@ -276,8 +276,10 @@ tnum.maketruenumber <- function(subject = "something",
                                 Nvalue = NA,
                                 error = NA,
                                 units = "",
-                                tags = list())
+                                tags = list(),
+                                noEmptyStrings=FALSE)
 {
+
   numval <- NA
   if (!is.na(Nvalue)) {
     unitSuffix <- ""
@@ -290,8 +292,7 @@ tnum.maketruenumber <- function(subject = "something",
       numval <- paste0(Nvalue, unitSuffix)
     }
   } else {
-
-    if (is.na(Cvalue)) {
+    if (is.na(Cvalue) || (noEmptyStrings && (Cvalue == ""))) {
       #if both values are NA return empty tnum
       return("{}")
     } else {
@@ -330,7 +331,8 @@ tnum.maketruenumbers <-
            Nvalue,
            error,
            units,
-           tags) {
+           tags,
+           noEmptyStrings=FALSE) {
     alljsonnums <-
       mapply(tnum.maketruenumber,
              subject,
@@ -339,7 +341,8 @@ tnum.maketruenumbers <-
              Nvalue,
              error,
              units,
-             tags)
+             tags,
+             noEmptyStrings)
     numnums <- length(alljsonnums)
     chunkcount <- 1
     chunksize <- 500
@@ -370,7 +373,7 @@ tnum.maketruenumbers <-
         accept("application/json"),
         content_type("application/json")
       )
-      message(paste0("written ",startinx," to ",endinx, " of ",numnums))
+      message(paste0("posted ",startinx," to ",endinx, " of ",numnums))
     }
 
   }
