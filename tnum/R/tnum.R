@@ -356,7 +356,6 @@ tnum.maketruenumbers <-
       }
 
       jsonnums <- alljsonnums[startinx:endinx]
-
       jsonnums <- paste(jsonnums, collapse = ', ')
       jsonnums <- gsub(",\\{\\},", ",", jsonnums)
       jsonnums <- gsub("\\{\\},", "", jsonnums)

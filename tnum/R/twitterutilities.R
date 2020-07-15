@@ -65,7 +65,9 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
 
   #  clean up tweet text so it works as a JSON string
   escapequotes <- function(strng) {
-    returnValue(gsub("\n", "", gsub('"', '\\\\"', strng)))
+    escaped <- gsub("\n", "", gsub('"', "'", strng))
+   escaped <- gsub("\\\\", "\\\\\\\\", escaped)
+    returnValue(dQuote(escaped))
   }
 
   # for boolean fields, if true, a tag is generated; no tag if false.
@@ -182,14 +184,13 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
   user.tags.verified <-
     lapply(profilesdf$verified, tagboolean, theTag = "twitter/user:verified")
   tagList <- list()
-
+  paste0("twitter/user:", profilesdf$screenName, "/tweet:", profilesdf$id)
   for (i in 1:numUsers) {
     tagList[[i]] <-
      list(user.tags.verified[[i]])
   }
 
-  user.subj.vector <- paste0("twitter/user:", profilesdf$screenName, "/profile")
-
+  user.subj.vector <- paste0("twitter/user:", profilesdf$screenName, "/profile:", profilesdf$id)
   user.prop.vector <- rep("date:creation", numUsers)
   user.cvalue.vector <- profilesdf$created
   retVal <-   # write the user's creation date
@@ -201,17 +202,6 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
                          NA,
                          tagList)
 
-  user.prop.vector <- rep("location", numUsers)
-  user.cvalue.vector <- lapply(profilesdf$location, escapequotes)
-  retVal <-   # write the user's location
-    tnum.maketruenumbers(user.subj.vector,
-                         user.prop.vector,
-                         user.cvalue.vector,
-                         NA,
-                         NA,
-                         NA,
-                         tagList,
-                         FALSE)
 
   user.prop.vector <- rep("description", numUsers)
   user.cvalue.vector <- lapply(profilesdf$description, escapequotes)
@@ -222,8 +212,7 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
                          NA,
                          NA,
                          NA,
-                         tagList,
-                         FALSE)
+                         tagList)
 
   user.prop.vector <- rep("followers", numUsers)
   user.nvalue.vector <- profilesdf$followersCount
@@ -257,4 +246,17 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
                          NA,
                          NA,
                          tagList)
+
+  user.prop.vector <- rep("location", numUsers)
+  user.cvalue.vector <- lapply(profilesdf$location, escapequotes)
+  retVal <-   # write the user's location
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         user.cvalue.vector,
+                         NA,
+                         NA,
+                         NA,
+                         tagList,
+                         FALSE)
+
 }
