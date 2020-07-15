@@ -41,7 +41,7 @@ tnum.twitteR.authorize <- function() {
 #' @export N/A
 #'
 
-tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
+tnum.twitteR.post_tweets_as_tnums <- function(tweetList, customTags = list()) {
   # Functions needed for apply() processing of tweet vectors ##########
 
   # Pull out a platform name from the HTML source field of the tweet
@@ -123,9 +123,13 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
 
   tagList <- list()
   for (i in 1:numTweets) {
-    tagList[[i]] <-
-      list(tweet.tags.platforms[[i]], tweet.tags.truncated[[i]])
+      tlist <- list(tweet.tags.platforms[[i]], tweet.tags.truncated[[i]])
+      if(length(customTags)>0){
+        tlist <- append(tlist,customTags)
+      }
+      tagList[[i]] <- tlist
   }
+
 
   # ... property and value for tweet's text:
   tweet.prop.vector <- rep("text", numTweets)
@@ -186,8 +190,11 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
   tagList <- list()
   paste0("twitter/user:", profilesdf$screenName, "/tweet:", profilesdf$id)
   for (i in 1:numUsers) {
-    tagList[[i]] <-
-     list(user.tags.verified[[i]])
+     tlist <- list(user.tags.verified[[i]])
+     if(length(customTags)>0){
+       tlist <- append(tlist,customTags)
+     }
+     tagList[[i]] <- tlist
   }
 
   user.subj.vector <- paste0("twitter/user:", profilesdf$screenName, "/profile:", profilesdf$id)
@@ -256,7 +263,6 @@ tnum.twitteR.post_tweets_as_tnums <- function(tweetList) {
                          NA,
                          NA,
                          NA,
-                         tagList,
-                         FALSE)
+                         tagList)
 
 }

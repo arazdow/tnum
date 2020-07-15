@@ -31,7 +31,7 @@ tnum.authorize <- function(ip = "54.166.186.11") {
   )
 
   token <- content(result)$data$token
-  assign("tnum.var.token", token, envir = .GlobalEnv)
+
   ## get list of numberspaces
   result <- GET(paste0("http://", ip, "/v1/numberspace/"),
                 add_headers(Authorization = paste0("Bearer ", token)))
@@ -42,6 +42,7 @@ tnum.authorize <- function(ip = "54.166.186.11") {
   }
   assign("tnum.var.nspace", nspaces[[1]], envir = .GlobalEnv)
   assign("tnum.var.nspaces", nspaces, envir = .GlobalEnv)
+  assign("tnum.var.token", token, envir = .GlobalEnv)
   returnValue(nspaces)
 
 }
@@ -122,7 +123,7 @@ tnum.query <- function(query = "* has *",
 
   assign("tnum.var.result", result, envir = .GlobalEnv)
   if (numReturned > 0) {
-    returnValue(tnum.simplify_result(result, max))
+    returnValue(tnum.queryResultToDataframe(result, max))
   } else {
     returnValue()
   }
@@ -136,7 +137,7 @@ tnum.query <- function(query = "* has *",
 #' @export
 #'
 #' @examples
-tnum.simplify_result <- function(result, max) {
+tnum.queryResultToDataframe <- function(result, max) {
   decodenumber <- function(tn) {
     subj <- tn$subject[[1]]
     prop <- tn$property[[1]]
@@ -279,6 +280,13 @@ tnum.maketruenumber <- function(subject = "something",
                                 tags = list(),
                                 noEmptyStrings=FALSE)
 {
+  notRealString <- function(strng){
+    if(length(grep("[0-9,a-z]+",strng,ignore.case = TRUE)) == 1){
+      return(FALSE)
+    } else {
+      return(TRUE)
+    }
+  }
 
   numval <- NA
   if (!is.na(Nvalue)) {
@@ -292,7 +300,7 @@ tnum.maketruenumber <- function(subject = "something",
       numval <- paste0(Nvalue, unitSuffix)
     }
   } else {
-    if (is.na(Cvalue) || (noEmptyStrings && (Cvalue == ""))) {
+    if (is.na(Cvalue) || (noEmptyStrings && notRealString(Cvalue))) {
       #if both values are NA return empty tnum
       return("{}")
     } else {
