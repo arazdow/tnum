@@ -9,7 +9,7 @@ License: MIT
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0
-Imports:
-  httr, jsonlite, twitteR, utils
-Suggested:
-  data.tree
+Imports: httr, jsonlite, twitteR, utils
+Suggested: data.tree
+NeedsCompilation: no
+Packaged: 2020-07-17 15:44:49 UTC; Allen Razdow

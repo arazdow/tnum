@@ -1,0 +1,9 @@
+tnum.add_remove_tags	tnum.add_remove_tags
+tnum.authorize	tnum.authorize
+tnum.getspace	tnum.getspace
+tnum.maketruenumber	tnum.maketruenumber
+tnum.query	tnum.query
+tnum.queryResultToDataframe	tnum.queryResultToDataframe
+tnum.setspace	tnum.setspace
+tnum.twitteR.authorize	tnum.twitteR.authorize
+tnum.twitteR.post_tweets_as_tnums	tnum.twitteR.post_tweets_as_tnums

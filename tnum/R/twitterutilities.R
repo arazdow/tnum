@@ -1,18 +1,12 @@
-#' Truenumber utility functions for working with Twitter/Tweets
-#' @author True Engineering Technology, LLC Boston, MA USA
-#' @references \url{http://www.truenum.com}
-#'
-library(twitteR)
+
 
 #' Authenticate twitteR package with Twitter account
 #'
-
+#' @return
+#' @export
+#'
 tnum.twitteR.authorize <- function() {
-  require(httr)
-  require(jsonlite)
-  require(data.tree)
-  require(twitteR)
-  twitter_token <- setup_twitter_oauth(
+  twitter_token <- twitteR::setup_twitter_oauth(
     consumer_key = "EJJSOPMbniEdgyxhD9Q6rZDp1",
     consumer_secret = "tcMRH9XTmXd6nq9hAFsYtsHW5cwsymN32duLCNmQIoqb3amwja",
     access_token = "1274782526926700546-PJpruW5N5CTkzycTj9gsZSePBdHv97",
@@ -38,7 +32,7 @@ tnum.twitteR.authorize <- function() {
 #' @param tweetList List of tweets as returned from twitteR::Search()
 #'
 #' @return return code of tnum.maketruenumbers call
-#' @export N/A
+#' @export
 #'
 
 tnum.twitteR.post_tweets_as_tnums <- function(tweetList, customTags = list()) {

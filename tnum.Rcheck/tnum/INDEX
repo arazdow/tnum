@@ -1,0 +1,21 @@
+tnum.add_remove_tags    Title
+tnum.authorize          Connect and authenticate to Truenumbers server
+tnum.getspace           Get current numberspace name
+tnum.maketruenumber     Title
+tnum.query              Query the truenumber DB
+tnum.queryResultToDataframe
+                        Title
+tnum.setspace           Set a particulara numberspace as current
+tnum.twitteR.authorize
+                        Authenticate twitteR package with Twitter
+                        account
+tnum.twitteR.post_tweets_as_tnums
+                        Post new tnums from twitteR query result tnums
+                        for each tweet: 1. tnum for full text 2. tnum
+                        for create date 3. tnum for favorite count (not
+                        present if 0) 4. tnum for retweet count (not
+                        present if 0) 5 tnum for replied-to tweet
+                        subject (not present if not a reply) 6. tnum
+                        for user location tags for each tweet: 1.
+                        tagged if retweet 2. tagged if truncated 3.
+                        tagged with user device

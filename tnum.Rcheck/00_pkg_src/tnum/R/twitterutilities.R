@@ -1,32 +1,20 @@
-#' Truenumber utility functions for working with Twitter/Tweets
-#' @author True Engineering Technology, LLC Boston, MA USA
-#' @references \url{http://www.truenum.com}
-#'
-library(rtweet)
-library(tidyverse)
+
 
 #' Authenticate twitteR package with Twitter account
 #'
-
-tnum.rtweet.authorize <- function() {
-  require(httr)
-  require(jsonlite)
-  require(data.tree)
-  require(rtweet)
-  require(tidyverse)
-  if (nchar(get_token()) < 5) {
-    twitter_token <- rtweet::create_token(
-      consumer_key = "EJJSOPMbniEdgyxhD9Q6rZDp1",
-      consumer_secret = "tcMRH9XTmXd6nq9hAFsYtsHW5cwsymN32duLCNmQIoqb3amwja",
-      access_token = "1274782526926700546-PJpruW5N5CTkzycTj9gsZSePBdHv97",
-      access_secret = "pfUowEnIFZRWOzJ8DDETiCNtIkT0PheEBuJnOE4O6bZvl"
-    )
-  }
-
-  return(get_token())
+#' @return
+#' @export
+#'
+tnum.twitteR.authorize <- function() {
+  twitter_token <- twitteR::setup_twitter_oauth(
+    consumer_key = "EJJSOPMbniEdgyxhD9Q6rZDp1",
+    consumer_secret = "tcMRH9XTmXd6nq9hAFsYtsHW5cwsymN32duLCNmQIoqb3amwja",
+    access_token = "1274782526926700546-PJpruW5N5CTkzycTj9gsZSePBdHv97",
+    access_secret = "pfUowEnIFZRWOzJ8DDETiCNtIkT0PheEBuJnOE4O6bZvl"
+  )
 }
 
-#' @title Post new tnums from rtweet search result
+#' @title Post new tnums from twitteR query result
 #'
 #' tnums for each tweet:
 #'  1. tnum for full text
@@ -41,13 +29,13 @@ tnum.rtweet.authorize <- function() {
 #'  2. tagged if truncated
 #'  3. tagged with user device
 #'
-#' @param tweetTibble table of tweets as returned from rtweet::search_tweets()
+#' @param tweetList List of tweets as returned from twitteR::Search()
 #'
 #' @return return code of tnum.maketruenumbers call
-#' @export N/A
+#' @export
 #'
 
-tnum.rtweet.post_tweets_as_tnums <- function(tweetTibble) {
+tnum.twitteR.post_tweets_as_tnums <- function(tweetList, customTags = list()) {
   # Functions needed for apply() processing of tweet vectors ##########
 
   # Pull out a platform name from the HTML source field of the tweet
@@ -71,7 +59,9 @@ tnum.rtweet.post_tweets_as_tnums <- function(tweetTibble) {
 
   #  clean up tweet text so it works as a JSON string
   escapequotes <- function(strng) {
-    returnValue(gsub("\n", "", gsub('"', '\\\\"', strng)))
+    escaped <- gsub("\n", "", gsub('"', "'", strng))
+   escaped <- gsub("\\\\", "\\\\\\\\", escaped)
+    returnValue(dQuote(escaped))
   }
 
   # for boolean fields, if true, a tag is generated; no tag if false.
@@ -84,8 +74,8 @@ tnum.rtweet.post_tweets_as_tnums <- function(tweetTibble) {
   }
 
   # for numeric fields, NA instead of a value if = zero
-  NAifZero <- function(num) {
-    if (num == 0) {
+  NAifZero <- function(num){
+    if(num == 0){
       returnValue(NA)
     } else {
       returnValue(num)
@@ -93,8 +83,8 @@ tnum.rtweet.post_tweets_as_tnums <- function(tweetTibble) {
   }
 
   # make reply tweet subject to use as value. If not a reply - return empty TN
-  replyTweetIfReply <- function(sname, sid) {
-    if (is.na(sname)) {
+  replyTweetIfReply <- function(sname, sid){
+    if(is.na(sname)){
       return(NA)
     } else {
       returnValue(paste0("twitter/user:", sname, "/tweet:", sid))
@@ -104,12 +94,13 @@ tnum.rtweet.post_tweets_as_tnums <- function(tweetTibble) {
   ## end of apply() functions ######################################
 
 
-  tf <- tweetTibble
+  tf <- twitteR::twListToDF(tweetList)  #create data.frame from list
   numTweets <- nrow(tf)  # number of tweets
 
   # get user profiles for enriching tweet data
   users <- unique(tf$screenName)
   profiles <- twitteR::lookupUsers(users, TRUE)
+  profilesdf <- twitteR::twListToDF(profiles)
 
   # make subject vector for all rows (tweets)
   tweet.subj.vector <-
@@ -126,9 +117,13 @@ tnum.rtweet.post_tweets_as_tnums <- function(tweetTibble) {
 
   tagList <- list()
   for (i in 1:numTweets) {
-    tagList[[i]] <-
-      list(tweet.tags.platforms[[i]], tweet.tags.truncated[[i]])
+      tlist <- list(tweet.tags.platforms[[i]], tweet.tags.truncated[[i]])
+      if(length(customTags)>0){
+        tlist <- append(tlist,customTags)
+      }
+      tagList[[i]] <- tlist
   }
+
 
   # ... property and value for tweet's text:
   tweet.prop.vector <- rep("text", numTweets)
@@ -171,8 +166,7 @@ tnum.rtweet.post_tweets_as_tnums <- function(tweetTibble) {
 
   # ... property and value for tweet's replied-to tweet:
   tweet.prop.vector <- rep("tweet:replied-to", numTweets)
-  tweet.cvalue.vector <-
-    mapply(replyTweetIfReply, tf$replyToSN, tf$replyToSID)
+  tweet.cvalue.vector <- mapply(replyTweetIfReply,tf$replyToSN,tf$replyToSID)
   retVal <-   # write the tweet replied to tnum to the server
     tnum.maketruenumbers(tweet.subj.vector,
                          tweet.prop.vector,
@@ -181,4 +175,88 @@ tnum.rtweet.post_tweets_as_tnums <- function(tweetTibble) {
                          NA,
                          NA,
                          tagList)
+
+  ##  add user profile information
+  # ...
+  numUsers <- length(users)
+  user.tags.verified <-
+    lapply(profilesdf$verified, tagboolean, theTag = "twitter/user:verified")
+  tagList <- list()
+  paste0("twitter/user:", profilesdf$screenName, "/tweet:", profilesdf$id)
+  for (i in 1:numUsers) {
+     tlist <- list(user.tags.verified[[i]])
+     if(length(customTags)>0){
+       tlist <- append(tlist,customTags)
+     }
+     tagList[[i]] <- tlist
+  }
+
+  user.subj.vector <- paste0("twitter/user:", profilesdf$screenName, "/profile:", profilesdf$id)
+  user.prop.vector <- rep("date:creation", numUsers)
+  user.cvalue.vector <- profilesdf$created
+  retVal <-   # write the user's creation date
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         user.cvalue.vector,
+                         NA,
+                         NA,
+                         NA,
+                         tagList)
+
+
+  user.prop.vector <- rep("description", numUsers)
+  user.cvalue.vector <- lapply(profilesdf$description, escapequotes)
+  retVal <-   # write the user's description
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         user.cvalue.vector,
+                         NA,
+                         NA,
+                         NA,
+                         tagList)
+
+  user.prop.vector <- rep("followers", numUsers)
+  user.nvalue.vector <- profilesdf$followersCount
+  retVal <-   # write the user's followers
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         NA,
+                         user.nvalue.vector,
+                         NA,
+                         NA,
+                         tagList)
+
+  user.prop.vector <- rep("friends", numUsers)
+  user.nvalue.vector <- profilesdf$friendsCount
+  retVal <-   # write the user's followers
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         NA,
+                         user.nvalue.vector,
+                         NA,
+                         NA,
+                         tagList)
+
+  user.prop.vector <- rep("likes", numUsers)
+  user.nvalue.vector <- profilesdf$favoritesCount
+  retVal <-   # write the user's followers
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         NA,
+                         user.nvalue.vector,
+                         NA,
+                         NA,
+                         tagList)
+
+  user.prop.vector <- rep("location", numUsers)
+  user.cvalue.vector <- lapply(profilesdf$location, escapequotes)
+  retVal <-   # write the user's location
+    tnum.maketruenumbers(user.subj.vector,
+                         user.prop.vector,
+                         user.cvalue.vector,
+                         NA,
+                         NA,
+                         NA,
+                         tagList)
+
 }
