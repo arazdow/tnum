@@ -40,16 +40,7 @@ Non-standard files/directories found at top level:
 * checking S3 generic/method consistency ... OK
 * checking replacement functions ... OK
 * checking foreign function calls ... OK
-* checking R code for possible problems ... NOTE
-Found the following assignments to the global environment:
-File 'tnum/R/tnum.R':
-  assign("tnum.var.ip", ip, envir = .GlobalEnv)
-  assign("tnum.var.nspace", nspaces[[1]], envir = .GlobalEnv)
-  assign("tnum.var.nspaces", nspaces, envir = .GlobalEnv)
-  assign("tnum.var.token", token, envir = .GlobalEnv)
-  assign("tnum.var.nspace", name, envir = .GlobalEnv)
-  assign("tnum.var.result", result, envir = .GlobalEnv)
-  assign("tnum.var.postedJSON", jsonnums, envir = .GlobalEnv)
+* checking R code for possible problems ... OK
 * checking Rd files ... NOTE
 prepare_Rd: tnum.add_remove_tags.Rd:12-14: Dropping empty section \value
 prepare_Rd: tnum.maketruenumber.Rd:21-23: Dropping empty section \value
@@ -94,4 +85,4 @@ Argument items with no description in Rd object 'tnum.queryResultToDataframe':
 * checking for non-standard things in the check directory ... OK
 * checking for detritus in the temp directory ... OK
 * DONE
-Status: 2 WARNINGs, 4 NOTEs
+Status: 2 WARNINGs, 3 NOTEs

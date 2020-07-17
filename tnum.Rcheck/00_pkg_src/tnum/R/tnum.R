@@ -6,8 +6,10 @@
 #' @return  List of numberspaces available on the server. The first one on the list is set as current
 #' @export
 
+tnum.env <- environment()
+
 tnum.authorize <- function(ip = "54.166.186.11") {
-  assign("tnum.var.ip", ip, envir = .GlobalEnv)
+  assign("tnum.var.ip", ip, envir = tnum.env)
   result <- httr::POST(
     paste0("http://", ip, "/v1/gateway/"),
     body = paste0('{"email":"admin@truenumbers.com"}'),
@@ -25,9 +27,9 @@ tnum.authorize <- function(ip = "54.166.186.11") {
   for (x in httr::content(result)$data) {
     nspaces <- append(nspaces, x[[2]])
   }
-  assign("tnum.var.nspace", nspaces[[1]], envir = .GlobalEnv)
-  assign("tnum.var.nspaces", nspaces, envir = .GlobalEnv)
-  assign("tnum.var.token", token, envir = .GlobalEnv)
+  assign("tnum.var.nspace", nspaces[[1]], envir = tnum.env)
+  assign("tnum.var.nspaces", nspaces, envir = tnum.env)
+  assign("tnum.var.token", token, envir = tnum.env)
   returnValue(nspaces)
 
 }
@@ -42,7 +44,7 @@ tnum.authorize <- function(ip = "54.166.186.11") {
 
 tnum.setspace <- function(name = "testspace") {
   if (name %in% tnum.var.nspaces) {
-    assign("tnum.var.nspace", name, envir = .GlobalEnv)
+    assign("tnum.var.nspace", name, envir = tnum.env)
   } else {
     stop(paste0('server has no numberspace "', name, '"'))
   }
@@ -106,7 +108,7 @@ tnum.query <- function(query = "* has *",
     )
   )
 
-  assign("tnum.var.result", result, envir = .GlobalEnv)
+  assign("tnum.var.result", result, envir = tnum.env)
   if (numReturned > 0) {
     returnValue(tnum.queryResultToDataframe(result, max))
   } else {
@@ -357,7 +359,7 @@ tnum.maketruenumbers <-
       jsonnums <- gsub("\\{\\},", "", jsonnums)
       jsonnums <- gsub(",\\{\\}", "", jsonnums)
 
-      assign("tnum.var.postedJSON", jsonnums, envir = .GlobalEnv)
+      assign("tnum.var.postedJSON", jsonnums, envir = tnum.env)
       args <-
         list(numberspace = tnum.var.nspace)
       result <- httr::POST(

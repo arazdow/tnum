@@ -2,7 +2,7 @@
 % Please edit documentation in R/tnum.R
 \name{tnum.setspace}
 \alias{tnum.setspace}
-\title{Set a particulara numberspace as current}
+\title{Set a particular numberspace as current}
 \usage{
 tnum.setspace(name = "testspace")
 }
@@ -13,5 +13,5 @@ tnum.setspace(name = "testspace")
 -none-
 }
 \description{
-Set a particulara numberspace as current
+Set a particular numberspace as current
 }
