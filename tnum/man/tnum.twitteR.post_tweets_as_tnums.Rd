@@ -17,13 +17,18 @@ tags for each tweet:
  2. tagged if truncated
  3. tagged with user device}
 \usage{
-tnum.twitteR.post_tweets_as_tnums(tweetList, customTags = list())
+tnum.twitteR.post_tweets_as_tnums(
+  tweetList,
+  customTags = list(),
+  doProfiles = FALSE
+)
 }
 \arguments{
 \item{tweetList}{List of tweets as returned from twitteR::Search()}
-}
-\value{
-return code of tnum.maketruenumbers call
+
+\item{customTags}{list of caller-supplied tags to add to all the tnums}
+
+\item{doProfiles}{if TRUE, add tnums for profile info about each tweeter in the tweet set}
 }
 \description{
 Post new tnums from twitteR query result

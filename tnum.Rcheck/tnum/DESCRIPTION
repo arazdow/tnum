@@ -12,5 +12,5 @@ RoxygenNote: 7.1.0
 Imports: httr, jsonlite, twitteR, utils
 Suggested: data.tree
 NeedsCompilation: no
-Packaged: 2020-07-17 18:35:59 UTC; Allen Razdow
-Built: R 4.0.0; ; 2020-07-17 18:36:07 UTC; windows
+Packaged: 2020-07-17 22:01:02 UTC; Allen Razdow
+Built: R 4.0.0; ; 2020-07-17 22:01:11 UTC; windows

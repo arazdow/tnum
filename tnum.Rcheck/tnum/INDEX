@@ -1,11 +1,17 @@
-tnum.add_remove_tags    Title
 tnum.authorize          Connect and authenticate to Truenumbers server
-tnum.getspace           Get current numberspace name
-tnum.maketruenumber     Title
+tnum.deleteByQuery      Delete tnums specified by a query
+tnum.env                Vars local to this file @export
+tnum.getSpace           Get current numberspace name
+tnum.makeTruenumber     Create a JSON truenumber from parts
+tnum.postTruenumber     Post a single truenumber from parts
+tnum.postTruenumbers    Create many truenumbers from lists of parts
 tnum.query              Query the truenumber DB
 tnum.queryResultToDataframe
                         Title
-tnum.setspace           Set a particulara numberspace as current
+tnum.setSpace           Set a particular numberspace as current
+tnum.tagByGuids         Add and remove tags to tnums specified by a
+                        list of their GUID's
+tnum.tagByQuery         Tag tnums specified by a query
 tnum.twitteR.authorize
                         Authenticate twitteR package with Twitter
                         account

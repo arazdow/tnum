@@ -22,9 +22,7 @@
 * checking DESCRIPTION meta-information ... NOTE
 License components which are templates and need '+ file LICENSE':
   MIT
-* checking top-level files ... NOTE
-Non-standard files/directories found at top level:
-  'manual.Rmd' 'manual.nb.html'
+* checking top-level files ... OK
 * checking for left-over files ... OK
 * checking index information ... OK
 * checking package subdirectories ... OK
@@ -40,10 +38,15 @@ Non-standard files/directories found at top level:
 * checking S3 generic/method consistency ... OK
 * checking replacement functions ... OK
 * checking foreign function calls ... OK
-* checking R code for possible problems ... OK
+* checking R code for possible problems ... NOTE
+tnum.twitteR.post_tweets_as_tnums: no visible global function
+  definition for 'tnum.maketruenumbers'
+Undefined global functions or variables:
+  tnum.maketruenumbers
 * checking Rd files ... NOTE
-prepare_Rd: tnum.add_remove_tags.Rd:12-14: Dropping empty section \value
-prepare_Rd: tnum.maketruenumber.Rd:21-23: Dropping empty section \value
+prepare_Rd: tnum.makeTruenumber.Rd:21-23: Dropping empty section \value
+prepare_Rd: tnum.postTruenumber.Rd:21-23: Dropping empty section \value
+prepare_Rd: tnum.postTruenumbers.Rd:21-23: Dropping empty section \value
 prepare_Rd: tnum.queryResultToDataframe.Rd:12-14: Dropping empty section \value
 prepare_Rd: tnum.twitteR.authorize.Rd:9-11: Dropping empty section \value
 * checking Rd metadata ... OK
@@ -52,12 +55,16 @@ prepare_Rd: tnum.twitteR.authorize.Rd:9-11: Dropping empty section \value
 * checking for missing documentation entries ... OK
 * checking for code/documentation mismatches ... OK
 * checking Rd \usage sections ... WARNING
-Undocumented arguments in documentation object 'tnum.add_remove_tags'
-  'gid' 'adds'
-
-Undocumented arguments in documentation object 'tnum.maketruenumber'
+Undocumented arguments in documentation object 'tnum.makeTruenumber'
   'subject' 'property' 'Cvalue' 'Nvalue' 'error' 'units'
   'noEmptyStrings'
+
+Undocumented arguments in documentation object 'tnum.postTruenumber'
+  'subject' 'property' 'Cvalue' 'Nvalue' 'error' 'units'
+  'noEmptyStrings'
+
+Undocumented arguments in documentation object 'tnum.postTruenumbers'
+  'subject' 'property' 'Cvalue' 'Nvalue' 'error' 'units' 'tags'
 
 Undocumented arguments in documentation object 'tnum.queryResultToDataframe'
   'max'
@@ -71,10 +78,10 @@ The \usage entries must correspond to syntactically valid R code.
 See chapter 'Writing R documentation files' in the 'Writing R
 Extensions' manual.
 * checking Rd contents ... WARNING
-Argument items with no description in Rd object 'tnum.add_remove_tags':
-  'removes'
+Argument items with no description in Rd object 'tnum.makeTruenumber':
+  'tags'
 
-Argument items with no description in Rd object 'tnum.maketruenumber':
+Argument items with no description in Rd object 'tnum.postTruenumber':
   'tags'
 
 Argument items with no description in Rd object 'tnum.queryResultToDataframe':

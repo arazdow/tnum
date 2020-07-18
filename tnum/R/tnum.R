@@ -48,7 +48,7 @@ tnum.authorize <- function(ip = "54.166.186.11") {
 #' @export
 #'
 
-tnum.setspace <- function(name = "testspace") {
+tnum.setSpace <- function(name = "testspace") {
   if (name %in% tnum.env$tnum.var.nspaces) {
     assign("tnum.var.nspace", name, envir = tnum.env)
   } else {
@@ -62,7 +62,7 @@ tnum.setspace <- function(name = "testspace") {
 #' @export
 #'
 
-tnum.getspace <- function() {
+tnum.getSpace <- function() {
   returnValue(tnum.env$tnum.var.nspace)
 }
 
@@ -246,11 +246,11 @@ tnum.queryResultToDataframe <- function(result, max) {
         string.value = Cval,
         numeric.value = Nval,
         numeric.error = Nerr,
-        units = uns,
-        guid = gid,
-        date = dat
+        units = uns
       )
     rdf$tags <- list(taglist)
+    rdf$date <- dat
+    rdf$guid <- gid
 
     returnValue(rdf)
   }
@@ -307,23 +307,22 @@ tnum.dateAsToken <- function() {
 # Truenumber creation functions
 
 
-#' Title
+#' Create a JSON truenumber from parts
 #'
 #' @param subject
 #' @param property
-#' @param value
-#' @param error
+#' @param string.value
+#' @param numeric.value
+#' @param numeric.error
 #' @param units
 #' @param tags
+#' @param noEmptyStrings
 #'
-#' @return
-#' @export
-#'
-tnum.maketruenumber <- function(subject = "something",
+tnum.makeTruenumber <- function(subject = "something",
                                 property = "property",
-                                Cvalue = NA,
-                                Nvalue = NA,
-                                error = NA,
+                                string.value = NA,
+                                numeric.value = NA,
+                                numeric.error = NA,
                                 units = "",
                                 tags = list(),
                                 noEmptyStrings = FALSE)
@@ -337,22 +336,22 @@ tnum.maketruenumber <- function(subject = "something",
   }
 
   numval <- NA
-  if (!is.na(Nvalue)) {
+  if (!is.na(numeric.value)) {
     unitSuffix <- ""
     if (!is.na(units) && nchar(units) > 0) {
       unitSuffix <- paste0(" ", units)
     }
-    if (!is.na(error)) {
-      numval <- paste0(Nvalue, " +/- ", error, unitSuffix)
+    if (!is.na(numeric.error)) {
+      numval <- paste0(numeric.value, " +/- ", numeric.error, unitSuffix)
     } else {
-      numval <- paste0(Nvalue, unitSuffix)
+      numval <- paste0(numeric.value, unitSuffix)
     }
   } else {
-    if (is.na(Cvalue) || (noEmptyStrings && notRealString(Cvalue))) {
+    if (is.na(string.value) || (noEmptyStrings && notRealString(string.value))) {
       #if both values are NA return empty tnum
       return("{}")
     } else {
-      numval <- Cvalue
+      numval <- string.value
     }
   }
   tagstr <- ""
@@ -380,23 +379,37 @@ tnum.maketruenumber <- function(subject = "something",
   returnValue(thenumber)
 }
 
-tnum.maketruenumbers <-
+#' Create many truenumbers from lists of parts
+#'
+#' @param subject
+#' @param property
+#' @param string.value
+#' @param numeric.value
+#' @param numeric.error
+#' @param units
+#' @param tags
+#' @param noEmptyStrings if true doesn't post TNs with empty values
+#'
+#' @return
+#' @export
+#'
+tnum.postTruenumbers <-
   function(subject,
            property,
-           Cvalue,
-           Nvalue,
-           error,
+           string.value,
+           numeric.value,
+           numeric.error,
            units,
            tags,
            noEmptyStrings = FALSE) {
     alljsonnums <-
       mapply(
-        tnum.maketruenumber,
+        tnum.makeTruenumber,
         subject,
         property,
-        Cvalue,
-        Nvalue,
-        error,
+        string.value,
+        numeric.value,
+        numeric.error,
         units,
         tags,
         noEmptyStrings
@@ -437,6 +450,56 @@ tnum.maketruenumbers <-
       message(paste0("posted ", startinx, " to ", endinx, " of ", numnums))
     }
 
+  }
+
+#' Post a single truenumber from parts
+#'
+#' @param subject
+#' @param property
+#' @param string.value
+#' @param numeric.value
+#' @param numeric.error
+#' @param units
+#' @param tags
+#'
+#' @return
+#' @export
+#'
+tnum.postTruenumber <-
+  function(subject = "something",
+           property = "property",
+           string.value = NA,
+           numeric.value = NA,
+           numeric.error = NA,
+           units = "",
+           tags = list(),
+           noEmptyStrings = FALSE) {
+    jsonnum <-
+        tnum.makeTruenumber(subject,
+                            property,
+                            string.value,
+                            numeric.value,
+                            numeric.error,
+                            units,
+                            tags,
+                            noEmptyStrings)
+    if(nchar(jsonnum)>5){
+      assign("tnum.var.postedJSON", jsonnum, envir = tnum.env)
+      args <-
+        list(numberspace = tnum.env$tnum.var.nspace)
+      result <- httr::POST(
+        paste0(
+          "http://",
+          tnum.env$tnum.var.ip,
+          "/v1/numberspace/numbers"
+        ),
+        query = args,
+        httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
+        body = paste0('{"truenumbers":[', jsonnum, ']}'),
+        httr::accept("application/json"),
+        httr::content_type("application/json")
+      )
+    }
   }
 
 #' Add and remove tags to tnums specified by a list of their GUID's

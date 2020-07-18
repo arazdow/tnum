@@ -1,0 +1,105 @@
+---
+title: "Using **tnum** for Truenumbers"
+author: "[True Engineering Technology, LLC](http://truenum.com) Boston MA" 
+output: html_notebook
+---
+
+### Background
+
+**Truenumbers** (tnum) is a cloud repository for creating, tagging and querying persistent data as a collection of facts in a domain-independent way. Facts can be numeric or textual, and each is represented as the *value* of a *property* of a *subject*. For example, in structured sentence form, with a single tag annotating it:
+
+> wing of F-35C aircraft has folded span = 29.83 ft   @users:US:navy
+
+is equivalent to JSON structure:
+
+> { "subject" : "aircraft:F-35C/wing", 
+    "property" : "span:folded", 
+    "value" : { "magnitude" : "29.83", "units" : "ft"}, 
+    "tags" : ["user:US:navy"] }
+  }
+  
+The phrase **wing of F-35C aircraft** is equivalent to the path **aircraft:F-35C/wing** where the slash and colon operators denote a possessive and adjectival relationship in the phrase grammar.
+
+Data represente in this way is universal, because phrases can describe any subject, property or tag.  
+
+### As a companion to R
+
+R users read a variety of data sources into frames vectors or lists, for exploration and analytics processing.  This results in more data, such as summary statistics, models, etc. that enrich the original data, or create new information from it. This process results in varied data structures, and files for persisting them on disk, in an ad-hoc way that can be hard to manage, and hard to collaborate with.
+
+By using tnum, R users can store their initial data with as much detail as they see fit, and then annotate or add to it as their explorations proceed.  
+
+Keeping information in human-readable form, directly accessible for writing and queries from R can reduce the need to manage many data files or to create SQL databases, and enable new insights.  
+
+### Getting started
+
+After installing *tnum*, it's necessary to authenticate with the *tnum* server:
+```{r}
+library(tnum)
+tnum.authorize()
+```
+*authorize* can take a single argument, a string representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation.
+
+#### Your first truenumber
+Let's make a truenumber and store it to the server, do a query to retrieve it, then delete it.  
+
+```{r}
+# post a single tnum to the server
+tnum.postTruenumber(
+  subject = "aircraft:F-35C/wing",
+  property = "span:folded",
+  numeric.value = 29.83,
+  units = "ft",
+  tags = list("user:US:navy")
+)
+```
+
+Next, we query the server for tnums with subject path starting with *aircraft*, and any property by using path and string wildcards:
+```{r}
+# Run query and return tnums as rows of a data.frame
+tn.frame <- tnum.query("aircraft# has *")
+tn.frame
+```
+We can use the same query to select and delete the same tnums:
+```{r}
+tnum.deleteByQuery("aircraft# has *")
+```
+### Using **twitteR** with **tnum**
+
+We have included a utility for working with Twitter data using Truenumbers. To do this, we have to represent data coming from the Twitter API as tnums.  This requires some thinking about what the truenumber *subjects*, *properties*, *values* and *tags* might be for best reflecting the intent of the data.  Let's begin by authenticating to the Twitter API:
+
+```{r}
+tnum.twitteR.authorize()
+```
+#### Getting tweets
+
+Now we can perform a search using twitteR to retrieve 5 English-language tweets about the search for extraterrestial intelligence.  They come back as a nested list, but *twitteR* provides a function to convert it to a data.frame so we can more easily view them: 
+```{r}
+tweets <- twitteR::searchTwitter("#seti", n=5, lang="en")
+dftweets <- twitteR::twListToDF(tweets)
+dftweets
+```
+#### Making truenumbers out of tweets
+
+A tweet needs to be identified by the *subject* of a set of truenumbers stating the properties of the tweet.  We can see that a tweet has a unique ID provided by Twitter, and also gives us the screen-name of the tweeter.  Our tnum.twitteR utility generates a subject for each tweet as a string operation essentially like this:
+```{R eval=FALSE}
+paste0("twitter/user:", screenName, "/tweet:", tweetID)
+
+```
+producing subjects such as *twitter/user:FredSmith131/tweet:462736536517*.  We've seen how such strings and numbers can be assemble into truenumbers and posted with *tnum.postTruenumber()*.  **tnum** provides a function that will take a nested tweet list as returned by twitteR::searchTwitter() and post a set of truenumbers representing them.  We first have to authenticate to Twitter API.  If the following fails, you'll have to get your own set of keys from Twitter's developer site and use *twitteR::setup_twitter_oauth()* (see twitteR documentation).  
+```{r}
+tnum.twitteR.authorize()
+```
+Once authenticated, we can post the tweets we obtained with twitteR::searchTwitter().  The *customTags* argument allows us to apply tags to the generated tnums so we can identify them easily.  *doProfiles=TRUE* means that information from user profiles for the users that tweeted these tweets will be extracted from the Twitter API and truenumbers for that information posted as well.  
+```{r}
+tnum.twitteR.post_tweets_as_tnums(
+  tweetList = tweets,
+  customTags = list("project:seti:tweets:1"),
+  doProfiles = TRUE
+  )
+```
+Now we query the tnums into a data.frame with a simple query for the custom tag we added to them.
+```{r}
+dftnums <- tnum.query("@project:seti:tweets:1")
+dftnums
+```
+
