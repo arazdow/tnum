@@ -65,7 +65,7 @@ tnum.deleteByQuery("aircraft# has *")
 ```
 ### Using **twitteR** with **tnum**
 
-We have included a utility for working with Twitter data using Truenumbers. To do this, we have to represent data coming from the Twitter API as tnums.  This requires some thinking about what the truenumber *subjects*, *properties*, *values* and *tags* might be for best reflecting the intent of the data.  Let's begin by authenticating to the Twitter API:
+We have included a utility for working with Twitter data using Truenumbers. To do this, we have to represent data coming from the Twitter API as tnums.  This requires some thinking about what the truenumber *subjects*, *properties*, *values* and *tags* might be for best reflecting the intent of the data.  Let's begin by authenticating to the Twitter API.  If the following fails, you'll have to get your own set of keys from Twitter's developer site and use *twitteR::setup_twitter_oauth()* (see twitteR documentation).
 
 ```{r}
 tnum.twitteR.authorize()
@@ -85,10 +85,8 @@ A tweet needs to be identified by the *subject* of a set of truenumbers stating 
 paste0("twitter/user:", screenName, "/tweet:", tweetID)
 
 ```
-producing subjects such as *twitter/user:FredSmith131/tweet:462736536517*.  We've seen how such strings and numbers can be assemble into truenumbers and posted with *tnum.postTruenumber()*.  **tnum** provides a function that will take a nested tweet list as returned by twitteR::searchTwitter() and post a set of truenumbers representing them.  We first have to authenticate to Twitter API.  If the following fails, you'll have to get your own set of keys from Twitter's developer site and use *twitteR::setup_twitter_oauth()* (see twitteR documentation).  
-```{r}
-tnum.twitteR.authorize()
-```
+producing subjects such as *twitter/user:FredSmith131/tweet:462736536517*.  We've seen how such strings and numbers can be assemble into truenumbers and posted with *tnum.postTruenumber()*.  **tnum** provides a function that will take a nested tweet list as returned by twitteR::searchTwitter() and post a set of truenumbers representing them.  
+
 Once authenticated, we can post the tweets we obtained with twitteR::searchTwitter().  The *customTags* argument allows us to apply tags to the generated tnums so we can identify them easily.  *doProfiles=TRUE* means that information from user profiles for the users that tweeted these tweets will be extracted from the Twitter API and truenumbers for that information posted as well.  
 ```{r}
 tnum.twitteR.post_tweets_as_tnums(

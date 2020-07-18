@@ -130,7 +130,7 @@ tnum.twitteR.post_tweets_as_tnums <-
     tweet.cvalue.vector <- lapply(tf$text, escapequotes)
 
     retVal <-   # write the text tnums to the server
-      tnum.maketruenumbers(tweet.subj.vector,
+      tnum.postTruenumbers(tweet.subj.vector,
                            tweet.prop.vector,
                            tweet.cvalue.vector,
                            NA,
@@ -143,7 +143,7 @@ tnum.twitteR.post_tweets_as_tnums <-
     tweet.nvalue.vector <- tf$favoriteCount
 
     retVal <-   # write the likes tnums to the server
-      tnum.maketruenumbers(tweet.subj.vector,
+      tnum.postTruenumbers(tweet.subj.vector,
                            tweet.prop.vector,
                            NA,
                            tweet.nvalue.vector,
@@ -156,7 +156,7 @@ tnum.twitteR.post_tweets_as_tnums <-
     tweet.cvalue.vector <- tf$created
 
     retVal <-   # write the creation date tnums to the server
-      tnum.maketruenumbers(tweet.subj.vector,
+      tnum.postTruenumbers(tweet.subj.vector,
                            tweet.prop.vector,
                            tweet.cvalue.vector,
                            NA,
@@ -169,7 +169,7 @@ tnum.twitteR.post_tweets_as_tnums <-
     tweet.cvalue.vector <-
       mapply(replyTweetIfReply, tf$replyToSN, tf$replyToSID)
     retVal <-   # write the tweet replied to tnum to the server
-      tnum.maketruenumbers(tweet.subj.vector,
+      tnum.postTruenumbers(tweet.subj.vector,
                            tweet.prop.vector,
                            tweet.cvalue.vector,
                            NA,
@@ -209,7 +209,7 @@ tnum.twitteR.post_tweets_as_tnums <-
       user.prop.vector <- rep("date:creation", numUsers)
       user.cvalue.vector <- profilesdf$created
       retVal <-   # write the user's creation date
-        tnum.maketruenumbers(user.subj.vector,
+        tnum.postTruenumbers(user.subj.vector,
                              user.prop.vector,
                              user.cvalue.vector,
                              NA,
@@ -221,7 +221,7 @@ tnum.twitteR.post_tweets_as_tnums <-
       user.prop.vector <- rep("description", numUsers)
       user.cvalue.vector <- lapply(profilesdf$description, escapequotes)
       retVal <-   # write the user's description
-        tnum.maketruenumbers(user.subj.vector,
+        tnum.postTruenumbers(user.subj.vector,
                              user.prop.vector,
                              user.cvalue.vector,
                              NA,
@@ -232,7 +232,7 @@ tnum.twitteR.post_tweets_as_tnums <-
       user.prop.vector <- rep("followers", numUsers)
       user.nvalue.vector <- profilesdf$followersCount
       retVal <-   # write the user's followers
-        tnum.maketruenumbers(user.subj.vector,
+        tnum.postTruenumbers(user.subj.vector,
                              user.prop.vector,
                              NA,
                              user.nvalue.vector,
@@ -243,7 +243,7 @@ tnum.twitteR.post_tweets_as_tnums <-
       user.prop.vector <- rep("friends", numUsers)
       user.nvalue.vector <- profilesdf$friendsCount
       retVal <-   # write the user's followers
-        tnum.maketruenumbers(user.subj.vector,
+        tnum.postTruenumbers(user.subj.vector,
                              user.prop.vector,
                              NA,
                              user.nvalue.vector,
@@ -254,7 +254,7 @@ tnum.twitteR.post_tweets_as_tnums <-
       user.prop.vector <- rep("likes", numUsers)
       user.nvalue.vector <- profilesdf$favoritesCount
       retVal <-   # write the user's followers
-        tnum.maketruenumbers(user.subj.vector,
+        tnum.postTruenumbers(user.subj.vector,
                              user.prop.vector,
                              NA,
                              user.nvalue.vector,
@@ -265,7 +265,7 @@ tnum.twitteR.post_tweets_as_tnums <-
       user.prop.vector <- rep("location", numUsers)
       user.cvalue.vector <- lapply(profilesdf$location, escapequotes)
       retVal <-   # write the user's location
-        tnum.maketruenumbers(user.subj.vector,
+        tnum.postTruenumbers(user.subj.vector,
                              user.prop.vector,
                              user.cvalue.vector,
                              NA,
