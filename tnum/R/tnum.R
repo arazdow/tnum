@@ -264,7 +264,7 @@ tnum.queryResultToDataframe <- function(result, max) {
         numeric.error = Nerr,
         units = uns
       )
-    rdf$tags <- list(taglist)
+    rdf$tags <- paste0(taglist, collapse=", ")  # was list(taglist)
     rdf$date <- dat
     rdf$guid <- gid
 

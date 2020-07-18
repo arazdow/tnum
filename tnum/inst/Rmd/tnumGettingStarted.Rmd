@@ -6,7 +6,7 @@ output: html_notebook
 
 ### Background
 
-**Truenumbers** (tnum) is a cloud repository for creating, tagging and querying persistent data as a collection of facts in a domain-independent way. Facts can be numeric or textual, and each is represented as the *value* of a *property* of a *subject*. For example, in structured sentence form, with a single tag annotating it:
+**Truenumbers** (tnum) is a cloud repository for creating, tagging and querying persistent data as a collection of facts in a domain-independent way. Facts can be numeric or textual, and each is represented as the *value* of a *property* of a *subject*. For example, this is a truenumber (tnum) in structured sentence form, with a single tag annotating it:
 
 > wing of F-35C aircraft has folded span = 29.83 ft   @users:US:navy
 
@@ -18,26 +18,23 @@ is equivalent to JSON structure:
     "tags" : ["user:US:navy"] }
   }
   
-The phrase **wing of F-35C aircraft** is equivalent to the path **aircraft:F-35C/wing** where the slash and colon operators denote a possessive and adjectival relationship in the phrase grammar.
+The phrase **wing of F-35C aircraft** is equivalent to the path **aircraft:F-35C/wing** where the slash and colon operators denote a possessive and adjectival relationship in the phrase grammar.  We call these Structured Resource Descriptors (SRD), intended to describe using natural language references the way column or row names do, but with a more explicit structure. In comparison, an *aircraft* table might have a *type* column with "F-35C" as its value, and a *wingspan_ft* column with value "29.83".  The wing as part of the aircraft, and that span refers to the wing, are implicit in the table and column names. The tnum makes this information explicit and available for computation and query.
 
-Data represente in this way is universal, because phrases can describe any subject, property or tag.  
+Data represented in this way is universal because phrases are.  Dimensionally, each tnum value is indexed by 2 to Nor more categorical variables, being the subject, property and any number of tags, and the categories have the heirarchical structure of the phrase paths.  
 
 ### As a companion to R
 
-R users read a variety of data sources into frames vectors or lists, for exploration and analytics processing.  This results in more data, such as summary statistics, models, etc. that enrich the original data, or create new information from it. This process results in varied data structures, and files for persisting them on disk, in an ad-hoc way that can be hard to manage, and hard to collaborate with.
+R users read a variety of data sources into frames vectors or lists, for exploration and analytics processing that produces more data such as summary statistics, models, etc. that enrich the original data, or create new information from it. This process results in varied data structures with many informally structured row and column names, as well files for persisting them on disk. Working and collaborating with these requires keeping their meaning and structure in our heads. A tnum representation of data makes relieves us of file management, and allows R users to work in terms closer to the way we understand the data.  
 
-By using tnum, R users can store their initial data with as much detail as they see fit, and then annotate or add to it as their explorations proceed.  
 
-Keeping information in human-readable form, directly accessible for writing and queries from R can reduce the need to manage many data files or to create SQL databases, and enable new insights.  
-
-### Getting started
+### *tnum* in action
 
 After installing *tnum*, it's necessary to authenticate with the *tnum* server:
 ```{r}
 library(tnum)
 tnum.authorize()
 ```
-*authorize* can take a single argument, a string representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation. It returns a list of available numberspaces on the server. A numberspace is a separate repository for truenumber data.  The above call sets the current numberspace to the first entry, "testspace" in this instance.  
+*authorize* can take a single argument, a string representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation. It returns a list of available numberspaces on the server. A *numberspace* is a separate repository for truenumber data.  The authorize() call sets the current numberspace to the first entry, "testspace" in this case  
 
 #### Your first truenumber
 Let's make a truenumber and store it to the server, do a query to retrieve it, then delete it.  
@@ -52,15 +49,15 @@ tnum.postTruenumber(
   tags = list("user:US:navy")
 )
 ```
-NOTE: There's a similar function for making many tnums at once by passing lists as arguments (we don't use it in this example):
-```{r eval=FALSE}
+There's a similar function for making many tnums at once by passing lists as arguments:
+```{r}
 # post several tnums at once
 tnum.postTruenumbers(
-     subject = list("aircraft:A-10/wing","aircraft:747/wing"),
-     property = list("span","thickness:max"),
-     numeric.value = list(22.45,5.78),
+     subject = list("aircraft:A-10/wing","aircraft:A-10/fuselage"),
+     property = list("span","length"),
+     numeric.value = list(22.45,52.78),
      units = list("ft","ft"),
-     tags = list(list("user:US:DoD"),list("user:US:DoD"))
+     tags = list(list("user:US:DoD","tnum/doc:gettingStarted"),list("as-built","user:US:DoD","tnum/doc:gettingStarted"))
  )
 ```
 Next, we query the server for tnums with subject path starting with *aircraft*, and any property by using path and string wildcards:
