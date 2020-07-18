@@ -161,17 +161,33 @@ tnum.tagByQuery <- function(query = "",
   args <-
     list(numberspace = tnum.env$tnum.var.nspace,
          tnql = query)
+  addstr <- paste0('"', paste(adds, collapse = '", "'), '"')
+  remstr <- paste0('"', paste(removes, collapse = '", "'), '"')
+  if (addstr == '""')
+    addstr <- ""
+  if (remstr == '""')
+    remstr <- ""
 
-  result <-
-    httr::content(httr::DELETE(
-      paste0("http://", tnum.env$tnum.var.ip, "/v1/numberspace/numbers"),
+  bodystr <-
+    paste0('{"tags":[', addstr, '],"remove":[', remstr, ']}')
+
+    theurl <-
+      paste0("http://",
+             tnum.env$tnum.var.ip,
+             "/v1/numberspace/numbers/"
+             )
+
+    result <- httr::PATCH(
+      theurl,
       query = args,
-      httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token))
-    ))
-  numReturned <- length(result$data$removed)
+      httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
+      body = bodystr,
+      httr::accept("application/json"),
+      httr::content_type("application/json")
+    )
+    return(result)
+  }
 
-  message(result)
-}
 
 
 #' Title

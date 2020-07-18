@@ -37,7 +37,7 @@ After installing *tnum*, it's necessary to authenticate with the *tnum* server:
 library(tnum)
 tnum.authorize()
 ```
-*authorize* can take a single argument, a string representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation.
+*authorize* can take a single argument, a string representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation. It returns a list of available numberspaces on the server. A numberspace is a separate repository for truenumber data.  The above call sets the current numberspace to the first entry, "testspace" in this instance.  
 
 #### Your first truenumber
 Let's make a truenumber and store it to the server, do a query to retrieve it, then delete it.  
@@ -95,9 +95,18 @@ tnum.twitteR.post_tweets_as_tnums(
   doProfiles = TRUE
   )
 ```
-Now we query the tnums into a data.frame with a simple query for the custom tag we added to them.
+Now we query the tnums into a data.frame qualified by the simple query for the custom tag we added to them.
 ```{r}
-dftnums <- tnum.query("@project:seti:tweets:1")
+dftnums <- tnum.query("@project:seti:tweets:1",max=100)
 dftnums
 ```
+#### Adding tags post-facto
+
+Now let's query for tweets where the text contains the string "alien" and tag them appropriately.
+```{r}
+dftnums <- tnum.tagByQuery('twitter# has text = REGEXP("comets")',list("project:seti/mentions:comets"),list())
+marstnums <- tnum.query("@project:seti/mentions:comets")
+marstnums
+```
+So we've enriched the original tweet data with tags based on a simple analysis of tweet texts. 
 
