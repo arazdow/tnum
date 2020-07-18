@@ -52,7 +52,17 @@ tnum.postTruenumber(
   tags = list("user:US:navy")
 )
 ```
-
+NOTE: There's a similar function for making many tnums at once by passing lists as arguments (we don't use it in this example):
+```{r eval=FALSE}
+# post several tnums at once
+tnum.postTruenumbers(
+     subject = list("aircraft:A-10/wing","aircraft:747/wing"),
+     property = list("span","thickness:max"),
+     numeric.value = list(22.45,5.78),
+     units = list("ft","ft"),
+     tags = list(list("user:US:DoD"),list("user:US:DoD"))
+ )
+```
 Next, we query the server for tnums with subject path starting with *aircraft*, and any property by using path and string wildcards:
 ```{r}
 # Run query and return tnums as rows of a data.frame

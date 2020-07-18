@@ -7,10 +7,10 @@
 tnum.postTruenumbers(
   subject,
   property,
-  string.value,
-  numeric.value,
-  numeric.error,
-  units,
+  string.value = NA,
+  numeric.value = NA,
+  numeric.error = NA,
+  units = NA,
   tags,
   noEmptyStrings = FALSE
 )
