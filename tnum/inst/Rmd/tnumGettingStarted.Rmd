@@ -123,7 +123,7 @@ dftweets
 ### Making truenumbers out of tweets
 
 A tweet needs to be identified by the *subject* of a set of truenumbers stating the properties of the tweet.  We can see that a tweet has a unique ID provided by Twitter, and also gives us the screen-name of the tweeter.  Our tnum.twitteR utility generates a subject for each tweet as a string operation essentially like this:
-```{R eval=FALSE, include=FALSE}
+```{R}
 paste0("twitter/user:", screenName, "/tweet:", tweetID)
 
 ```
@@ -160,4 +160,5 @@ tnum.tagByGuids(tweetTexts$guid,saTags)
 tweetTexts <- tnum.query("* has text", max=100)
 tweetTexts
 ```
+Scroll right to see the sentiment tags in the tags column. 
 
