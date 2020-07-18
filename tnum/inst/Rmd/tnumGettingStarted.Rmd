@@ -1,10 +1,10 @@
 ---
-title: "Using **tnum** for Truenumbers"
+title: "Getting Started wth **tnum** for Truenumbers"
 author: "[True Engineering Technology, LLC](http://truenum.com) Boston MA" 
 output: html_notebook
 ---
 
-### Background
+## Background
 
 **Truenumbers** (tnum) is a cloud repository for creating, tagging and querying persistent data as a collection of facts in a domain-independent way. Facts can be numeric or textual, and each is represented as the *value* of a *property* of a *subject*. For example, this is a truenumber (tnum) in structured sentence form, with a single tag annotating it:
 
@@ -27,7 +27,7 @@ Data represented in this way is universal because phrases are.  Dimensionally, e
 R users read a variety of data sources into frames vectors or lists, for exploration and analytics processing that produces more data such as summary statistics, models, etc. that enrich the original data, or create new information from it. This process results in varied data structures with many informally structured row and column names, as well files for persisting them on disk. Working and collaborating with these requires keeping their meaning and structure in our heads. A tnum representation of data makes relieves us of file management, and allows R users to work in terms closer to the way we understand the data.  
 
 
-### *tnum* in action
+## *tnum* in action
 
 After installing *tnum*, it's necessary to authenticate with the *tnum* server:
 ```{r}
@@ -66,29 +66,64 @@ Next, we query the server for tnums with subject path starting with *aircraft*, 
 tn.frame <- tnum.query("aircraft# has *")
 tn.frame
 ```
-We can use the same query to select and delete the same tnums:
+### Visualizing description trees
+
+Truenumber path phrases naturally imply trees the way filename paths do, revealing the relationships among data items in a useful way.  
+
+The package *data.tree* lets us work with tree structures in R.  It is able to convert paths in a column of a data.frame to trees, which is perfect for data.rames of tnums.  Let's try it on the three *aircraft* numbers above.  
+
+Because subjects of tnums are a forest of trees, we need to provide a root node for them.  We write a function to do that, and *lapply()* it to the subject column.  
+
+```{r}
+library(data.tree)
+
+# pre-pend a root node, since tnum subjects are a forest,
+
+supplyRoot <- function(p){
+  return(paste0("<root>/",p))
+}
+
+tn.frame.mod1 <- tn.frame
+tn.frame.mod1$subject <- lapply(tn.frame.mod1$subject,supplyRoot)
+
+# now use data.tree::asNode() to buid the tree, then print it
+
+tree <- as.Node(tn.frame.mod1,
+                pathName = "subject",
+                pathDelimiter = "/")
+
+print(tree, "property", "numeric.value","units")
+```
+We can get a nicer tree using *plot()*
+```{r}
+plot(tree)
+```
+
+### Cleaning up our aircraft example
+
+If we use tags and phrases with enough specificity, we can keep our truenumbers around.  If we choose to clean some of them up, We can use a query not to retrieve, but to delete and select tnums:
 ```{r}
 tnum.deleteByQuery("aircraft# has *")
 ```
-### Using **twitteR** with **tnum**
+## Using **twitteR** with **tnum**
 
 We have included a utility for working with Twitter data using Truenumbers. To do this, we have to represent data coming from the Twitter API as tnums.  This requires some thinking about what the truenumber *subjects*, *properties*, *values* and *tags* might be for best reflecting the intent of the data.  Let's begin by authenticating to the Twitter API.  If the following fails, you'll have to get your own set of keys from Twitter's developer site and use *twitteR::setup_twitter_oauth()* (see twitteR documentation).
 
 ```{r}
 tnum.twitteR.authorize()
 ```
-#### Getting tweets
+### Getting tweets
 
 Now we can perform a search using twitteR to retrieve 5 English-language tweets about the search for extraterrestial intelligence.  They come back as a nested list, but *twitteR* provides a function to convert it to a data.frame so we can more easily view them: 
 ```{r}
-tweets <- twitteR::searchTwitter("#seti", n=5, lang="en")
+tweets <- twitteR::searchTwitter("#seti+aliens", n=5, lang="en")
 dftweets <- twitteR::twListToDF(tweets)
 dftweets
 ```
-#### Making truenumbers out of tweets
+### Making truenumbers out of tweets
 
 A tweet needs to be identified by the *subject* of a set of truenumbers stating the properties of the tweet.  We can see that a tweet has a unique ID provided by Twitter, and also gives us the screen-name of the tweeter.  Our tnum.twitteR utility generates a subject for each tweet as a string operation essentially like this:
-```{R eval=FALSE}
+```{R eval=FALSE, include=FALSE}
 paste0("twitter/user:", screenName, "/tweet:", tweetID)
 
 ```
@@ -107,13 +142,22 @@ Now we query the tnums into a data.frame qualified by the simple query for the c
 dftnums <- tnum.query("@project:seti:tweets:1",max=100)
 dftnums
 ```
-#### Adding tags post-facto
+### Adding tags post-facto based on analysis
 
-Now let's query for tweets where the text contains the string "alien" and tag them appropriately.
+Next, we apply sentiment analysis from package *SentimentAnalysis*, and apply it to the tweet text tnums.  First, we query for those tnums, then we apply sentiment analysis, and convert the resulting scores to *positive negative* or *neutral* tokens.  We build a tag vector with them.
 ```{r}
-dftnums <- tnum.tagByQuery('twitter# has text = REGEXP("comets")',list("project:seti/mentions:comets"),list())
-marstnums <- tnum.query("@project:seti/mentions:comets")
-marstnums
+library(SentimentAnalysis)
+
+tweetTexts <- tnum.query("* has text", max=100)
+sa <- SentimentAnalysis::analyzeSentiment(tweetTexts$string.value)
+posneg <- SentimentAnalysis::convertToDirection(sa$SentimentGI)
+saTags <- paste0("analysis:sentiment:",posneg)
+print(saTags)
 ```
-So we've enriched the original tweet data with tags based on a simple analysis of tweet texts. 
+Now we applythem element-wise to the text tnums specified by their GUID's, and fetch them again for display:
+```{r}
+tnum.tagByGuids(tweetTexts$guid,saTags)
+tweetTexts <- tnum.query("* has text", max=100)
+tweetTexts
+```
 

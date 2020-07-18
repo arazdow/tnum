@@ -519,34 +519,24 @@ tnum.postTruenumber <-
     }
   }
 
-#' Add and remove tags to tnums specified by a list of their GUID's
+#' Add a column of single tags element-wise to list of tnums by GUID
 #'
 #' @param gids  guids of tnums to tag
 #' @param adds   tags to add
-#' @param removes tags to remove
 #'
 #' @return result of API call
 #' @export
 
 tnum.tagByGuids <- function(gids = c(),
-                            adds = c(),
-                            removes = c()) {
-  addstr <- paste0('"', paste(adds, collapse = '", "'), '"')
-  remstr <- paste0('"', paste(removes, collapse = '", "'), '"')
-  if (addstr == '""')
-    addstr <- ""
-  if (remstr == '""')
-    remstr <- ""
-
-  bodystr <-
-    paste0('{"tags":[', addstr, '],"remove":[', remstr, ']}')
-  for (gid in gids) {
+                            adds = c()
+                            ) {
+  for (i in 1:length(gids)) {
     theurl <-
       paste0("http://",
              tnum.env$tnum.var.ip,
              "/v1/numberspace/numbers/",
-             gid)
-
+             gids[[i]])
+  bodystr <- paste0('{"tags":["', adds[[i]], '"],"remove":[]}')
     result <- httr::PATCH(
       theurl,
       query = paste0("numberspace=", tnum.env$tnum.var.nspace),

@@ -2,20 +2,18 @@
 % Please edit documentation in R/tnum.R
 \name{tnum.tagByGuids}
 \alias{tnum.tagByGuids}
-\title{Add and remove tags to tnums specified by a list of their GUID's}
+\title{Add a column of single tags element-wise to list of tnums by GUID}
 \usage{
-tnum.tagByGuids(gids = c(), adds = c(), removes = c())
+tnum.tagByGuids(gids = c(), adds = c())
 }
 \arguments{
 \item{gids}{guids of tnums to tag}
 
 \item{adds}{tags to add}
-
-\item{removes}{tags to remove}
 }
 \value{
 result of API call
 }
 \description{
-Add and remove tags to tnums specified by a list of their GUID's
+Add a column of single tags element-wise to list of tnums by GUID
 }
