@@ -4,13 +4,15 @@ author: "[True Engineering Technology, LLC](http://truenum.com) Boston MA"
 output: html_notebook
 ---
 
-## Background
+### A data management companion to R
 
-**Truenumbers** (tnum) is a cloud repository for creating, tagging and querying persistent data as a collection of facts in a domain-independent way. Facts can be numeric or textual, and each is represented as the *value* of a *property* of a *subject*. For example, this is a truenumber (tnum) in structured sentence form, with a single tag annotating it:
+R users draw from a variety of data sources, reading them into tables, vectors or lists for exploration and analytic processing.  This in turn produces more data, from summary statistics and models to graphs and tables that enrich the original data, or derive new information from it. Doing this results in many different data structures, each labeled with informal, unstructured row and column names, and many files for persisting them on disk. Working and collaborating with these requires keeping their meaning and structure in our heads. 
+
+**Truenumbers** is a central cloud repository for creating, tagging and querying persistent data as a collection of facts in a domain-independent way. Facts can be numeric, textual, or categorical and are represented as the *value* of a *property* of a *subject*.  For example, this is a truenumber (tnum) in structured sentence form, with a single tag annotating it:
 
 > wing of F-35C aircraft has folded span = 29.83 ft   @users:US:navy
 
-is equivalent to JSON structure:
+This is equivalent to JSON structure:
 
 > { "subject" : "aircraft:F-35C/wing", 
     "property" : "span:folded", 
@@ -18,18 +20,13 @@ is equivalent to JSON structure:
     "tags" : ["user:US:navy"] }
   }
   
-The phrase **wing of F-35C aircraft** is equivalent to the path **aircraft:F-35C/wing** where the slash and colon operators denote a possessive and adjectival relationship in the phrase grammar.  We call these Structured Resource Descriptors (SRD), intended to describe using natural language references the way column or row names do, but with a more explicit structure. In comparison, an *aircraft* table might have a *type* column with "F-35C" as its value, and a *wingspan_ft* column with value "29.83".  The wing as part of the aircraft, and that span refers to the wing, are implicit in the table and column names. The tnum makes this information explicit and available for computation and query.
+We see the phrase **wing of F-35C aircraft** is encoded as a path **aircraft:F-35C/wing** where the slash and colon operators denote the possessive and adjectival relationships of ordinary grammar.  These structured phrases are intended to describe data using natural language references the way column or row names do, but with an explicit structure. In comparison, an *aircraft* table might have a *type* column with "F-35C" as its value, and a *wingspan_ft* column with value "29.83".  That the wing as part of the aircraft, and that *span* refers to the wing, are implicit in the table and column names. The tnum makes this information explicit and available for computation and query.
 
-Data represented in this way is universal because phrases are.  Dimensionally, each tnum value is indexed by 2 to Nor more categorical variables, being the subject, property and any number of tags, and the categories have the heirarchical structure of the phrase paths.  
-
-### As a companion to R
-
-R users read a variety of data sources into frames vectors or lists, for exploration and analytics processing that produces more data such as summary statistics, models, etc. that enrich the original data, or create new information from it. This process results in varied data structures with many informally structured row and column names, as well files for persisting them on disk. Working and collaborating with these requires keeping their meaning and structure in our heads. A tnum representation of data makes relieves us of file management, and allows R users to work in terms closer to the way we understand the data.  
-
+Data represented in this way is universal because phrases are.  Dimensionally, each tnum value is indexed by 2 or more categorical variables, being its subject, property and any number of tags. The categories are paths that have hierarchical structure, and participate in analytics and query.
 
 ## *tnum* in action
 
-After installing *tnum*, it's necessary to authenticate with the *tnum* server:
+After installing package *tnum*, it's necessary to authenticate with the *tnum* server:
 ```{r}
 library(tnum)
 tnum.authorize()
@@ -37,7 +34,8 @@ tnum.authorize()
 *authorize* can take a single argument, a string representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation. It returns a list of available numberspaces on the server. A *numberspace* is a separate repository for truenumber data.  The authorize() call sets the current numberspace to the first entry, "testspace" in this case  
 
 #### Your first truenumber
-Let's make a truenumber and store it to the server, do a query to retrieve it, then delete it.  
+
+Let's make a few truenumbers from scratch and store them to the server, do a query to retrieve, then delete them. 
 
 ```{r}
 # post a single tnum to the server
@@ -60,7 +58,7 @@ tnum.postTruenumbers(
      tags = list(list("user:US:DoD","tnum/doc:gettingStarted"),list("as-built","user:US:DoD","tnum/doc:gettingStarted"))
  )
 ```
-Next, we query the server for tnums with subject path starting with *aircraft*, and any property by using path and string wildcards:
+Next, we query the server for these tnums by subject path starting with *aircraft#* , and any property by using path and string wildcards:
 ```{r}
 # Run query and return tnums as rows of a data.frame
 tn.frame <- tnum.query("aircraft# has *")
@@ -99,7 +97,7 @@ We can get a nicer tree using *plot()*
 plot(tree)
 ```
 
-### Cleaning up our aircraft example
+### Cleaning up after our aircraft example
 
 If we use tags and phrases with enough specificity, we can keep our truenumbers around.  If we choose to clean some of them up, We can use a query not to retrieve, but to delete and select tnums:
 ```{r}
@@ -161,4 +159,6 @@ tweetTexts <- tnum.query("* has text", max=100)
 tweetTexts
 ```
 Scroll right to see the sentiment tags in the tags column. 
+
+
 

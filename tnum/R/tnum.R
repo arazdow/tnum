@@ -1,5 +1,6 @@
 
 
+
 #' Vars local to this file
 #'  @export
 
@@ -171,22 +172,21 @@ tnum.tagByQuery <- function(query = "",
   bodystr <-
     paste0('{"tags":[', addstr, '],"remove":[', remstr, ']}')
 
-    theurl <-
-      paste0("http://",
-             tnum.env$tnum.var.ip,
-             "/v1/numberspace/numbers/"
-             )
+  theurl <-
+    paste0("http://",
+           tnum.env$tnum.var.ip,
+           "/v1/numberspace/numbers/")
 
-    result <- httr::PATCH(
-      theurl,
-      query = args,
-      httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
-      body = bodystr,
-      httr::accept("application/json"),
-      httr::content_type("application/json")
-    )
-    return(result)
-  }
+  result <- httr::PATCH(
+    theurl,
+    query = args,
+    httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
+    body = bodystr,
+    httr::accept("application/json"),
+    httr::content_type("application/json")
+  )
+  return(result)
+}
 
 
 
@@ -222,7 +222,7 @@ tnum.queryResultToDataframe <- function(result, max) {
       for (unitpwr in tn$value$unitPowers) {
         if (unitpwr$p < 0) {
           if (unitpwr$p < -1) {
-            neguns <- paste0(neguns, unitpwr$u, "^",-unitpwr$p, " ")
+            neguns <- paste0(neguns, unitpwr$u, "^", -unitpwr$p, " ")
           } else {
             neguns <- paste0(neguns, unitpwr$u, " ")
           }
@@ -264,7 +264,7 @@ tnum.queryResultToDataframe <- function(result, max) {
         numeric.error = Nerr,
         units = uns
       )
-    rdf$tags <- paste0(taglist, collapse=", ")  # was list(taglist)
+    rdf$tags <- paste0(taglist, collapse = ", ")  # was list(taglist)
     rdf$date <- dat
     rdf$guid <- gid
 
@@ -363,7 +363,8 @@ tnum.makeTruenumber <- function(subject = "something",
       numval <- paste0(numeric.value, unitSuffix)
     }
   } else {
-    if (is.na(string.value) || (noEmptyStrings && notRealString(string.value))) {
+    if (is.na(string.value) ||
+        (noEmptyStrings && notRealString(string.value))) {
       #if both values are NA return empty tnum
       return("{}")
     } else {
@@ -412,13 +413,12 @@ tnum.makeTruenumber <- function(subject = "something",
 tnum.postTruenumbers <-
   function(subject,
            property,
-           string.value=NA,
-           numeric.value=NA,
-           numeric.error=NA,
-           units=NA,
+           string.value = NA,
+           numeric.value = NA,
+           numeric.error = NA,
+           units = NA,
            tags,
            noEmptyStrings = FALSE) {
-
     alljsonnums <-
       mapply(
         tnum.makeTruenumber,
@@ -492,15 +492,17 @@ tnum.postTruenumber <-
            tags = list(),
            noEmptyStrings = FALSE) {
     jsonnum <-
-        tnum.makeTruenumber(subject,
-                            property,
-                            string.value,
-                            numeric.value,
-                            numeric.error,
-                            units,
-                            tags,
-                            noEmptyStrings)
-    if(nchar(jsonnum)>5){
+      tnum.makeTruenumber(
+        subject,
+        property,
+        string.value,
+        numeric.value,
+        numeric.error,
+        units,
+        tags,
+        noEmptyStrings
+      )
+    if (nchar(jsonnum) > 5) {
       assign("tnum.var.postedJSON", jsonnum, envir = tnum.env)
       args <-
         list(numberspace = tnum.env$tnum.var.nspace)
@@ -528,15 +530,14 @@ tnum.postTruenumber <-
 #' @export
 
 tnum.tagByGuids <- function(gids = c(),
-                            adds = c()
-                            ) {
+                            adds = c()) {
   for (i in 1:length(gids)) {
     theurl <-
       paste0("http://",
              tnum.env$tnum.var.ip,
              "/v1/numberspace/numbers/",
              gids[[i]])
-  bodystr <- paste0('{"tags":["', adds[[i]], '"],"remove":[]}')
+    bodystr <- paste0('{"tags":["', adds[[i]], '"],"remove":[]}')
     result <- httr::PATCH(
       theurl,
       query = paste0("numberspace=", tnum.env$tnum.var.nspace),
@@ -546,5 +547,65 @@ tnum.tagByGuids <- function(gids = c(),
       httr::content_type("application/json")
     )
   }
-
 }
+
+## retrieve taxonomies
+
+#' Get phrase taxonomies
+#'
+#' @param taxonomy string, one of "subject", "property", or "tags"
+#' @param pattern  a tnum path with path-wildcard #, or string-wildcard * to restrict what tree is returned.
+#' @param levels   integer, how man levels down to extract
+#'
+#' @return a data.tree Node, suitable for print(returned node) or plot(returned node)
+#' @export
+
+tnum.getPhraseTree <-
+  function(taxonomy = "subject",
+           pattern = "",
+           levels = 10) {
+    # recursive descent function
+
+    tnToNodeWalker <- function(tnNode, dtreeNode) {
+      tkids <- tnNode$childrenCount
+      if (tkids > 0) {
+        for (i in 1:tnNode$childrenCount) {
+          tkid <- tnNode$children[[i]]
+          nodeLabel <- tkid$fullName
+          if(stringr::str_count(nodeLabel,"[:/]") > 0){
+            nodeLabel <- stringr::str_extract(nodeLabel, "[/:][^/^:]+$")
+          }
+          message(nodeLabel)
+          nkid <- dtreeNode$AddChild(nodeLabel)
+          tnToNodeWalker(tkid, nkid)
+        }
+      }
+    }
+
+    # get taxonomy as nested list
+    args <-
+      list(
+        numberspace = tnum.env$tnum.var.nspace,
+        type = taxonomy,
+        srd = pattern,
+        depth = levels
+      )
+    result <- httr::GET(
+      query = args,
+      paste0(
+        "http://",
+        tnum.env$tnum.var.ip,
+        "/v1/numberspace/taxonomy"
+      ),
+      httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
+      httr::accept("application/json"),
+      httr::content_type("application/json")
+    )
+    #build a data.tree from the result
+
+    tnApiRoot <- httr::content(result)$data
+    dTree <- Node$new(tnApiRoot$fullName)
+    tnToNodeWalker(tnApiRoot, dTree)
+
+    return(dTree)
+  }
