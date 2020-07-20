@@ -575,7 +575,6 @@ tnum.getPhraseTree <-
           if(stringr::str_count(nodeLabel,"[:/]") > 0){
             nodeLabel <- stringr::str_extract(nodeLabel, "[/:][^/^:]+$")
           }
-          message(nodeLabel)
           nkid <- dtreeNode$AddChild(nodeLabel)
           tnToNodeWalker(tkid, nkid)
         }
