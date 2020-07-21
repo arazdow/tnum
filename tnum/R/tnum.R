@@ -571,7 +571,7 @@ tnum.getPhraseTree <-
     tnToNodeWalker <- function(grph, tnNode, gNodeId) {
       adjAes <- DiagrammeR::node_aes(shape="rectangle",fillcolor = "white",fixedsize = FALSE, color = "black")
       posAes <- DiagrammeR::node_aes(shape="ellipse",fixedsize = FALSE, fillcolor = "white", color = "black")
-      adjEdgeAes <- DiagrammeR::edge_aes(label="adj",fontcolor = "black", color = "black")
+      adjEdgeAes <- DiagrammeR::edge_aes(label="adj",fontcolor = "black", color = "black", dir = "back")
       posEdgeAes <- DiagrammeR::edge_aes(label="of",fontcolor = "black", color = "black", style = "dashed", dir = "back")
       newGrph <- grph
       tkids <- tnNode$childrenCount
@@ -633,3 +633,72 @@ tnum.getPhraseTree <-
 
     return(dGraph)
   }
+
+#' Get a DiagrammeR tree for rendering, from a list of SRD paths
+#'
+#' @param pathList
+#' @param rootLabel
+#' @param levels
+#'
+#' @return  Diagrammer graph object
+#' @export
+
+tnum.getPhraseTreeFromPathList <-
+  function(pathList=list(),
+           rootLabel="ROOT",
+           levels = 10) {
+
+    # recursive descent and other utilities
+
+    tnToNodeWalker <- function(grph, dtNode, gNodeId) {
+      adjAes <- DiagrammeR::node_aes(shape="rectangle",fillcolor = "white",fixedsize = FALSE, color = "black")
+      posAes <- DiagrammeR::node_aes(shape="ellipse",fixedsize = FALSE, fillcolor = "white", color = "black")
+      adjEdgeAes <- DiagrammeR::edge_aes(label="adj",fontcolor = "black", color = "black", dir = "back")
+      posEdgeAes <- DiagrammeR::edge_aes(label="of",fontcolor = "black", color = "black", style = "dashed", dir = "back")
+      rootEdgeAes <- DiagrammeR::edge_aes(color = "lightgrey", arrowhead = "none")
+      newGrph <- grph
+      tkids <- dtNode$count
+      if (tkids > 0) {
+        for (tkid in dtNode$children) {
+          nodeLabel <- tkid$name
+          sep <- "/"
+          naes <- posAes
+          eaes <- posEdgeAes
+          if(stringr::str_count(nodeLabel,":") > 0){
+            nodeLabel <- stringr::str_extract(nodeLabel, "[^/^:]+$")
+            sep <- ":"
+          }
+          if(sep == ":"){
+            naes <- adjAes
+            eaes <- adjEdgeAes
+          }
+          if(gNodeId == 1)eaes <- rootEdgeAes
+          newGrph <- DiagrammeR::add_node(newGrph, label=nodeLabel,from=gNodeId, node_aes = naes, edge_aes = eaes)
+          nextId <- get_last_node_id(newGrph)
+          newGrph <- tnToNodeWalker(newGrph, tkid, nextId)
+        }
+      }
+      return(newGrph)
+    }
+
+    # hack for getting id of the last node added tp a graph
+    get_last_node_id <- function(grph){
+      ndf <- DiagrammeR::get_node_df(grph)
+      return(tail(ndf$id,1))
+    }
+
+    pList <- paste0(rootLabel,"/", gsub(":","/:",pathList))
+    df <- data.frame(paths=pList)
+    tree <- data.tree::as.Node(df, pathName="paths")
+    if(tree$children[[1]]$count == 1){
+      tree <- tree$children[[1]]$children[[1]]
+    }
+    rootAes <- DiagrammeR::node_aes(color = "lightgrey", fixedsize = FALSE, fillcolor = "white",fontcolor = "lightgrey", shape = "egg")
+    dGraph <- DiagrammeR::create_graph()
+    dGraph <- DiagrammeR::add_node(dGraph,label=tree$name,node_aes = rootAes)
+    dGraphRoot <- get_last_node_id(dGraph)
+    dGraph <- tnToNodeWalker(dGraph,tree, dGraphRoot)
+
+    return(dGraph)
+  }
+

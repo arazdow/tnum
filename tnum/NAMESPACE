@@ -3,6 +3,7 @@
 export(tnum.authorize)
 export(tnum.deleteByQuery)
 export(tnum.getPhraseTree)
+export(tnum.getPhraseTreeFromPathList)
 export(tnum.getSpace)
 export(tnum.postTruenumber)
 export(tnum.postTruenumbers)
