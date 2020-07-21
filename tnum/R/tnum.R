@@ -564,21 +564,44 @@ tnum.getPhraseTree <-
   function(taxonomy = "subject",
            pattern = "",
            levels = 10) {
-    # recursive descent function
 
-    tnToNodeWalker <- function(tnNode, dtreeNode) {
+
+    # recursive descent and other utilities
+
+    tnToNodeWalker <- function(grph, tnNode, gNodeId) {
+      adjAes <- DiagrammeR::node_aes(shape="rectangle",fillcolor = "white",fixedsize = FALSE, color = "black")
+      posAes <- DiagrammeR::node_aes(shape="ellipse",fixedsize = FALSE, fillcolor = "white", color = "black")
+      adjEdgeAes <- DiagrammeR::edge_aes(label="adj",fontcolor = "black", color = "black")
+      posEdgeAes <- DiagrammeR::edge_aes(label="of",fontcolor = "black", color = "black", style = "dashed", dir = "back")
+      newGrph <- grph
       tkids <- tnNode$childrenCount
       if (tkids > 0) {
         for (i in 1:tnNode$childrenCount) {
           tkid <- tnNode$children[[i]]
           nodeLabel <- tkid$fullName
+          sep <- ""
+          naes <- posAes
+          eaes <- posEdgeAes
           if(stringr::str_count(nodeLabel,"[:/]") > 0){
             nodeLabel <- stringr::str_extract(nodeLabel, "[/:][^/^:]+$")
+            sep <- substr(nodeLabel,1,1)
           }
-          nkid <- dtreeNode$AddChild(nodeLabel)
-          tnToNodeWalker(tkid, nkid)
+          if(sep == ":"){
+            naes <- adjAes
+            eaes <- adjEdgeAes
+          }
+          newGrph <- DiagrammeR::add_node(newGrph, label=nodeLabel,from=gNodeId, node_aes = naes, edge_aes = eaes)
+          nextId <- get_last_node_id(newGrph)
+          newGrph <- tnToNodeWalker(newGrph, tkid, nextId)
         }
       }
+      return(newGrph)
+    }
+
+    # hack for getting id of the last node added tp a graph
+    get_last_node_id <- function(grph){
+      ndf <- DiagrammeR::get_node_df(grph)
+      return(tail(ndf$id,1))
     }
 
     # get taxonomy as nested list
@@ -603,8 +626,10 @@ tnum.getPhraseTree <-
     #build a data.tree from the result
 
     tnApiRoot <- httr::content(result)$data
-    dTree <- Node$new(tnApiRoot$fullName)
-    tnToNodeWalker(tnApiRoot, dTree)
+    dGraph <- DiagrammeR::create_graph()
+    dGraph <- DiagrammeR::add_node(dGraph,label=tnApiRoot$fullName)
+    dGraphRoot <- get_last_node_id(dGraph)
+    dGraph <- tnToNodeWalker(dGraph,tnApiRoot, dGraphRoot)
 
-    return(dTree)
+    return(dGraph)
   }
