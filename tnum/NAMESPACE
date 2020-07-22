@@ -2,9 +2,10 @@
 
 export(tnum.authorize)
 export(tnum.deleteByQuery)
-export(tnum.getPhraseTree)
-export(tnum.getPhraseTreeFromPathList)
+export(tnum.getDatabasePhraseTree)
 export(tnum.getSpace)
+export(tnum.makePhraseGraphFromPathList)
+export(tnum.makeTnumPhraseGraph)
 export(tnum.postTruenumber)
 export(tnum.postTruenumbers)
 export(tnum.query)
