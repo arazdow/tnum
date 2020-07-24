@@ -2,6 +2,7 @@
 
 
 
+
 #' Vars local to this file
 #'  @export
 
@@ -10,20 +11,16 @@ tnum.env <- new.env()
 #' Connect and authenticate to Truenumbers server
 #'
 #' @param ip The endpoint address of the server. Default is a public cloud server
+#' @param key  token to authorize API access
 #'
 #' @return  List of numberspaces available on the server. The first one on the list is set as current
 #' @export
 
-tnum.authorize <- function(ip = "54.166.186.11") {
+tnum.authorize <- function(ip = "54.166.186.11", key) {
   assign("tnum.var.ip", ip, envir = tnum.env)
-  result <- httr::POST(
-    paste0("http://", ip, "/v1/gateway/"),
-    body = paste0('{"email":"admin@truenumbers.com"}'),
-    httr::accept("application/json"),
-    httr::content_type("application/json")
-  )
+  assign("tnum.var.token", key, envir = tnum.env)
 
-  token <- httr::content(result)$data$token
+  token <- key
 
   ## get list of numberspaces
   result <- httr::GET(
@@ -38,8 +35,27 @@ tnum.authorize <- function(ip = "54.166.186.11") {
   assign("tnum.var.nspace", nspaces[[1]], envir = tnum.env)
   assign("tnum.var.nspaces", nspaces, envir = tnum.env)
   assign("tnum.var.token", token, envir = tnum.env)
-  returnValue(nspaces)
+  tnum.setSpace("shared-testspace")
+  message(paste0("Available spaces: ", paste0(nspaces, collapse = ", ")))
+  message(paste0("Numberspace set to: ", tnum.getSpace()))
 
+}
+
+#' Create new numberspace
+#'
+#' @param name name of space to create
+#'
+#' @export
+
+tnum.createSpace <- function(name) {
+  result <- httr::POST(
+    paste0("http://", tnum.env$tnum.var.ip, "/v1/numberspace/"),
+    httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
+    body = paste0('{"numberspace":"', name, '"}'),
+    httr::accept("application/json"),
+    httr::content_type("application/json")
+  )
+  return(httr::content(result))
 }
 
 #' Set a particular numberspace as current
@@ -223,7 +239,7 @@ tnum.queryResultToDataframe <- function(result, max) {
       for (unitpwr in tn$value$unitPowers) {
         if (unitpwr$p < 0) {
           if (unitpwr$p < -1) {
-            neguns <- paste0(neguns, unitpwr$u, "^",-unitpwr$p, " ")
+            neguns <- paste0(neguns, unitpwr$u, "^", -unitpwr$p, " ")
           } else {
             neguns <- paste0(neguns, unitpwr$u, " ")
           }
@@ -566,7 +582,6 @@ tnum.getDatabasePhraseTree <-
   function(taxonomy = "subject",
            pattern = "",
            levels = 10) {
-
     # node and edge styles for DiagrammeR
     adjAes <-
       DiagrammeR::node_aes(
@@ -662,7 +677,8 @@ tnum.getDatabasePhraseTree <-
 
     tnApiRoot <- httr::content(result)$data
     dGraph <- DiagrammeR::create_graph()
-    dGraph <- DiagrammeR::add_node(dGraph, label = tnApiRoot$fullName)
+    dGraph <-
+      DiagrammeR::add_node(dGraph, label = tnApiRoot$fullName)
     dGraphRoot <- get_last_node_id(dGraph)
     dGraph <- tnToNodeWalker(dGraph, tnApiRoot, dGraphRoot)
 
@@ -682,7 +698,6 @@ tnum.makePhraseGraphFromPathList <-
   function(pathList = list(),
            rootLabel = "ROOT",
            levels = 10) {
-
     # node and edge styling for DiagrammeR
     adjAes <-
       DiagrammeR::node_aes(
@@ -700,14 +715,14 @@ tnum.makePhraseGraphFromPathList <-
       )
     adjEdgeAes <-
       DiagrammeR::edge_aes(
-        label = "adj",
+      #  label = "adj",
         fontcolor = "black",
         color = "black",
         dir = "back"
       )
     posEdgeAes <-
       DiagrammeR::edge_aes(
-        label = "of",
+      #  label = "of",
         fontcolor = "black",
         color = "black",
         style = "dashed",
@@ -723,11 +738,12 @@ tnum.makePhraseGraphFromPathList <-
       )
     rootEdgeAes <-
       DiagrammeR::edge_aes(color = "lightgrey", arrowhead = "none")
+    propertyEdgeAes <-
+      DiagrammeR::edge_aes(color = "lightgrey", arrowhead = "none", fontcolor = "lightgrey", label = "HAS")
 
     # recursive descent and other utility local functions
 
     tnToNodeWalker <- function(grph, dtNode, gNodeId) {
-
       newGrph <- grph
       tkids <- dtNode$count
 
@@ -746,20 +762,25 @@ tnum.makePhraseGraphFromPathList <-
             naes <- adjAes
             eaes <- adjEdgeAes
           }
-          if(gNodeId == 1){
+          if (gNodeId == 1) {
             eaes <- rootEdgeAes
           }
+          if(stringr::str_starts(nodeLabel,"---")){
+            eaes <- propertyEdgeAes
+            nodeLabel <- substr(nodeLabel,4, nchar(nodeLabel))
+          }
+            newGrph <-
+              DiagrammeR::add_node(
+                newGrph,
+                label = nodeLabel,
+                from = gNodeId,
+                node_aes = naes,
+                edge_aes = eaes
+              )
 
-          newGrph <-
-            DiagrammeR::add_node(
-              newGrph,
-              label = nodeLabel,
-              from = gNodeId,
-              node_aes = naes,
-              edge_aes = eaes
-            )
           nextId <- get_last_node_id(newGrph)
           newGrph <- tnToNodeWalker(newGrph, tkid, nextId)
+
         }
       }
       return(newGrph)
@@ -776,12 +797,18 @@ tnum.makePhraseGraphFromPathList <-
     # prepend the forest root, and insert data.tree separator / before :
     pList <- paste0(rootLabel, "/", gsub(":", "/:", pathList))
     df <- data.frame(paths = pList)
-    tree <- data.tree::as.Node(df, pathName = "paths") # get node tree
+    tree <-
+      data.tree::as.Node(df, pathName = "paths") # get node tree
 
     # create DiagrammeR graph and add root node
     dGraph <- DiagrammeR::create_graph()
     dGraph <-
-      DiagrammeR::add_node(dGraph, label = tree$name, node_aes = rootAes, edge_aes = rootEdgeAes)
+      DiagrammeR::add_node(
+        dGraph,
+        label = tree$name,
+        node_aes = rootAes,
+        edge_aes = rootEdgeAes
+      )
     dGraphRoot <- get_last_node_id(dGraph)
     # start recursion on only child of prepended root node
     dGraph <- tnToNodeWalker(dGraph, tree, dGraphRoot)
@@ -792,21 +819,42 @@ tnum.makePhraseGraphFromPathList <-
 #' Make full tnum graph from tnum.query return data frame
 #'
 #' @param tdf truenum data frame as returned from tnum.query
-#' @param commonRoots list of gsub patterns for replacement with --- to aggregate subjects
+#' @param collectors list of gsub patterns for replacement with ### to aggregate subjects
 #'
 #' @return
 #' @export
 #'
 #' @examples
- tnum.makeTnumPhraseGraph <- function(tdf, commonRoots=list()){
+tnum.makeTnumPhraseGraph <- function(tdf, collectors = list()) {
 
-  tnumList <- paste0(tnums$subject,"/PROPERTY:",tnums$property)
-  if(length(commonRoots) > 0){
-    for(commonRoot in commonRoots){
-      tnumList <- gsub(paste0(commonRoot,"[^/^:]+"),paste0(commonRoot,"---"),tnumList)
+  tnumList <- paste0(tdf$subject, "/---", tdf$property)
+
+  commonRoots <- list()
+ for(collector in collectors){
+  if((nchar(collector)>0) && (stringr::str_count(collector,pattern = "###")>0)){
+    collectorSplit <- stringr::str_split(collector, "###")[[1]]
+    accum <- ""
+    for(seg in collectorSplit){
+      if(nchar(accum)>0){
+        accum <- paste0(accum,"###",seg)
+      } else {
+        accum <- seg
+      }
+      if(nchar(seg)>0)
+        commonRoots <- c(commonRoots, accum)
+    }
+  }
+ }
+  if (length(commonRoots) > 0) {
+    for (commonRoot in commonRoots) {
+      tnumList <-
+        gsub(paste0(commonRoot, "[^/^:]+"),
+             paste0(commonRoot, "###"),
+             tnumList)
       tnumList <- unique(tnumList)
     }
   }
-  gph <- tnum.makePhraseGraphFromPathList(tnumList, rootLabel = "tnums")
+  gph <-
+    tnum.makePhraseGraphFromPathList(tnumList, rootLabel = "tnums")
   return(gph)
 }

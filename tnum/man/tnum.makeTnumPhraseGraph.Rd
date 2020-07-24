@@ -4,12 +4,12 @@
 \alias{tnum.makeTnumPhraseGraph}
 \title{Make full tnum graph from tnum.query return data frame}
 \usage{
-tnum.makeTnumPhraseGraph(tdf, commonRoots = list())
+tnum.makeTnumPhraseGraph(tdf, collectors = list())
 }
 \arguments{
 \item{tdf}{truenum data frame as returned from tnum.query}
 
-\item{commonRoots}{list of gsub patterns for replacement with --- to aggregate subjects}
+\item{collectors}{list of gsub patterns for replacement with ### to aggregate subjects}
 }
 \value{
 

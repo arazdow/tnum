@@ -1,18 +1,20 @@
 ---
-title: "Getting Started wth **tnum** for Truenumbers"
+title: "Getting Started wth **tnum** for R"
 author: "[True Engineering Technology, LLC](http://truenum.com) Boston MA" 
 output: html_notebook
 ---
 
 ### A data management companion to R
 
-R users draw from a variety of data sources, reading them into tables, vectors or lists for exploration and analytic processing.  This in turn produces more data, from summary statistics and models to graphs and tables that enrich the original data, or derive new information from it. Doing this results in many different data structures, each labeled with informal, unstructured row and column names, and many files for persisting them on disk. Working and collaborating with these requires keeping their meaning and structure in our heads. 
+R users draw from a variety of data sources, reading them into tables, vectors or lists for exploration and analytic processing.  This in turn produces more data, from summary statistics and models to graphs and tables that enrich the original data, or derive new information from it. Doing this results in many different data structures, labeled with informal row and column names, and many files persisting data on disk. Working and collaborating with these requires keeping track of all their meaning, structure and file versions. 
 
-**Truenumbers** is a central cloud repository for creating, tagging and querying persistent data as a collection of facts in a domain-independent way. Facts can be numeric, textual, or categorical and are represented as the *value* of a *property* of a *subject*.  For example, this is a truenumber (tnum) in structured sentence form, with a single tag annotating it:
+**Truenumbers** is a central cloud repository for creating, tagging and querying persistent data as a collection of facts in a domain-independent way. Facts can be numeric, textual, or categorical, and are represented in a pseudo-natural language. This simplifies the relationship between R analyses and data, because source data, results, and working storage are centralized in a single intelligible representation. 
+
+Truenumber facts are expressed as the *value* of a *property* of a *subject*.  For example, this is a truenumber (tnum) in structured sentence form, with a single tag annotating it:
 
 > wing of F-35C aircraft has folded span = 29.83 ft   @users:US:navy
 
-This is equivalent to JSON structure:
+It is equivalent to JSON structure:
 
 > { "subject" : "aircraft:F-35C/wing", 
     "property" : "span:folded", 
@@ -20,18 +22,22 @@ This is equivalent to JSON structure:
     "tags" : ["user:US:navy"] }
   }
   
-We see the phrase **wing of F-35C aircraft** is encoded as a path **aircraft:F-35C/wing** where the slash and colon operators denote the possessive and adjectival relationships of ordinary grammar.  These structured phrases are intended to describe data using natural language references the way column or row names do, but with an explicit structure. In comparison, an *aircraft* table might have a *type* column with "F-35C" as its value, and a *wingspan_ft* column with value "29.83".  That the wing as part of the aircraft, and that *span* refers to the wing, are implicit in the table and column names. The tnum makes this information explicit and available for computation and query.
+We see the phrase **wing of F-35C aircraft** gets encoded as the path **aircraft:F-35C/wing** where the slash and colon operators denote the possessive and adjectival relationships of ordinary grammar.  These structured phrases are intended to describe data using natural language references the way column or row names do, but with an explicit structure. In contrast, an *aircraft* table might have a *type* column with "F-35C" as its value, and a *wingspan_ft* column with value "29.83".  That we're talking about the wing of an F-36 aircraft, and it's dimensions in feet, are implicit in the column names and values. The tnum fact makes this information explicit and available for computation and query. It separates a detailed description of the subject of the measurement, the type of measurement, and units of measure.  
 
-Data represented in this way is universal because phrases are.  Dimensionally, each tnum value is indexed by 2 or more categorical variables, being its subject, property and any number of tags. The categories are paths that have hierarchical structure, and participate in analytics and query.
+Data represented in this way is universal because phrases are.  Dimensionally, each tnum value is indexed by 2 or more categorical variables, being its subject, property and any number of tags. The categories are paths that have hierarchical structure, and participate in analytics and query.  In fact, in tnum data, the descriptive phrases are as much a part of the data as the value itself.   
 
 ## *tnum* in action
 
-After installing package *tnum*, it's necessary to authenticate with the *tnum* server:
+After installing package *tnum*, it's necessary to authenticate with the *tnum* server.  Your sysadmin will give you a key, something like
+
+token <- "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoidXNlciIsInVzZXJJZCI6IjMzNzZlMWE2LWU0NDMtNDc5YS1hZTM1LWMzZDMzMm"
+
+which must be passed to the authorization function of tnum as the **key** parameter:
 ```{r}
 library(tnum)
-tnum.authorize()
+tnum.authorize(key = token)
 ```
-*authorize* can take a single argument, a string representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation. It returns a list of available numberspaces on the server. A *numberspace* is a separate repository for truenumber data.  The authorize() call sets the current numberspace to the first entry, "testspace" in this case  
+*authorize* can take also take an argument **ip** representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation. The function displays a list of available numberspaces on the server. A *numberspace* is a separate repository for truenumber data.  The authorize() call sets the current numberspace to a numberspace defeined by your administrator.    
 
 #### Your first truenumber
 
@@ -68,33 +74,18 @@ tn.frame
 
 Truenumber path phrases naturally imply trees the way filename paths do, revealing the relationships among data items in a useful way.  
 
-The package *data.tree* lets us work with tree structures in R.  It is able to convert paths in a column of a data.frame to trees, which is perfect for data.rames of tnums.  Let's try it on the three *aircraft* numbers above.  
+The package *data.tree* provides tree structures in R, and is able to convert paths in a column of a data.frame to trees, which is perfect for data.frames of tnums.  The package *DiagrammeR* enables graphs and displays.  Both are required by *tnum*.  Let's try it on the three *aircraft* numbers above.  
 
-Because subjects of tnums are a forest of trees, we need to provide a root node for them.  We write a function to do that, and *lapply()* it to the subject column.  
 
 ```{r}
-library(data.tree)
 
-# pre-pend a root node, since tnum subjects are a forest,
+# Use tnum function to generate a graph from the subject column of the data frame of tnums
 
-supplyRoot <- function(p){
-  return(paste0("<root>/",p))
-}
+graph <- tnum.makePhraseGraphFromPathList(tn.frame$subject)
 
-tn.frame.mod1 <- tn.frame
-tn.frame.mod1$subject <- lapply(tn.frame.mod1$subject,supplyRoot)
+# Use a rendering function from*DiagrammeR* to display it:
 
-# now use data.tree::asNode() to buid the tree, then print it
-
-tree <- as.Node(tn.frame.mod1,
-                pathName = "subject",
-                pathDelimiter = "/")
-
-print(tree, "property", "numeric.value","units")
-```
-We can get a nicer tree using *plot()*
-```{r}
-plot(tree)
+DiagrammeR::render_graph(graph, layout = "tree")
 ```
 
 ### Cleaning up after our aircraft example
@@ -121,7 +112,7 @@ dftweets
 ### Making truenumbers out of tweets
 
 A tweet needs to be identified by the *subject* of a set of truenumbers stating the properties of the tweet.  We can see that a tweet has a unique ID provided by Twitter, and also gives us the screen-name of the tweeter.  Our tnum.twitteR utility generates a subject for each tweet as a string operation essentially like this:
-```{R}
+```{r eval=FALSE}
 paste0("twitter/user:", screenName, "/tweet:", tweetID)
 
 ```
@@ -140,6 +131,16 @@ Now we query the tnums into a data.frame qualified by the simple query for the c
 dftnums <- tnum.query("@project:seti:tweets:1",max=100)
 dftnums
 ```
+Now we make and render a graph that includes the properties of the truenumbers:
+```{r}
+graph2 <- tnum.makeTnumPhraseGraph(dftnums)
+
+# use a different layout than the tree shown above
+
+DiagrammeR::render_graph(graph2, layout = "neato", height = 1000, width = 1000)
+
+```
+
 ### Adding tags post-facto based on analysis
 
 Next, we apply sentiment analysis from package *SentimentAnalysis*, and apply it to the tweet text tnums.  First, we query for those tnums, then we apply sentiment analysis, and convert the resulting scores to *positive negative* or *neutral* tokens.  We build a tag vector with them.
