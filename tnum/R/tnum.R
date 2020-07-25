@@ -715,18 +715,18 @@ tnum.makePhraseGraphFromPathList <-
       )
     adjEdgeAes <-
       DiagrammeR::edge_aes(
-      #  label = "adj",
-        fontcolor = "black",
+        label = "adj.",
+        fontcolor = "grey",
         color = "black",
         dir = "back"
       )
     posEdgeAes <-
       DiagrammeR::edge_aes(
-      #  label = "of",
-        fontcolor = "black",
+        label = "pos.",
+        fontcolor = "grey",
         color = "black",
         style = "dashed",
-        dir = "back"
+        #dir = "back"
       )
     rootAes <-
       DiagrammeR::node_aes(
@@ -734,6 +734,13 @@ tnum.makePhraseGraphFromPathList <-
         fixedsize = FALSE,
         fillcolor = "white",
         fontcolor = "lightgrey",
+        shape = "plaintext"
+      )
+    tagAes <-
+      DiagrammeR::node_aes(
+        fixedsize = FALSE,
+        fillcolor = rgb(1,1,1,0.5),
+        fontcolor = "darkgrey",
         shape = "plaintext"
       )
     rootEdgeAes <-
@@ -768,6 +775,11 @@ tnum.makePhraseGraphFromPathList <-
           if(stringr::str_starts(nodeLabel,"---")){
             eaes <- propertyEdgeAes
             nodeLabel <- substr(nodeLabel,4, nchar(nodeLabel))
+          }
+          if(stringr::str_detect(nodeLabel,"[?;]")){
+            eaes <- rootEdgeAes
+            naes <- tagAes
+            nodeLabel <- gsub("[;]",":",gsub("[?]","/",nodeLabel))
           }
             newGrph <-
               DiagrammeR::add_node(
@@ -819,15 +831,34 @@ tnum.makePhraseGraphFromPathList <-
 #' Make full tnum graph from tnum.query return data frame
 #'
 #' @param tdf truenum data frame as returned from tnum.query
+#' @param tagMatch regexp to select tags to include in graph
 #' @param collectors list of gsub patterns for replacement with ### to aggregate subjects
 #'
 #' @return
 #' @export
 #'
 #' @examples
-tnum.makeTnumPhraseGraph <- function(tdf, collectors = list()) {
-
+tnum.makeTnumPhraseGraph <- function(tdf, tagMatch = "", collectors = list()) {
+  # make list of full-tnum paths using --- as "has"
   tnumList <- paste0(tdf$subject, "/---", tdf$property)
+
+  # now add tags matching regexps in tags list
+  if(nchar(tagMatch)>0){
+    newTnumList <- list()
+    for(i in 1:length(tnumList)){
+      newTnumList <- append(newTnumList,tnumList[[i]])
+      if(nchar(tdf$tags[[i]])>0){
+        rowtags <- stringr::str_split(tdf$tags[[i]],", ")
+        for(tag in rowtags[[1]]){
+          if(stringr::str_detect(tag,tagMatch)){
+            guardedTag <- gsub("[/]","?",gsub("[:]",";",tag))
+            newTnumList <- append(newTnumList, paste0(tnumList[[i]],"/",guardedTag))
+          }
+        }
+      }
+    }
+    tnumList <- unique(newTnumList)
+  }
 
   commonRoots <- list()
  for(collector in collectors){
@@ -857,4 +888,23 @@ tnum.makeTnumPhraseGraph <- function(tdf, collectors = list()) {
   gph <-
     tnum.makePhraseGraphFromPathList(tnumList, rootLabel = "tnums")
   return(gph)
+}
+
+#' Plot DiagrammeR graph
+#'
+#' @param gph the graph df
+#' @param style what DiagrammeR calls "layout" = tree,nicely,neato,kk, or fr
+#' @param size size of plot in pixels
+#'
+#' @return  result of render_graph() call
+#' @export
+
+tnum.plotGraph <- function(gph,style="neato", size=0){
+  if(size > 0){
+    res <- DiagrammeR::render_graph(graph2, layout=style, height = size)
+  } else {
+    res <- DiagrammeR::render_graph(graph2, layout=style)
+  }
+
+  return(res)
 }

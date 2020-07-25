@@ -4,10 +4,12 @@
 \alias{tnum.makeTnumPhraseGraph}
 \title{Make full tnum graph from tnum.query return data frame}
 \usage{
-tnum.makeTnumPhraseGraph(tdf, collectors = list())
+tnum.makeTnumPhraseGraph(tdf, tagMatch = "", collectors = list())
 }
 \arguments{
 \item{tdf}{truenum data frame as returned from tnum.query}
+
+\item{tagMatch}{regexp to select tags to include in graph}
 
 \item{collectors}{list of gsub patterns for replacement with ### to aggregate subjects}
 }
