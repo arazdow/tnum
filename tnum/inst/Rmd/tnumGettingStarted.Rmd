@@ -72,20 +72,41 @@ tn.frame
 ```
 ### Visualizing description trees
 
-Truenumber path phrases naturally imply trees the way filename paths do, revealing the relationships among data items in a useful way.  
+Truenumber path phrases naturally imply trees the way filename paths do, revealing  relationships among data items in a useful way.  
 
-The package *data.tree* provides tree structures in R, and is able to convert paths in a column of a data.frame to trees, which is perfect for data.frames of tnums.  The package *DiagrammeR* enables graphs and displays.  Both are required by *tnum*.  Let's try it on the three *aircraft* numbers above.  
+Package *tnum* uses *data.tree* and *Diagrammer* for managing tree structures and graphs in its truenumber plotting functions. Let's see them in action.  First, we try a utility that creates a graph from a list of tnum paths, delimited by the **:** and **/** characters. We apply it to the *subject* column of the tnum data frame of aircraft data: 
 
 
 ```{r}
 
 # Use tnum function to generate a graph from the subject column of the data frame of tnums
 
-graph <- tnum.makePhraseGraphFromPathList(tn.frame$subject)
+graph <- tnum.makePhraseGraphFromPathList(tn.frame$subject, rootLabel="Subjects")
 
-# Use a rendering function from*DiagrammeR* to display it:
+# Use the tnum rendering function to display it as a graph:
 
-DiagrammeR::render_graph(graph, layout = "tree")
+tnum.plotGraph(graph)
+```
+These plots render tnum paths in keeping with their intent as encodings of descriptive phrases.  In the phrase "wing of A-10 aircraft", or **aircraft:A-10/wing**, "A-10" functions as an adjective modifying noun "aircraft" in a rounded shape. The square node and solid arrow denote that binding of adjective and noun as an entity description.  The "wing of" or **/wing** is a possessive form, equivalent to "A-10's wing", shown as the dotted relationship arrow.  It's important to keep in mind that these encode descriptions, not specific structural relationships as a class or entity-relationship diagram would.  Think of these as explicit versions of what would mormally be unstructured metadaata like variable names or column names. 
+
+### Adding knowledge with tags
+
+The A-10 aircraft is nicknamed Warthog.  The F-35 is officially the Lightning-II, but Panther is gaining ground in the services.  Let's add this information to our tnums by applying appropriate tags.  While we're at it, we designate them as military aircraft:
+```{r}
+# add 2 tags to all A-10 tnums
+tnum.tagByQuery("aircraft:A-10# has *",list("aircraft:military","nickname:official:Warthog"))
+
+# and 3 tags to any F-35 tnums (we only have F-35C variant)
+tnum.tagByQuery("aircraft:F-35* has *",list("aircraft:military","nickname:official:Lightning-II","nickname:unofficial:Panther"))
+```
+Now let's use a function that graphs tnum subjects, properties and tags together.  Because too many tags can clutter the picture, we have to provide a regular expression to select the tags we want to see.  Without that argument, no tags will be shown:
+```{r}
+# first re-query the database to get the new tags
+tn.frame <- tnum.query("aircraft# has *")
+
+# create the graph with only nickname tags shown
+tgraph <- tnum.makeTnumPhraseGraph(tn.frame,tagMatch="^nickname.+")
+tnum.plotGraph(tgraph,style="tree")
 ```
 
 ### Cleaning up after our aircraft example
@@ -94,6 +115,8 @@ If we use tags and phrases with enough specificity, we can keep our truenumbers 
 ```{r}
 tnum.deleteByQuery("aircraft# has *")
 ```
+
+
 ## Using **twitteR** with **tnum**
 
 We have included a utility for working with Twitter data using Truenumbers. To do this, we have to represent data coming from the Twitter API as tnums.  This requires some thinking about what the truenumber *subjects*, *properties*, *values* and *tags* might be for best reflecting the intent of the data.  Let's begin by authenticating to the Twitter API.  If the following fails, you'll have to get your own set of keys from Twitter's developer site and use *twitteR::setup_twitter_oauth()* (see twitteR documentation).
@@ -133,11 +156,11 @@ dftnums
 ```
 Now we make and render a graph that includes the properties of the truenumbers:
 ```{r}
-graph2 <- tnum.makeTnumPhraseGraph(dftnums)
+graph2 <- tnum.makeTnumPhraseGraph(dftnums, tagMatch = "^pro.+")
 
 # use a different layout than the tree shown above
 
-DiagrammeR::render_graph(graph2, layout = "neato", height = 1000, width = 1000)
+tnum.plotGraph(graph2)
 
 ```
 

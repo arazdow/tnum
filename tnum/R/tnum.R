@@ -202,7 +202,7 @@ tnum.tagByQuery <- function(query = "",
     httr::accept("application/json"),
     httr::content_type("application/json")
   )
-  return(result)
+  message(httr::content(result))
 }
 
 
@@ -740,7 +740,7 @@ tnum.makePhraseGraphFromPathList <-
       DiagrammeR::node_aes(
         fixedsize = FALSE,
         fillcolor = rgb(1,1,1,0.5),
-        fontcolor = "darkgrey",
+        fontcolor = rgb(0.2,1,0.2),
         shape = "plaintext"
       )
     rootEdgeAes <-
@@ -749,6 +749,7 @@ tnum.makePhraseGraphFromPathList <-
       DiagrammeR::edge_aes(color = "lightgrey", arrowhead = "none", fontcolor = "lightgrey", label = "HAS")
 
     # recursive descent and other utility local functions
+    assign("tnum.var.parity", 0, envir = tnum.env)
 
     tnToNodeWalker <- function(grph, dtNode, gNodeId) {
       newGrph <- grph
@@ -777,9 +778,16 @@ tnum.makePhraseGraphFromPathList <-
             nodeLabel <- substr(nodeLabel,4, nchar(nodeLabel))
           }
           if(stringr::str_detect(nodeLabel,"[?;]")){
+            newLineParity <- tnum.env$tnum.var.parity
             eaes <- rootEdgeAes
             naes <- tagAes
             nodeLabel <- gsub("[;]",":",gsub("[?]","/",nodeLabel))
+            if(newLineParity==1){
+              nodeLabel <- paste0("\\n",nodeLabel)
+            } else if(newLineParity==2){
+              nodeLabel <- paste0("\\n\\n",nodeLabel)
+            }
+            assign("tnum.var.parity", (newLineParity + 1) %% 3, envir = tnum.env)
           }
             newGrph <-
               DiagrammeR::add_node(
@@ -814,6 +822,11 @@ tnum.makePhraseGraphFromPathList <-
 
     # create DiagrammeR graph and add root node
     dGraph <- DiagrammeR::create_graph()
+    DiagrammeR::add_global_graph_attrs(
+      dGraph,
+      attr = "overlap",
+      value = "false",
+      attr_type = "graph")
     dGraph <-
       DiagrammeR::add_node(
         dGraph,
@@ -901,9 +914,9 @@ tnum.makeTnumPhraseGraph <- function(tdf, tagMatch = "", collectors = list()) {
 
 tnum.plotGraph <- function(gph,style="neato", size=0){
   if(size > 0){
-    res <- DiagrammeR::render_graph(graph2, layout=style, height = size)
+    res <- DiagrammeR::render_graph(gph, layout=style, width = size, height = size)
   } else {
-    res <- DiagrammeR::render_graph(graph2, layout=style)
+    res <- DiagrammeR::render_graph(gph, layout=style)
   }
 
   return(res)
