@@ -739,8 +739,8 @@ tnum.makePhraseGraphFromPathList <-
     tagAes <-
       DiagrammeR::node_aes(
         fixedsize = FALSE,
-        fillcolor = rgb(1,1,1,0.5),
-        fontcolor = rgb(0.2,1,0.2),
+        fillcolor = rgb(1,1,1,0),
+        fontcolor = rgb(0.2,0.5,0.2),
         shape = "plaintext"
       )
     rootEdgeAes <-

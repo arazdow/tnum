@@ -87,7 +87,7 @@ graph <- tnum.makePhraseGraphFromPathList(tn.frame$subject, rootLabel="Subjects"
 
 tnum.plotGraph(graph)
 ```
-These plots render tnum paths in keeping with their intent as encodings of descriptive phrases.  In the phrase "wing of A-10 aircraft", or **aircraft:A-10/wing**, "A-10" functions as an adjective modifying noun "aircraft" in a rounded shape. The square node and solid arrow denote that binding of adjective and noun as an entity description.  The "wing of" or **/wing** is a possessive form, equivalent to "A-10's wing", shown as the dotted relationship arrow.  It's important to keep in mind that these encode descriptions, not specific structural relationships as a class or entity-relationship diagram would.  Think of these as explicit versions of what would mormally be unstructured metadaata like variable names or column names. 
+These plots render tnum paths in keeping with their intent as encodings of descriptive phrases.  In the phrase "wing of A-10 aircraft", or **aircraft:A-10/wing**, "A-10" functions as an adjective modifying noun "aircraft" in a rounded shape. The square node and solid arrow denote that binding of adjective and noun as an entity description.  The "wing of" or **/wing** is a possessive form, equivalent to "A-10's wing", shown as the dotted relationship arrow.  It's important to keep in mind that these encode descriptions, not specific structural relationships as a class or entity-relationship diagram would.  Think of these as explicit versions of what would normally be unstructured metadata like variable names or column names. 
 
 ### Adding knowledge with tags
 
@@ -106,7 +106,7 @@ tn.frame <- tnum.query("aircraft# has *")
 
 # create the graph with only nickname tags shown
 tgraph <- tnum.makeTnumPhraseGraph(tn.frame,tagMatch="^nickname.+")
-tnum.plotGraph(tgraph,style="tree")
+tnum.plotGraph(tgraph,style="tree", size=500)
 ```
 
 ### Cleaning up after our aircraft example
@@ -154,16 +154,21 @@ Now we query the tnums into a data.frame qualified by the simple query for the c
 dftnums <- tnum.query("@project:seti:tweets:1",max=100)
 dftnums
 ```
-Now we make and render a graph that includes the properties of the truenumbers:
+Now we make and render a graph that includes the properties of the truenumbers and all tags:
 ```{r}
-graph2 <- tnum.makeTnumPhraseGraph(dftnums, tagMatch = "^pro.+")
+graph2 <- tnum.makeTnumPhraseGraph(dftnums, tagMatch = ".+")
 
 # use a different layout than the tree shown above
 
 tnum.plotGraph(graph2)
 
 ```
+That's quite a busy graph.  We can generate a summary graph by collecting on the terms in the subject paths by screen name and by tweet and profile id's:
+```{r}
+graph3 <- tnum.makeTnumPhraseGraph(dftnums, collectors = list("twitter/user:###/tweet:###","twitter/user:###/profile:###"))
 
+tnum.plotGraph(graph3,size=800)
+```
 ### Adding tags post-facto based on analysis
 
 Next, we apply sentiment analysis from package *SentimentAnalysis*, and apply it to the tweet text tnums.  First, we query for those tnums, then we apply sentiment analysis, and convert the resulting scores to *positive negative* or *neutral* tokens.  We build a tag vector with them.
@@ -182,7 +187,11 @@ tnum.tagByGuids(tweetTexts$guid,saTags)
 tweetTexts <- tnum.query("* has text", max=100)
 tweetTexts
 ```
-Scroll right to see the sentiment tags in the tags column. 
+Scroll right to see the sentiment tags in the tags column. We suppress display of neutral sentiment tags:
 
+```{r}
 
-
+graph4 <- tnum.makeTnumPhraseGraph(tweetTexts, tagMatch = "^analysis:sentiment:(positive|negative)")
+tnum.plotGraph(graph4, size = 700)
+```
+This shows us that user AR_Yngve's 2 tweets have strong sentiment signals relative to the others.   
