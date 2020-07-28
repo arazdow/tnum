@@ -1,11 +1,7 @@
 
+# Vars local to this file
 
-
-
-
-#' Vars local to this file
-#'  @export
-
+#' @export
 tnum.env <- new.env()
 
 #' Connect and authenticate to Truenumbers server
@@ -264,7 +260,13 @@ tnum.queryResultToDataframe <- function(result, max) {
 
     } else {
       Cval <- tn$value$value[[1]]
-      Nval <- NA
+      if(stringr::str_starts(Cval,"vector(")){
+        csl <- substr(Cval,8,nchar(Cval)-1)
+        Nval <- as.numeric(unlist(strsplit(csl,",")))
+        Cval <- NA
+      } else {
+        Nval <- NA
+      }
       Nerr <- NA
       uns <- NA
     }
@@ -387,6 +389,9 @@ tnum.makeTruenumber <- function(subject = "something",
       return("{}")
     } else {
       numval <- string.value
+      if(!stringr::str_starts(numval,'"') && !stringr::str_match(numval,"^[0-9a-zA-Z/:\\-_]+$")){
+        numval <- dQuote(numval) ## if not SRD, and not quoted text, then add quotes
+      }
     }
   }
   tagstr <- ""
@@ -435,8 +440,16 @@ tnum.postTruenumbers <-
            numeric.value = NA,
            numeric.error = NA,
            units = NA,
-           tags,
+           tags = NA,
            noEmptyStrings = FALSE) {
+
+    len <- length(subject)
+    if(is.logical(string.value)) string.value <- rep(NA,len)
+    if(is.logical(numeric.value)) numeric.value <- rep(NA,len)
+    if(is.logical(numeric.error)) numeric.error <- rep(NA,len)
+    if(is.logical(units)) units <- rep(NA,len)
+    if(is.logical(tags)) tags <- rep(NA,len)
+
     alljsonnums <-
       mapply(
         tnum.makeTruenumber,
@@ -450,19 +463,15 @@ tnum.postTruenumbers <-
         noEmptyStrings
       )
     numnums <- length(alljsonnums)
-    chunkcount <- 1
-    chunksize <- 500
-    chunks <- (numnums %/% chunksize) + 1
-    remainder <- numnums %% chunksize
-    for (i in 1:chunks) {
-      startinx <- (i - 1) * chunksize + 1
-      endinx <- startinx + chunksize - 1
-      if (endinx > numnums) {
-        endinx <- startinx + remainder - 1
-      }
-
-      jsonnums <- alljsonnums[startinx:endinx]
-      jsonnums <- paste(jsonnums, collapse = ', ')
+    chunkcount <- 0
+    chunksize <- 25000
+    jsonnums <- ""
+    for (i in 1:numnums) {
+      curnum <- alljsonnums[[i]]
+      chunkcount <- chunkcount + nchar(curnum)
+      jsonnums <- paste0(jsonnums,curnum,",")
+      if(chunkcount > chunksize){
+      jsonnums <- substr(jsonnums,1,nchar(jsonnums)-1)
       jsonnums <- gsub(",\\{\\},", ",", jsonnums)
       jsonnums <- gsub("\\{\\},", "", jsonnums)
       jsonnums <- gsub(",\\{\\}", "", jsonnums)
@@ -470,21 +479,27 @@ tnum.postTruenumbers <-
       assign("tnum.var.postedJSON", jsonnums, envir = tnum.env)
       args <-
         list(numberspace = tnum.env$tnum.var.nspace)
+      payload <- paste0('{"truenumbers":[', jsonnums, ']}')
       result <- httr::POST(
         paste0(
           "http://",
           tnum.env$tnum.var.ip,
           "/v1/numberspace/numbers"
         ),
+        encode = "json",
         query = args,
         httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
-        body = paste0('{"truenumbers":[', jsonnums, ']}'),
+        body = payload,
         httr::accept("application/json"),
         httr::content_type("application/json")
       )
-      message(paste0("posted ", startinx, " to ", endinx, " of ", numnums))
-    }
+      message(paste0("Posting ",chunkcount, " characters"))
+      chunkcount <- 0
+      jsonnums <- ""
+      }
 
+    }
+    message(paste0("posted ", numnums, " tnums"))
   }
 
 #' Post a single truenumber from parts
@@ -920,4 +935,21 @@ tnum.plotGraph <- function(gph,style="neato", size=0){
   }
 
   return(res)
+}
+
+#' Create a tnum vector value string "vector(23,-34.02...)" from an R vector or list
+#'
+#' @param numvec a vector or list
+#'
+#' @return a string "vector(23,-34.02...)"
+#' @export
+
+tnum.makeNumericVectorString <- function(numvec){
+  if(mode(numvec) == "numeric"){
+    nvec <-numvec
+  } else {
+    nvec = rep(0.0,length(numvec))
+  }
+  vvals <- paste0("vector(",paste0(nvec,collapse = ","),")")
+  return(vvals[[1]])
 }

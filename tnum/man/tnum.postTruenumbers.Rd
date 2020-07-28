@@ -11,7 +11,7 @@ tnum.postTruenumbers(
   numeric.value = NA,
   numeric.error = NA,
   units = NA,
-  tags,
+  tags = NA,
   noEmptyStrings = FALSE
 )
 }
