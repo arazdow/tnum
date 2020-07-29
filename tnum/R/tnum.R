@@ -260,13 +260,7 @@ tnum.queryResultToDataframe <- function(result, max) {
 
     } else {
       Cval <- tn$value$value[[1]]
-      if(stringr::str_starts(Cval,"vector(")){
-        csl <- substr(Cval,8,nchar(Cval)-1)
-        Nval <- as.numeric(unlist(strsplit(csl,",")))
-        Cval <- NA
-      } else {
-        Nval <- NA
-      }
+      Nval <- NA
       Nerr <- NA
       uns <- NA
     }
@@ -279,10 +273,12 @@ tnum.queryResultToDataframe <- function(result, max) {
         subject = subj,
         property = prop,
         string.value = Cval,
-        numeric.value = Nval,
+        numeric.value = 0,
         numeric.error = Nerr,
-        units = uns
+        units = uns,
+        stringsAsFactors = FALSE
       )
+    rdf$numeric.value <- Nval
     rdf$tags <-
       paste0(taglist, collapse = ", ")  # was list(taglist)
     rdf$date <- dat
@@ -389,8 +385,8 @@ tnum.makeTruenumber <- function(subject = "something",
       return("{}")
     } else {
       numval <- string.value
-      if(!stringr::str_starts(numval,'"') && !stringr::str_match(numval,"^[0-9a-zA-Z/:\\-_]+$")){
-        numval <- dQuote(numval) ## if not SRD, and not quoted text, then add quotes
+      if(!stringr::str_starts(numval,'"') && !stringr::str_detect(numval,"^[0-9a-zA-Z/:\\-_]+$")){
+        numval <- paste0("\\\"", numval,"\\\"") ## if not SRD, and not quoted text, then add quotes
       }
     }
   }
@@ -952,4 +948,21 @@ tnum.makeNumericVectorString <- function(numvec){
   }
   vvals <- paste0("vector(",paste0(nvec,collapse = ","),")")
   return(vvals[[1]])
+}
+
+#' Return numeric vector from string "vector(1.23,34.5....)"
+#'
+#' @param nvs
+#'
+#' @return vector of numbers
+#' @export
+
+tnum.decodeNumericVectorString <- function(nvs){
+  if(stringr::str_starts(nvs,'"vector\\(')){
+    csl <- substr(nvs,9,nchar(nvs)-1)
+    Nvec <- readr::parse_number(unlist(strsplit(csl,",")))
+  } else {
+    Nvec <- vector(0.0)
+  }
+  return(Nvec)
 }

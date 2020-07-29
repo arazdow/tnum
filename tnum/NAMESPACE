@@ -2,6 +2,7 @@
 
 export(tnum.authorize)
 export(tnum.createSpace)
+export(tnum.decodeNumericVectorString)
 export(tnum.deleteByQuery)
 export(tnum.env)
 export(tnum.getDatabasePhraseTree)

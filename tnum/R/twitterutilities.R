@@ -66,6 +66,7 @@ tnum.twitteR.post_tweets_as_tnums <-
     escapequotes <- function(strng) {
       escaped <- gsub("\n", "", gsub('"', "'", strng))
       escaped <- gsub("\\\\", "\\\\\\\\", escaped)
+      options(useFancyQuotes = FALSE)
       returnValue(dQuote(escaped))
     }
 
