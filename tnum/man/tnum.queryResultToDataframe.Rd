@@ -2,16 +2,18 @@
 % Please edit documentation in R/tnum.R
 \name{tnum.queryResultToDataframe}
 \alias{tnum.queryResultToDataframe}
-\title{Title}
+\title{Convert tnum query result to a data frame}
 \usage{
 tnum.queryResultToDataframe(result, max)
 }
 \arguments{
-\item{result}{}
+\item{result}{from a tnum API query}
+
+\item{max}{maximum rows to return}
 }
 \value{
 
 }
 \description{
-Title
+Convert tnum query result to a data frame
 }

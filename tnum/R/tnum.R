@@ -1,4 +1,5 @@
 
+
 # Vars local to this file
 
 #' @export
@@ -24,7 +25,10 @@ tnum.authorize <- function(ip = "54.166.186.11", key) {
     httr::add_headers(Authorization = paste0("Bearer ", token))
   )
   nspaces <- list()
-
+  payload <- httr::content(result)
+  if(!is.null(payload$code)){
+    message(payload$code)
+  } else {
   for (x in httr::content(result)$data) {
     nspaces <- append(nspaces, x[[2]])
   }
@@ -34,7 +38,7 @@ tnum.authorize <- function(ip = "54.166.186.11", key) {
   tnum.setSpace("shared-testspace")
   message(paste0("Available spaces: ", paste0(nspaces, collapse = ", ")))
   message(paste0("Numberspace set to: ", tnum.getSpace()))
-
+  }
 }
 
 #' Create new numberspace
@@ -203,10 +207,10 @@ tnum.tagByQuery <- function(query = "",
 
 
 
-#' Title
+#' Convert tnum query result to a data frame
 #'
-#' @param result
-#'
+#' @param result from a tnum API query
+#' @param max maximum rows to return
 #' @return
 #' @export
 
@@ -235,7 +239,7 @@ tnum.queryResultToDataframe <- function(result, max) {
       for (unitpwr in tn$value$unitPowers) {
         if (unitpwr$p < 0) {
           if (unitpwr$p < -1) {
-            neguns <- paste0(neguns, unitpwr$u, "^", -unitpwr$p, " ")
+            neguns <- paste0(neguns, unitpwr$u, "^",-unitpwr$p, " ")
           } else {
             neguns <- paste0(neguns, unitpwr$u, " ")
           }
@@ -284,7 +288,7 @@ tnum.queryResultToDataframe <- function(result, max) {
     rdf$date <- dat
     rdf$guid <- gid
 
-    returnValue(rdf)
+    returnValue(rdf) # return one-row df
   }
 
   #END local function
@@ -327,6 +331,40 @@ tnum.queryResultToDataframe <- function(result, max) {
   }
 
   returnValue(retdf)
+}
+
+#' make a tnum object from numeric values in a tnum data frame
+#'
+#' @param df data frame as returned by tnum.query
+#' @param numerics return df as numeric vector of only numeric values in the df. Defauls is FALSE
+#'
+#' @return an R object of class tnum
+#' @export
+#'
+
+tnum.objectFromTnumDataFrame <- function(df, numerics = FALSE) {
+  newObj <- list()
+  subjs <- factor()
+  props <- factor()
+  siError <- vector(mode = "numeric")
+  tags <- list()
+
+  attr(newObj, "class") <- "tnum"
+
+  if (numerics) {
+    processNumericRow <- function(dfRow) {
+      if (!is.na(dfRow$si.value)) {
+        append(newObj, si.value)
+        append(subjs, dfRow$subject)
+        append(props, dfRow$property)
+        append(tags, dfRow$tags)
+        append(siError, dfRow$si.error)
+      }
+
+    }
+  } else {
+
+  }
 }
 
 tnum.dateAsToken <- function() {
@@ -385,8 +423,10 @@ tnum.makeTruenumber <- function(subject = "something",
       return("{}")
     } else {
       numval <- string.value
-      if(!stringr::str_starts(numval,'"') && !stringr::str_detect(numval,"^[0-9a-zA-Z/:\\-_]+$")){
-        numval <- paste0("\\\"", numval,"\\\"") ## if not SRD, and not quoted text, then add quotes
+      if (!stringr::str_starts(numval, '"') &&
+          !stringr::str_detect(numval, "^[0-9a-zA-Z/:\\-_]+$")) {
+        numval <-
+          paste0("\\\"", numval, "\\\"") ## if not SRD, and not quoted text, then add quotes
       }
     }
   }
@@ -438,9 +478,8 @@ tnum.postTruenumbers <-
            units = NA,
            tags = NA,
            noEmptyStrings = FALSE) {
-
     len <- length(subject)
-    if(len == 1){
+    if (len == 1) {
       res <- tnum.postTruenumber(
         subject,
         property,
@@ -453,11 +492,16 @@ tnum.postTruenumbers <-
       )
       return(res)
     }
-    if(is.logical(string.value)) string.value <- rep(NA,len)
-    if(is.logical(numeric.value)) numeric.value <- rep(NA,len)
-    if(is.logical(numeric.error)) numeric.error <- rep(NA,len)
-    if(is.logical(units)) units <- rep(NA,len)
-    if(is.logical(tags)) tags <- rep(NA,len)
+    if (is.logical(string.value))
+      string.value <- rep(NA, len)
+    if (is.logical(numeric.value))
+      numeric.value <- rep(NA, len)
+    if (is.logical(numeric.error))
+      numeric.error <- rep(NA, len)
+    if (is.logical(units))
+      units <- rep(NA, len)
+    if (is.logical(tags))
+      tags <- rep(NA, len)
 
     alljsonnums <-
       mapply(
@@ -478,33 +522,33 @@ tnum.postTruenumbers <-
     for (i in 1:numnums) {
       curnum <- alljsonnums[[i]]
       chunkcount <- chunkcount + nchar(curnum)
-      jsonnums <- paste0(jsonnums,curnum,",")
-      if(chunkcount > chunksize){
-      jsonnums <- substr(jsonnums,1,nchar(jsonnums)-1)
-      jsonnums <- gsub(",\\{\\},", ",", jsonnums)
-      jsonnums <- gsub("\\{\\},", "", jsonnums)
-      jsonnums <- gsub(",\\{\\}", "", jsonnums)
+      jsonnums <- paste0(jsonnums, curnum, ",")
+      if (chunkcount > chunksize) {
+        jsonnums <- substr(jsonnums, 1, nchar(jsonnums) - 1)
+        jsonnums <- gsub(",\\{\\},", ",", jsonnums)
+        jsonnums <- gsub("\\{\\},", "", jsonnums)
+        jsonnums <- gsub(",\\{\\}", "", jsonnums)
 
-      assign("tnum.var.postedJSON", jsonnums, envir = tnum.env)
-      args <-
-        list(numberspace = tnum.env$tnum.var.nspace)
-      payload <- paste0('{"truenumbers":[', jsonnums, ']}')
-      result <- httr::POST(
-        paste0(
-          "http://",
-          tnum.env$tnum.var.ip,
-          "/v1/numberspace/numbers"
-        ),
-        encode = "json",
-        query = args,
-        httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
-        body = payload,
-        httr::accept("application/json"),
-        httr::content_type("application/json")
-      )
-      message(paste0("Posting ",chunkcount, " characters"))
-      chunkcount <- 0
-      jsonnums <- ""
+        assign("tnum.var.postedJSON", jsonnums, envir = tnum.env)
+        args <-
+          list(numberspace = tnum.env$tnum.var.nspace)
+        payload <- paste0('{"truenumbers":[', jsonnums, ']}')
+        result <- httr::POST(
+          paste0(
+            "http://",
+            tnum.env$tnum.var.ip,
+            "/v1/numberspace/numbers"
+          ),
+          encode = "json",
+          query = args,
+          httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
+          body = payload,
+          httr::accept("application/json"),
+          httr::content_type("application/json")
+        )
+        message(paste0("Posting ", chunkcount, " characters"))
+        chunkcount <- 0
+        jsonnums <- ""
       }
 
     }
@@ -589,13 +633,13 @@ tnum.tagByGuids <- function(gids = c(),
 #' @return a string "vector(23,-34.02...)"
 #' @export
 
-tnum.makeNumericVectorString <- function(numvec){
-  if(mode(numvec) == "numeric"){
-    nvec <-numvec
+tnum.makeNumericVectorString <- function(numvec) {
+  if (mode(numvec) == "numeric") {
+    nvec <- numvec
   } else {
-    nvec = rep(0.0,length(numvec))
+    nvec = rep(0.0, length(numvec))
   }
-  vvals <- paste0("vector(",paste0(nvec,collapse = ","),")")
+  vvals <- paste0("vector(", paste0(nvec, collapse = ","), ")")
   return(vvals[[1]])
 }
 
@@ -606,10 +650,10 @@ tnum.makeNumericVectorString <- function(numvec){
 #' @return vector of numbers
 #' @export
 
-tnum.decodeNumericVectorString <- function(nvs){
-  if(stringr::str_starts(nvs,'"vector\\(')){
-    csl <- substr(nvs,9,nchar(nvs)-1)
-    Nvec <- readr::parse_number(unlist(strsplit(csl,",")))
+tnum.decodeNumericVectorString <- function(nvs) {
+  if (stringr::str_starts(nvs, '"vector\\(')) {
+    csl <- substr(nvs, 9, nchar(nvs) - 1)
+    Nvec <- readr::parse_number(unlist(strsplit(csl, ",")))
   } else {
     Nvec <- vector(0.0)
   }
