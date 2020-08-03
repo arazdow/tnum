@@ -88,14 +88,16 @@ tnum.getSpace <- function() {
 #' Query the truenumber DB
 #'
 #' @param query  string in tnum query language
+#' @param SI     if TRUE, returns the SI value
 #' @param max    maximum nuber of truenumbers to return
 #' @param start  begin return with this sequence number
 #'
-#' @return  a data.frame where each row is a returned truenumber
+#' @return  a list of tnum class vaues
 #' @export
 #'
 
 tnum.query <- function(query = "* has *",
+                       SI = FALSE,
                        max = 10,
                        start = 0) {
   args <-
@@ -133,79 +135,109 @@ tnum.query <- function(query = "* has *",
   )
 
   assign("tnum.var.result", result, envir = tnum.env)
-  if (numReturned > 0) {
-    returnValue(tnum.queryResultToDataframe(result, max))
-  } else {
-    returnValue()
+  return(result)
+}
+
+#' Convert tnum query result to an object list
+#'
+#' @param result from a tnum API query
+#' @param SI if TRUE, the object will reflect numerical SI values
+#' @param max maximum rows to return
+#' @return  list of tnum objects
+#' @export
+
+tnum.queryResultToObjects <- function(result, SI = FALSE, max = 100) {
+  decodenumber <- function(tn) {
+    subj <- tn$subject[[1]]
+    prop <- tn$property[[1]]
+    taglist <- list()
+    for (tag in tn$tags) {
+      if (!startsWith(tag[[1]], '_')) {
+        taglist <- append(taglist, tag$srd)
+      }
+    }
+    gid <- as.character(tn[["_id"]])
+    dat <- as.Date(tn$agent$dateCreated)
+
+    if(SI){
+      valstruc <- tn$si-value
+    } else {
+      valstruc <- tn$value
+    }
+
+    if (valstruc$type == "numeric" || !is.null(valstruc$magnitude)) {
+      Nval <- valstruc$magnitude[[1]]
+      tol <- valstruc$tolerance[[1]]
+
+      if (tol == 0) {
+        tol <- NA
+      }
+      posuns <- ""
+      neguns <- ""
+      for (unitpwr in valstruc$unitPowers) {
+        if (unitpwr$p < 0) {
+          if (unitpwr$p < -1) {
+            neguns <- paste0(neguns, unitpwr$u, "^",-unitpwr$p, " ")
+          } else {
+            neguns <- paste0(neguns, unitpwr$u, " ")
+          }
+        } else {
+          if (unitpwr$p > 1) {
+            posuns <- paste0(posuns, " ", unitpwr$u, "^", unitpwr$p)
+          } else {
+            posuns <- paste0(" ", unitpwr$u)
+          }
+        }
+      }
+      uns <- posuns
+      if (nchar(posuns) == 0 && nchar(neguns) > 0) {
+        uns <- paste0("1/", neguns)
+      } else if (nchar(posuns) > 0 && nchar(neguns) > 0) {
+        uns <- paste0(posuns, "/", neguns)
+      }
+
+      if (nchar(uns)== 0 || uns == " unity") {
+        uns <- NA
+      }
+
+    } else {
+      Nval <- tn$value$value[[1]]
+      tol <- NA
+      uns <- NA
+    }
+
+    return(tnum.makeTnumObject(subj,prop,Nval,tol,uns,taglist,dat,gid)) # return object
   }
+
+  #END local function
+
+  retList <- list()
+
+  if (is.null(result$data$truenumbers[[1]]$truenumbers)) {
+    for (tn in result$data$truenumbers) {
+      retList[[length(retList)+1]] <- decodenumber(tn)
+    }
+
+  } else {
+    count <- max
+    for (tnList in result$data$truenumbers) {
+      tnGroup <- tnList$truenumbers
+      for (tn in tnGroup) {
+        retList[[length(retList)+1]] <- decodenumber(tn)
+        count <- count - 1
+        if (count == 0) {
+          break
+        }
+      }
+      if (count == 0) {
+        break
+
+      }
+    }
+  }
+
+  return(retList)
 }
-
-
-#' Delete tnums specified by a query
-#'
-#' @param query  string in tnum query language
-#'
-#' @export
-#'
-
-tnum.deleteByQuery <- function(query = "") {
-  args <-
-    list(numberspace = tnum.env$tnum.var.nspace,
-         tnql = query)
-
-  result <-
-    httr::content(httr::DELETE(
-      paste0("http://", tnum.env$tnum.var.ip, "/v1/numberspace/numbers"),
-      query = args,
-      httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token))
-    ))
-  numReturned <- length(result$data$removed)
-
-  message(result)
-}
-
-#' Tag tnums specified by a query
-#'
-#' @param query  string in tnum query language
-#' @param adds   list of tags to add
-#' @param removes   list of tags to remove
-#'
-#' @export
-#'
-
-tnum.tagByQuery <- function(query = "",
-                            adds = list(),
-                            removes = list()) {
-  args <-
-    list(numberspace = tnum.env$tnum.var.nspace,
-         tnql = query)
-  addstr <- paste0('"', paste(adds, collapse = '", "'), '"')
-  remstr <- paste0('"', paste(removes, collapse = '", "'), '"')
-  if (addstr == '""')
-    addstr <- ""
-  if (remstr == '""')
-    remstr <- ""
-
-  bodystr <-
-    paste0('{"tags":[', addstr, '],"remove":[', remstr, ']}')
-
-  theurl <-
-    paste0("http://",
-           tnum.env$tnum.var.ip,
-           "/v1/numberspace/numbers/")
-
-  result <- httr::PATCH(
-    theurl,
-    query = args,
-    httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
-    body = bodystr,
-    httr::accept("application/json"),
-    httr::content_type("application/json")
-  )
-  message(httr::content(result))
-}
-
-
 
 #' Convert tnum query result to a data frame
 #'
@@ -225,7 +257,7 @@ tnum.queryResultToDataframe <- function(result, max) {
       }
     }
 
-    if (tn$value$type == "numeric") {
+    if (tn$value$type == "numeric"|| !is.null(tn$value$magnitude)) { # because of tyler type bug
       Nval <- tn$value$magnitude[[1]]
       tol <- tn$value$tolerance[[1]]
       if (tol != 0) {
@@ -333,6 +365,75 @@ tnum.queryResultToDataframe <- function(result, max) {
   returnValue(retdf)
 }
 
+
+#' Delete tnums specified by a query
+#'
+#' @param query  string in tnum query language
+#'
+#' @export
+#'
+
+tnum.deleteByQuery <- function(query = "") {
+  args <-
+    list(numberspace = tnum.env$tnum.var.nspace,
+         tnql = query)
+
+  result <-
+    httr::content(httr::DELETE(
+      paste0("http://", tnum.env$tnum.var.ip, "/v1/numberspace/numbers"),
+      query = args,
+      httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token))
+    ))
+  numReturned <- length(result$data$removed)
+
+  message(result)
+}
+
+#' Tag tnums specified by a query
+#'
+#' @param query  string in tnum query language
+#' @param adds   list of tags to add
+#' @param removes   list of tags to remove
+#'
+#' @export
+#'
+
+tnum.tagByQuery <- function(query = "",
+                            adds = list(),
+                            removes = list()) {
+  args <-
+    list(numberspace = tnum.env$tnum.var.nspace,
+         tnql = query)
+  addstr <- paste0('"', paste(adds, collapse = '", "'), '"')
+  remstr <- paste0('"', paste(removes, collapse = '", "'), '"')
+  if (addstr == '""')
+    addstr <- ""
+  if (remstr == '""')
+    remstr <- ""
+
+  bodystr <-
+    paste0('{"tags":[', addstr, '],"remove":[', remstr, ']}')
+
+  theurl <-
+    paste0("http://",
+           tnum.env$tnum.var.ip,
+           "/v1/numberspace/numbers/")
+
+  result <- httr::PATCH(
+    theurl,
+    query = args,
+    httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
+    body = bodystr,
+    httr::accept("application/json"),
+    httr::content_type("application/json")
+  )
+  message(httr::content(result))
+}
+
+
+
+
+
 #' make a tnum object from numeric values in a tnum data frame
 #'
 #' @param df data frame as returned by tnum.query
@@ -342,29 +443,21 @@ tnum.queryResultToDataframe <- function(result, max) {
 #' @export
 #'
 
-tnum.objectFromTnumDataFrame <- function(df, numerics = FALSE) {
-  newObj <- list()
-  subjs <- factor()
-  props <- factor()
-  siError <- vector(mode = "numeric")
-  tags <- list()
+tnum.makeTnumObject <- function(subject="something", property="some-property", value, error=NA, units=NA,tags=NA, dat=NA, gid=NA) {
 
-  attr(newObj, "class") <- "tnum"
+  if(!is.na(error)) attr(value, "error") <- error
+  if(!is.na(units)) attr(value, "unit") <- units
+  if(mode(tags) == "character") attr(value, "tags") <- tags
 
-  if (numerics) {
-    processNumericRow <- function(dfRow) {
-      if (!is.na(dfRow$si.value)) {
-        append(newObj, si.value)
-        append(subjs, dfRow$subject)
-        append(props, dfRow$property)
-        append(tags, dfRow$tags)
-        append(siError, dfRow$si.error)
-      }
+  attr(value, 'class') <- "tnum"
+  attr(value, 'subject') <- subject
+  attr(value, 'property') <- property
 
-    }
-  } else {
+  if(!is.na(gid)) attr(value, "guid") <- gid
+  if(!is.na(dat)) attr(value, "date") <- dat
+    else attr(value, "date") <- date()
 
-  }
+   return(value)##return(sticky::sticky(value))
 }
 
 tnum.dateAsToken <- function() {
@@ -595,6 +688,24 @@ tnum.postTruenumber <-
         httr::content_type("application/json")
       )
     }
+  }
+
+#' post a list or vector of tnum objects
+#'
+#' @param objects
+#' @param noEmptyStrings
+#'
+#' @return
+#' @export
+
+tnum.postTruenumberObjects <-
+  function(objects, noEmptyStrings = FALSE) {
+    subject <- attr(objects,"subject")
+    property <- attr(objects,"property")
+    numeric.error <- attr(objects,"error")
+    units <- attr(objects,"units")
+    tags <- attr(objects,"tags")
+    tnum.postTruenumbers()
   }
 
 #' Add a column of single tags element-wise to list of tnums by GUID
