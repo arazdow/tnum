@@ -1,5 +1,6 @@
 
 
+
 # Vars local to this file
 
 #' @export
@@ -26,18 +27,18 @@ tnum.authorize <- function(ip = "54.166.186.11", key) {
   )
   nspaces <- list()
   payload <- httr::content(result)
-  if(!is.null(payload$code)){
+  if (!is.null(payload$code)) {
     message(payload$code)
   } else {
-  for (x in httr::content(result)$data) {
-    nspaces <- append(nspaces, x[[2]])
-  }
-  assign("tnum.var.nspace", nspaces[[1]], envir = tnum.env)
-  assign("tnum.var.nspaces", nspaces, envir = tnum.env)
-  assign("tnum.var.token", token, envir = tnum.env)
-  tnum.setSpace("shared-testspace")
-  message(paste0("Available spaces: ", paste0(nspaces, collapse = ", ")))
-  message(paste0("Numberspace set to: ", tnum.getSpace()))
+    for (x in httr::content(result)$data) {
+      nspaces <- append(nspaces, x[[2]])
+    }
+    assign("tnum.var.nspace", nspaces[[1]], envir = tnum.env)
+    assign("tnum.var.nspaces", nspaces, envir = tnum.env)
+    assign("tnum.var.token", token, envir = tnum.env)
+    tnum.setSpace("shared-testspace")
+    message(paste0("Available spaces: ", paste0(nspaces, collapse = ", ")))
+    message(paste0("Numberspace set to: ", tnum.getSpace()))
   }
 }
 
@@ -135,7 +136,7 @@ tnum.query <- function(query = "* has *",
   )
 
   assign("tnum.var.result", result, envir = tnum.env)
-  return(tnum.queryResultToObjects(result,SI,max))
+  return(tnum.queryResultToObjects(result, SI, max))
 }
 
 #' Convert tnum query result to an object list
@@ -146,98 +147,100 @@ tnum.query <- function(query = "* has *",
 #' @return  list of tnum objects
 
 
-tnum.queryResultToObjects <- function(result, SI = FALSE, max = 100) {
-  decodenumber <- function(tn) {
-    subj <- tn$subject[[1]]
-    prop <- tn$property[[1]]
-    taglist <- list()
-    for (tag in tn$tags) {
-      if (!startsWith(tag[[1]], '_')) {
-        taglist <- append(taglist, tag$srd)
-      }
-    }
-    gid <- as.character(tn[["_id"]])
-    dat <- as.Date(tn$agent$dateCreated)
-
-    if(SI){
-      valstruc <- tn$si-value
-    } else {
-      valstruc <- tn$value
-    }
-
-    if (valstruc$type == "numeric" || !is.null(valstruc$magnitude)) {
-      Nval <- valstruc$magnitude[[1]]
-      tol <- valstruc$tolerance[[1]]
-
-      if (tol == 0) {
-        tol <- NA
-      }
-      posuns <- ""
-      neguns <- ""
-      for (unitpwr in valstruc$unitPowers) {
-        if (unitpwr$p < 0) {
-          if (unitpwr$p < -1) {
-            neguns <- paste0(neguns, unitpwr$u, "^",-unitpwr$p, " ")
-          } else {
-            neguns <- paste0(neguns, unitpwr$u, " ")
-          }
-        } else {
-          if (unitpwr$p > 1) {
-            posuns <- paste0(posuns, " ", unitpwr$u, "^", unitpwr$p)
-          } else {
-            posuns <- paste0(" ", unitpwr$u)
-          }
+tnum.queryResultToObjects <-
+  function(result, SI = FALSE, max = 100) {
+    decodenumber <- function(tn) {
+      subj <- tn$subject[[1]]
+      prop <- tn$property[[1]]
+      taglist <- list()
+      for (tag in tn$tags) {
+        if (!startsWith(tag[[1]], '_')) {
+          taglist <- append(taglist, tag$srd)
         }
       }
-      uns <- posuns
-      if (nchar(posuns) == 0 && nchar(neguns) > 0) {
-        uns <- paste0("1/", neguns)
-      } else if (nchar(posuns) > 0 && nchar(neguns) > 0) {
-        uns <- paste0(posuns, "/", neguns)
+      gid <- as.character(tn[["_id"]])
+      dat <- as.Date(tn$agent$dateCreated)
+
+      if (SI) {
+        valstruc <- tn$si - value
+      } else {
+        valstruc <- tn$value
       }
 
-      if (nchar(uns)== 0 || uns == " unity") {
+      if (valstruc$type == "numeric" ||
+          !is.null(valstruc$magnitude)) {
+        Nval <- valstruc$magnitude[[1]]
+        tol <- valstruc$tolerance[[1]]
+
+        if (tol == 0) {
+          tol <- NA
+        }
+        posuns <- ""
+        neguns <- ""
+        for (unitpwr in valstruc$unitPowers) {
+          if (unitpwr$p < 0) {
+            if (unitpwr$p < -1) {
+              neguns <- paste0(neguns, unitpwr$u, "^", -unitpwr$p, " ")
+            } else {
+              neguns <- paste0(neguns, unitpwr$u, " ")
+            }
+          } else {
+            if (unitpwr$p > 1) {
+              posuns <- paste0(posuns, " ", unitpwr$u, "^", unitpwr$p)
+            } else {
+              posuns <- paste0(" ", unitpwr$u)
+            }
+          }
+        }
+        uns <- posuns
+        if (nchar(posuns) == 0 && nchar(neguns) > 0) {
+          uns <- paste0("1/", neguns)
+        } else if (nchar(posuns) > 0 && nchar(neguns) > 0) {
+          uns <- paste0(posuns, "/", neguns)
+        }
+
+        if (nchar(uns) == 0 || uns == " unity") {
+          uns <- NA
+        }
+
+      } else {
+        Nval <- tn$value$value[[1]]
+        tol <- NA
         uns <- NA
       }
 
+      return(tnum.makeTnumObject(subj, prop, Nval, tol, uns, taglist, dat, gid)) # return object
+    }
+
+    #END local function
+
+    retList <- list()
+
+    if (is.null(result$data$truenumbers[[1]]$truenumbers)) {
+      for (tn in result$data$truenumbers) {
+        retList[[length(retList) + 1]] <- decodenumber(tn)
+      }
+
     } else {
-      Nval <- tn$value$value[[1]]
-      tol <- NA
-      uns <- NA
-    }
-
-    return(tnum.makeTnumObject(subj,prop,Nval,tol,uns,taglist,dat,gid)) # return object
-  }
-
-  #END local function
-
-  retList <- list()
-
-  if (is.null(result$data$truenumbers[[1]]$truenumbers)) {
-    for (tn in result$data$truenumbers) {
-      retList[[length(retList)+1]] <- decodenumber(tn)
-    }
-
-  } else {
-    count <- max
-    for (tnList in result$data$truenumbers) {
-      tnGroup <- tnList$truenumbers
-      for (tn in tnGroup) {
-        retList[[length(retList)+1]] <- decodenumber(tn)
-        count <- count - 1
+      count <- max
+      for (tnList in result$data$truenumbers) {
+        tnGroup <- tnList$truenumbers
+        for (tn in tnGroup) {
+          retList[[length(retList) + 1]] <- decodenumber(tn)
+          count <- count - 1
+          if (count == 0) {
+            break
+          }
+        }
         if (count == 0) {
           break
+
         }
       }
-      if (count == 0) {
-        break
-
-      }
     }
-  }
 
-  return(retList)
-}
+    return(retList)
+  }
 
 
 
@@ -306,10 +309,12 @@ tnum.tagByQuery <- function(query = "",
 }
 
 # utility to get attr from list
-tnum.getAttrFromList <- function(obs,attname,num,rval){
-  al <- attr(obs[[1]],attname)
-  if(is.null(al)) return(rep(rval,num))
-  else return(c(unlist(lapply(obs,attr,attname))))
+tnum.getAttrFromList <- function(obs, attname, num, rval) {
+  al <- attr(obs[[1]], attname)
+  if (is.null(al))
+    return(rep(rval, num))
+  else
+    return(c(unlist(lapply(obs, attr, attname))))
 }
 
 
@@ -320,14 +325,14 @@ tnum.getAttrFromList <- function(obs,attname,num,rval){
 #' @return data frame
 #' @export
 #'
-tnum.tnumObjectsToDf <- function(objs){
+tnum.tnumObjectsToDf <- function(objs) {
   len <- length(objs)
-  subj <- tnum.getAttrFromList(objs,"subject",len,NA)
-  prop <- tnum.getAttrFromList(objs,"property",len,NA)
-  chrs <- vector(mode="character")
+  subj <- tnum.getAttrFromList(objs, "subject", len, NA)
+  prop <- tnum.getAttrFromList(objs, "property", len, NA)
+  chrs <- vector(mode = "character")
   nums <- vector(mode = "numeric")
-  for(i in 1:len){
-    if(mode(objs[[i]]) == "numeric"){
+  for (i in 1:len) {
+    if (mode(objs[[i]]) == "numeric") {
       nums[[i]] <- objs[[i]]
       chrs[[i]] <- NA
     } else {
@@ -335,13 +340,25 @@ tnum.tnumObjectsToDf <- function(objs){
       nums[[i]] <- NA
     }
   }
-  errs <- as.vector(mode="numeric",tnum.getAttrFromList(objs,"error",len,NA))
-  uns <- tnum.getAttrFromList(objs,"unit",len,NA)
-  tgs <- tnum.getAttrFromList(objs,"tags",len,NA)
-  dat <- tnum.getAttrFromList(objs,"date",len,NA)
-  gid <- tnum.getAttrFromList(objs,"guid",len,NA)
-  df <- data.frame("subject"= subj,"property"=prop,"string.value"=chrs,"numeric.value"=nums,"error"=errs,"units"=uns,"tags"=tgs,"date"=dat,"id"=gid)
-  df$date <- as.Date(df$date,origin = "1970-01-01")
+  errs <-
+    as.vector(mode = "numeric", tnum.getAttrFromList(objs, "error", len, NA))
+  uns <- tnum.getAttrFromList(objs, "unit", len, NA)
+  tgs <- tnum.getAttrFromList(objs, "tags", len, NA)
+  dat <- tnum.getAttrFromList(objs, "date", len, NA)
+  gid <- tnum.getAttrFromList(objs, "guid", len, NA)
+  df <-
+    data.frame(
+      "subject" = subj,
+      "property" = prop,
+      "string.value" = chrs,
+      "numeric.value" = nums,
+      "error" = errs,
+      "units" = uns,
+      "tags" = tgs,
+      "date" = dat,
+      "id" = gid
+    )
+  df$date <- as.Date(df$date, origin = "1970-01-01")
   return(df)
 }
 
@@ -355,22 +372,35 @@ tnum.tnumObjectsToDf <- function(objs){
 #' @export
 #'
 
-tnum.makeTnumObject <- function(subject="something", property="some-property", value, error=NA, units=NA,tags=NA, dat=NA, gid=NA) {
+tnum.makeTnumObject <-
+  function(subject = "something",
+           property = "some-property",
+           value,
+           error = NA,
+           units = NA,
+           tags = NA,
+           dat = NA,
+           gid = NA) {
+    if (!is.na(error))
+      attr(value, "error") <- error
+    if (!is.na(units))
+      attr(value, "unit") <- units
+    if (mode(tags) == "character")
+      attr(value, "tags") <- tags
 
-  if(!is.na(error)) attr(value, "error") <- error
-  if(!is.na(units)) attr(value, "unit") <- units
-  if(mode(tags) == "character") attr(value, "tags") <- tags
+    attr(value, 'class') <- "tnum"
+    attr(value, 'subject') <- subject
+    attr(value, 'property') <- property
 
-  attr(value, 'class') <- "tnum"
-  attr(value, 'subject') <- subject
-  attr(value, 'property') <- property
+    if (!is.na(gid))
+      attr(value, "guid") <- gid
+    if (!is.na(dat))
+      attr(value, "date") <- dat
+    else
+      attr(value, "date") <- date()
 
-  if(!is.na(gid)) attr(value, "guid") <- gid
-  if(!is.na(dat)) attr(value, "date") <- dat
-    else attr(value, "date") <- date()
-
-   return(value)##return(sticky::sticky(value))
-}
+    return(value)##return(sticky::sticky(value))
+  }
 
 tnum.dateAsToken <- function() {
   dt <- date()
@@ -393,12 +423,12 @@ tnum.dateAsToken <- function() {
 #' @param noEmptyStrings
 #'
 tnum.makeTnumJson <- function(subject = "something",
-                                property = "property",
-                                value = NA,
-                                numeric.error = NA,
-                                units = "",
-                                tags = list(),
-                                noEmptyStrings = FALSE)
+                              property = "property",
+                              value = NA,
+                              numeric.error = NA,
+                              units = "",
+                              tags = list(),
+                              noEmptyStrings = FALSE)
 {
   notRealString <- function(strng) {
     if (length(grep("[0-9,a-z]+", strng, ignore.case = TRUE)) == 1) {
@@ -480,15 +510,13 @@ tnum.postTnumLists <-
            noEmptyStrings = FALSE) {
     len <- length(subject)
     if (len == 1) {
-      res <- tnum.postTnumFields(
-        subject,
-        property,
-        value,
-        numeric.error,
-        units,
-        tags,
-        noEmptyStrings
-      )
+      res <- tnum.postTnumFields(subject,
+                                 property,
+                                 value,
+                                 numeric.error,
+                                 units,
+                                 tags,
+                                 noEmptyStrings)
       return(res)
     }
 
@@ -518,7 +546,7 @@ tnum.postTnumLists <-
       curnum <- alljsonnums[[i]]
       chunkcount <- chunkcount + nchar(curnum)
       jsonnums <- paste0(jsonnums, curnum, ",")
-      if (chunkcount > chunksize || i==numnums) {
+      if (chunkcount > chunksize || i == numnums) {
         jsonnums <- substr(jsonnums, 1, nchar(jsonnums) - 1)
         jsonnums <- gsub(",\\{\\},", ",", jsonnums)
         jsonnums <- gsub("\\{\\},", "", jsonnums)
@@ -562,15 +590,13 @@ tnum.postTnumFields <-
            tags = list(),
            noEmptyStrings = FALSE) {
     jsonnum <-
-      tnum.makeTnumJson(
-        subject,
-        property,
-        value,
-        numeric.error,
-        units,
-        tags,
-        noEmptyStrings
-      )
+      tnum.makeTnumJson(subject,
+                        property,
+                        value,
+                        numeric.error,
+                        units,
+                        tags,
+                        noEmptyStrings)
     if (nchar(jsonnum) > 5) {
       assign("tnum.var.postedJSON", jsonnum, envir = tnum.env)
       args <-
@@ -599,12 +625,12 @@ tnum.postTnumFields <-
 
 tnum.postTnums <-
   function(objects) {
-    subject <- lapply(objects,attr,"subject")
-    property <- lapply(objects,attr,"property")
-    error <- lapply(objects,attr,"error")
-    units <- lapply(objects,attr,"unit")
-    tags <- lapply(objects,attr,"tags")
-    tnum.postTnumLists(subject,property,objects,error,units,tags)
+    subject <- lapply(objects, attr, "subject")
+    property <- lapply(objects, attr, "property")
+    error <- lapply(objects, attr, "error")
+    units <- lapply(objects, attr, "unit")
+    tags <- lapply(objects, attr, "tags")
+    tnum.postTnumLists(subject, property, objects, error, units, tags)
   }
 
 #' Add a column of single tags element-wise to list of tnums by GUID
