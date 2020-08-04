@@ -305,8 +305,45 @@ tnum.tagByQuery <- function(query = "",
   message(httr::content(result))
 }
 
+# utility to get attr from list
+tnum.getAttrFromList <- function(obs,attname,num,rval){
+  al <- attr(obs[[1]],attname)
+  if(is.null(al)) return(rep(rval,num))
+  else return(c(unlist(lapply(obs,attr,attname))))
+}
 
 
+#' make data frame from list of tnum objects
+#'
+#' @param objs tnum list
+#'
+#' @return data frame
+#' @export
+#'
+tnum.tnumObjectsToDf <- function(objs){
+  len <- length(objs)
+  subj <- tnum.getAttrFromList(objs,"subject",len,NA)
+  prop <- tnum.getAttrFromList(objs,"property",len,NA)
+  chrs <- vector(mode="character")
+  nums <- vector(mode = "numeric")
+  for(i in 1:len){
+    if(mode(objs[[i]]) == "numeric"){
+      nums[[i]] <- objs[[i]]
+      chrs[[i]] <- NA
+    } else {
+      chrs[[i]] <- objs[[i]]
+      nums[[i]] <- NA
+    }
+  }
+  errs <- as.vector(mode="numeric",tnum.getAttrFromList(objs,"error",len,NA))
+  uns <- tnum.getAttrFromList(objs,"unit",len,NA)
+  tgs <- tnum.getAttrFromList(objs,"tags",len,NA)
+  dat <- tnum.getAttrFromList(objs,"date",len,NA)
+  gid <- tnum.getAttrFromList(objs,"guid",len,NA)
+  df <- data.frame("subject"= subj,"property"=prop,"string.value"=chrs,"numeric.value"=nums,"error"=errs,"units"=uns,"tags"=tgs,"date"=dat,"id"=gid)
+  df$date <- as.Date(df$date,origin = "1970-01-01")
+  return(df)
+}
 
 
 #' make a tnum object from numeric values in a tnum data frame
