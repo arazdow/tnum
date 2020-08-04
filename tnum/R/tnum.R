@@ -135,7 +135,7 @@ tnum.query <- function(query = "* has *",
   )
 
   assign("tnum.var.result", result, envir = tnum.env)
-  return(result)
+  return(tnum.queryResultToObjects(result,SI,max))
 }
 
 #' Convert tnum query result to an object list
@@ -144,7 +144,7 @@ tnum.query <- function(query = "* has *",
 #' @param SI if TRUE, the object will reflect numerical SI values
 #' @param max maximum rows to return
 #' @return  list of tnum objects
-#' @export
+
 
 tnum.queryResultToObjects <- function(result, SI = FALSE, max = 100) {
   decodenumber <- function(tn) {
@@ -239,131 +239,6 @@ tnum.queryResultToObjects <- function(result, SI = FALSE, max = 100) {
   return(retList)
 }
 
-#' Convert tnum query result to a data frame
-#'
-#' @param result from a tnum API query
-#' @param max maximum rows to return
-#' @return
-#' @export
-
-tnum.queryResultToDataframe <- function(result, max) {
-  decodenumber <- function(tn) {
-    subj <- tn$subject[[1]]
-    prop <- tn$property[[1]]
-    taglist <- list()
-    for (tag in tn$tags) {
-      if (!startsWith(tag[[1]], '_')) {
-        taglist <- append(taglist, tag$srd)
-      }
-    }
-
-    if (tn$value$type == "numeric"|| !is.null(tn$value$magnitude)) { # because of tyler type bug
-      Nval <- tn$value$magnitude[[1]]
-      tol <- tn$value$tolerance[[1]]
-      if (tol != 0) {
-        Nerr <- tol
-      } else{
-        Nerr <- NA
-      }
-      Cval <- NA
-      posuns <- ""
-      neguns <- ""
-      for (unitpwr in tn$value$unitPowers) {
-        if (unitpwr$p < 0) {
-          if (unitpwr$p < -1) {
-            neguns <- paste0(neguns, unitpwr$u, "^",-unitpwr$p, " ")
-          } else {
-            neguns <- paste0(neguns, unitpwr$u, " ")
-          }
-        } else {
-          if (unitpwr$p > 1) {
-            posuns <- paste0(posuns, " ", unitpwr$u, "^", unitpwr$p)
-          } else {
-            posuns <- paste0(" ", unitpwr$u)
-          }
-        }
-      }
-      uns <- posuns
-      if (nchar(posuns) == 0 && nchar(neguns) > 0) {
-        uns <- paste0("1/", neguns)
-      } else if (nchar(posuns) > 0 && nchar(neguns) > 0) {
-        uns <- paste0(posuns, "/", neguns)
-      }
-
-      if (nchar(uns) == 0 || uns == " unity") {
-        uns <- NA
-      }
-
-    } else {
-      Cval <- tn$value$value[[1]]
-      Nval <- NA
-      Nerr <- NA
-      uns <- NA
-    }
-    gid <- as.character(tn[["_id"]])
-
-    dat <- as.Date(tn$agent$dateCreated)
-
-    rdf <-
-      data.frame(
-        subject = subj,
-        property = prop,
-        string.value = Cval,
-        numeric.value = 0,
-        numeric.error = Nerr,
-        units = uns,
-        stringsAsFactors = FALSE
-      )
-    rdf$numeric.value <- Nval
-    rdf$tags <-
-      paste0(taglist, collapse = ", ")  # was list(taglist)
-    rdf$date <- dat
-    rdf$guid <- gid
-
-    returnValue(rdf) # return one-row df
-  }
-
-  #END local function
-
-  retdf <- NULL
-
-  if (is.null(result$data$truenumbers[[1]]$truenumbers)) {
-    for (tn in result$data$truenumbers) {
-      rowdf <- decodenumber(tn)
-
-      if (is.null(retdf)) {
-        retdf <- rowdf
-      } else {
-        retdf <- rbind(retdf, rowdf)
-      }
-    }
-
-  } else {
-    count <- max
-    for (tnList in result$data$truenumbers) {
-      tnGroup <- tnList$truenumbers
-      for (tn in tnGroup) {
-        rowdf <- decodenumber(tn)
-        if (is.null(retdf)) {
-          retdf <- rowdf
-        } else {
-          retdf <- rbind(retdf, rowdf)
-        }
-
-        count <- count - 1
-        if (count == 0) {
-          break
-        }
-      }
-      if (count == 0) {
-        break
-
-      }
-    }
-  }
-
-  returnValue(retdf)
-}
 
 
 #' Delete tnums specified by a query
@@ -474,17 +349,15 @@ tnum.dateAsToken <- function() {
 #'
 #' @param subject
 #' @param property
-#' @param string.value
-#' @param numeric.value
+#' @param value
 #' @param numeric.error
 #' @param units
 #' @param tags
 #' @param noEmptyStrings
 #'
-tnum.makeTruenumber <- function(subject = "something",
+tnum.makeTnumJson <- function(subject = "something",
                                 property = "property",
-                                string.value = NA,
-                                numeric.value = NA,
+                                value = NA,
                                 numeric.error = NA,
                                 units = "",
                                 tags = list(),
@@ -499,23 +372,22 @@ tnum.makeTruenumber <- function(subject = "something",
   }
 
   numval <- NA
-  if (!is.na(numeric.value)) {
+  if (mode(value) == "numeric") {
     unitSuffix <- ""
-    if (!is.na(units) && nchar(units) > 0) {
+    if (!(is.null(units) || is.na(units)) && nchar(units) > 0) {
       unitSuffix <- paste0(" ", units)
     }
-    if (!is.na(numeric.error)) {
-      numval <- paste0(numeric.value, " +/- ", numeric.error, unitSuffix)
+    if (!(is.null(units) || is.na(units))) {
+      numval <- paste0(value, " +/- ", numeric.error, unitSuffix)
     } else {
-      numval <- paste0(numeric.value, unitSuffix)
+      numval <- paste0(value, unitSuffix)
     }
   } else {
-    if (is.na(string.value) ||
-        (noEmptyStrings && notRealString(string.value))) {
+    if ((noEmptyStrings && notRealString(value))) {
       #if both values are NA return empty tnum
       return("{}")
     } else {
-      numval <- string.value
+      numval <- value
       if (!stringr::str_starts(numval, '"') &&
           !stringr::str_detect(numval, "^[0-9a-zA-Z/:\\-_]+$")) {
         numval <-
@@ -552,32 +424,29 @@ tnum.makeTruenumber <- function(subject = "something",
 #'
 #' @param subject
 #' @param property
-#' @param string.value
-#' @param numeric.value
+#' @param value
 #' @param numeric.error
 #' @param units
 #' @param tags
 #' @param noEmptyStrings if true doesn't post TNs with empty values
 #'
 #' @return
-#' @export
+
 #'
-tnum.postTruenumbers <-
+tnum.postTnumLists <-
   function(subject,
            property,
-           string.value = NA,
-           numeric.value = NA,
+           value = NA,
            numeric.error = NA,
            units = NA,
            tags = NA,
            noEmptyStrings = FALSE) {
     len <- length(subject)
     if (len == 1) {
-      res <- tnum.postTruenumber(
+      res <- tnum.postTnumFields(
         subject,
         property,
-        string.value,
-        numeric.value,
+        value,
         numeric.error,
         units,
         tags,
@@ -585,10 +454,7 @@ tnum.postTruenumbers <-
       )
       return(res)
     }
-    if (is.logical(string.value))
-      string.value <- rep(NA, len)
-    if (is.logical(numeric.value))
-      numeric.value <- rep(NA, len)
+
     if (is.logical(numeric.error))
       numeric.error <- rep(NA, len)
     if (is.logical(units))
@@ -598,11 +464,10 @@ tnum.postTruenumbers <-
 
     alljsonnums <-
       mapply(
-        tnum.makeTruenumber,
+        tnum.makeTnumJson,
         subject,
         property,
-        string.value,
-        numeric.value,
+        value,
         numeric.error,
         units,
         tags,
@@ -616,7 +481,7 @@ tnum.postTruenumbers <-
       curnum <- alljsonnums[[i]]
       chunkcount <- chunkcount + nchar(curnum)
       jsonnums <- paste0(jsonnums, curnum, ",")
-      if (chunkcount > chunksize) {
+      if (chunkcount > chunksize || i==numnums) {
         jsonnums <- substr(jsonnums, 1, nchar(jsonnums) - 1)
         jsonnums <- gsub(",\\{\\},", ",", jsonnums)
         jsonnums <- gsub("\\{\\},", "", jsonnums)
@@ -651,21 +516,19 @@ tnum.postTruenumbers <-
 # Post a single truenumber from parts
 #
 
-tnum.postTruenumber <-
+tnum.postTnumFields <-
   function(subject = "something",
            property = "property",
-           string.value = NA,
-           numeric.value = NA,
+           value = NA,
            numeric.error = NA,
            units = "",
            tags = list(),
            noEmptyStrings = FALSE) {
     jsonnum <-
-      tnum.makeTruenumber(
+      tnum.makeTnumJson(
         subject,
         property,
-        string.value,
-        numeric.value,
+        value,
         numeric.error,
         units,
         tags,
@@ -693,19 +556,18 @@ tnum.postTruenumber <-
 #' post a list or vector of tnum objects
 #'
 #' @param objects
-#' @param noEmptyStrings
 #'
 #' @return
 #' @export
 
-tnum.postTruenumberObjects <-
-  function(objects, noEmptyStrings = FALSE) {
-    subject <- attr(objects,"subject")
-    property <- attr(objects,"property")
-    numeric.error <- attr(objects,"error")
-    units <- attr(objects,"units")
-    tags <- attr(objects,"tags")
-    tnum.postTruenumbers()
+tnum.postTnums <-
+  function(objects) {
+    subject <- lapply(objects,attr,"subject")
+    property <- lapply(objects,attr,"property")
+    error <- lapply(objects,attr,"error")
+    units <- lapply(objects,attr,"unit")
+    tags <- lapply(objects,attr,"tags")
+    tnum.postTnumLists(subject,property,objects,error,units,tags)
   }
 
 #' Add a column of single tags element-wise to list of tnums by GUID

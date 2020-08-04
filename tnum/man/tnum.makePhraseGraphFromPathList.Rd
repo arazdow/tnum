@@ -11,7 +11,11 @@ tnum.makePhraseGraphFromPathList(
 )
 }
 \arguments{
-\item{levels}{}
+\item{pathList}{list of phrase path strings}
+
+\item{rootLabel}{a lable for the root of the graph}
+
+\item{levels}{limit for how many levels down paths to graph}
 }
 \value{
 Diagrammer graph object

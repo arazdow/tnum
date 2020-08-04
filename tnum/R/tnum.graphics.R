@@ -6,10 +6,10 @@
 #' @param pattern  a tnum path with path-wildcard #, or string-wildcard * to restrict what tree is returned.
 #' @param levels   integer, how man levels down to extract
 #'
-#' @return a data.tree Node, suitable for print(returned node) or plot(returned node)
+#' @return a DiagrammeR graph, suitable for display
 #' @export
 
-tnum.getDatabasePhraseTree <-
+tnum.getDatabasePhraseGraph <-
   function(taxonomy = "subject",
            pattern = "",
            levels = 10) {
@@ -118,9 +118,9 @@ tnum.getDatabasePhraseTree <-
 
 #' Get a DiagrammeR tree for rendering, from a list of SRD paths
 #'
-#' @param pathList
-#' @param rootLabel
-#' @param levels
+#' @param pathList list of phrase path strings
+#' @param rootLabel  a lable for the root of the graph
+#' @param levels  limit for how many levels down paths to graph
 #'
 #' @return  Diagrammer graph object
 #' @export
@@ -274,25 +274,27 @@ tnum.makePhraseGraphFromPathList <-
 
 #' Make full tnum graph from tnum.query return data frame
 #'
-#' @param tdf truenum data frame as returned from tnum.query
+#' @param tlist list of tnum objects as returned from tnum.query
 #' @param tagMatch regexp to select tags to include in graph
 #' @param collectors list of gsub patterns for replacement with ### to aggregate subjects
 #'
-#' @return
+#' @return returns a DiagrammeR graph
 #' @export
 #'
-#' @examples
-tnum.makeTnumPhraseGraph <- function(tdf, tagMatch = "", collectors = list()) {
+tnum.makeTnumPhraseGraph <- function(tlist, tagMatch = "", collectors = list()) {
   # make list of full-tnum paths using --- as "has"
-  tnumList <- paste0(tdf$subject, "/---", tdf$property)
+  subjAttrs <- lapply(tlist,attr,"subject")
+  propAttrs <- lapply(tlist,attr,"property")
+  tagAttrs <- lapply(tlist,attr,"tags")
+  tnumList <- paste0(subjAttrs, "/---", propAttrs)
 
   # now add tags matching regexps in tags list
   if(nchar(tagMatch)>0){
     newTnumList <- list()
     for(i in 1:length(tnumList)){
       newTnumList <- append(newTnumList,tnumList[[i]])
-      if(nchar(tdf$tags[[i]])>0){
-        rowtags <- stringr::str_split(tdf$tags[[i]],", ")
+      if(length(tagAttrs[[i]])>0){
+        rowtags <- tagAttrs[[i]]
         for(tag in rowtags[[1]]){
           if(stringr::str_detect(tag,tagMatch)){
             guardedTag <- gsub("[/]","?",gsub("[:]",";",tag))

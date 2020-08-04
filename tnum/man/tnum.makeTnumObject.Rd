@@ -11,8 +11,8 @@ tnum.makeTnumObject(
   error = NA,
   units = NA,
   tags = NA,
-  gid = NA,
-  dat = NA
+  dat = NA,
+  gid = NA
 )
 }
 \arguments{

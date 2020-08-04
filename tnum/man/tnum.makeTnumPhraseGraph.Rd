@@ -4,17 +4,17 @@
 \alias{tnum.makeTnumPhraseGraph}
 \title{Make full tnum graph from tnum.query return data frame}
 \usage{
-tnum.makeTnumPhraseGraph(tdf, tagMatch = "", collectors = list())
+tnum.makeTnumPhraseGraph(tlist, tagMatch = "", collectors = list())
 }
 \arguments{
-\item{tdf}{truenum data frame as returned from tnum.query}
+\item{tlist}{list of tnum objects as returned from tnum.query}
 
 \item{tagMatch}{regexp to select tags to include in graph}
 
 \item{collectors}{list of gsub patterns for replacement with ### to aggregate subjects}
 }
 \value{
-
+returns a DiagrammeR graph
 }
 \description{
 Make full tnum graph from tnum.query return data frame
