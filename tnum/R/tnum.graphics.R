@@ -283,9 +283,10 @@ tnum.makePhraseGraphFromPathList <-
 #'
 tnum.makeTnumPhraseGraph <- function(tlist, tagMatch = "", collectors = list()) {
   # make list of full-tnum paths using --- as "has"
-  subjAttrs <- lapply(tlist,attr,"subject")
-  propAttrs <- lapply(tlist,attr,"property")
-  tagAttrs <- lapply(tlist,attr,"tags")
+  len <- length(tlist)
+  subjAttrs <- tnum.getAttrFromList(tlist,"subject", len, NA)
+  propAttrs <- tnum.getAttrFromList(tlist,"property", len, NA)
+  tagAttrs <- tnum.getAttrFromList(tlist,"tags", len, NA)
   tnumList <- paste0(subjAttrs, "/---", propAttrs)
 
   # now add tags matching regexps in tags list

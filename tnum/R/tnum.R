@@ -209,7 +209,7 @@ tnum.queryResultToObjects <-
         uns <- NA
       }
 
-      return(tnum.makeTnumObject(subj, prop, Nval, tol, uns, taglist, dat, gid)) # return object
+      return(tnum.makeObject(subj, prop, Nval, tol, uns, taglist, dat, gid)) # return object
     }
 
     #END local function
@@ -309,13 +309,28 @@ tnum.tagByQuery <- function(query = "",
 }
 
 # utility to get attr from list
-tnum.getAttrFromList <- function(obs, attname, num, rval) {
+tnum.getAttrFromListOld <- function(obs, attname, num, rval) {
   al <- attr(obs[[1]], attname)
   if (is.null(al))
     return(rep(rval, num))
   else
     return(c(unlist(lapply(obs, attr, attname))))
 }
+tnum.getAttrFromList <- function(obs, attname, num, rval) {
+  ll <- list()
+  for(i in 1:length(obs)){
+    atv <- attr(obs[[i]],attname)
+    if(is.null(atv)){
+      ll[[i]] <- rval
+    } else if(length(atv)>1){
+      ll[[i]] <- paste0('"',paste0(atv, collapse = ","),'"')
+    } else {
+      ll[[i]] <- atv
+    }
+  }
+    return(unlist(ll))
+}
+
 
 
 #' make data frame from list of tnum objects
@@ -325,7 +340,7 @@ tnum.getAttrFromList <- function(obs, attname, num, rval) {
 #' @return data frame
 #' @export
 #'
-tnum.tnumObjectsToDf <- function(objs) {
+tnum.objectsToDf <- function(objs) {
   len <- length(objs)
   subj <- tnum.getAttrFromList(objs, "subject", len, NA)
   prop <- tnum.getAttrFromList(objs, "property", len, NA)
@@ -353,12 +368,13 @@ tnum.tnumObjectsToDf <- function(objs) {
       "string.value" = chrs,
       "numeric.value" = nums,
       "error" = errs,
-      "units" = uns,
+      "unit" = uns,
       "tags" = tgs,
       "date" = dat,
       "id" = gid
     )
-  df$date <- as.Date(df$date, origin = "1970-01-01")
+  if(mode(df$date[[1]]) == "numeric")
+         df$date <- as.Date(df$date, origin = "1970-01-01")
   return(df)
 }
 
@@ -372,21 +388,24 @@ tnum.tnumObjectsToDf <- function(objs) {
 #' @export
 #'
 
-tnum.makeTnumObject <-
+tnum.makeObject <-
   function(subject = "something",
            property = "some-property",
            value,
            error = NA,
-           units = NA,
+           unit = NA,
            tags = NA,
            dat = NA,
            gid = NA) {
     if (!is.na(error))
       attr(value, "error") <- error
-    if (!is.na(units))
-      attr(value, "unit") <- units
+    if (!is.na(unit))
+      attr(value, "unit") <- unit
     if (mode(tags) == "character")
       attr(value, "tags") <- tags
+    if(is.list(tags)){
+      attr(value, "tags") <- unlist(tags)
+    }
 
     attr(value, 'class') <- "tnum"
     attr(value, 'subject') <- subject
@@ -418,7 +437,7 @@ tnum.dateAsToken <- function() {
 #' @param property
 #' @param value
 #' @param numeric.error
-#' @param units
+#' @param unit
 #' @param tags
 #' @param noEmptyStrings
 #'
@@ -426,12 +445,12 @@ tnum.makeTnumJson <- function(subject = "something",
                               property = "property",
                               value = NA,
                               numeric.error = NA,
-                              units = "",
+                              unit = "",
                               tags = list(),
                               noEmptyStrings = FALSE)
 {
   notRealString <- function(strng) {
-    if (length(grep("[0-9,a-z]+", strng, ignore.case = TRUE)) == 1) {
+    if (length(grep("[0-9,a-z%]+", strng, ignore.case = TRUE)) == 1) {
       return(FALSE)
     } else {
       return(TRUE)
@@ -441,10 +460,10 @@ tnum.makeTnumJson <- function(subject = "something",
   numval <- NA
   if (mode(value) == "numeric") {
     unitSuffix <- ""
-    if (!(is.null(units) || is.na(units)) && nchar(units) > 0) {
-      unitSuffix <- paste0(" ", units)
+    if (!(is.null(unit) || is.na(unit) || notRealString(unit))) {
+      unitSuffix <- paste0(" ", unit)
     }
-    if (!(is.null(units) || is.na(units))) {
+    if (!(is.null(numeric.error) || is.na(numeric.error))) {
       numval <- paste0(value, " +/- ", numeric.error, unitSuffix)
     } else {
       numval <- paste0(value, unitSuffix)
@@ -493,19 +512,19 @@ tnum.makeTnumJson <- function(subject = "something",
 #' @param property
 #' @param value
 #' @param numeric.error
-#' @param units
+#' @param unit
 #' @param tags
 #' @param noEmptyStrings if true doesn't post TNs with empty values
 #'
 #' @return
 
 #'
-tnum.postTnumLists <-
+tnum.postFromLists <-
   function(subject,
            property,
            value = NA,
            numeric.error = NA,
-           units = NA,
+           unit = NA,
            tags = NA,
            noEmptyStrings = FALSE) {
     len <- length(subject)
@@ -514,7 +533,7 @@ tnum.postTnumLists <-
                                  property,
                                  value,
                                  numeric.error,
-                                 units,
+                                 unit,
                                  tags,
                                  noEmptyStrings)
       return(res)
@@ -522,8 +541,8 @@ tnum.postTnumLists <-
 
     if (is.logical(numeric.error))
       numeric.error <- rep(NA, len)
-    if (is.logical(units))
-      units <- rep(NA, len)
+    if (is.logical(unit))
+      unit <- rep(NA, len)
     if (is.logical(tags))
       tags <- rep(NA, len)
 
@@ -534,7 +553,7 @@ tnum.postTnumLists <-
         property,
         value,
         numeric.error,
-        units,
+        unit,
         tags,
         noEmptyStrings
       )
@@ -586,7 +605,7 @@ tnum.postTnumFields <-
            property = "property",
            value = NA,
            numeric.error = NA,
-           units = "",
+           unit = "",
            tags = list(),
            noEmptyStrings = FALSE) {
     jsonnum <-
@@ -594,7 +613,7 @@ tnum.postTnumFields <-
                         property,
                         value,
                         numeric.error,
-                        units,
+                        unit,
                         tags,
                         noEmptyStrings)
     if (nchar(jsonnum) > 5) {
@@ -623,14 +642,14 @@ tnum.postTnumFields <-
 #' @return
 #' @export
 
-tnum.postTnums <-
+tnum.postObjects <-
   function(objects) {
     subject <- lapply(objects, attr, "subject")
     property <- lapply(objects, attr, "property")
     error <- lapply(objects, attr, "error")
-    units <- lapply(objects, attr, "unit")
+    unit <- lapply(objects, attr, "unit")
     tags <- lapply(objects, attr, "tags")
-    tnum.postTnumLists(subject, property, objects, error, units, tags)
+    tnum.postFromLists(subject, property, objects, error, unit, tags)
   }
 
 #' Add a column of single tags element-wise to list of tnums by GUID

@@ -4,71 +4,81 @@ author: "[True Engineering Technology, LLC](http://truenum.com) Boston MA"
 output: html_notebook
 ---
 
-### A data management companion to R
+***
 
-R users draw from a variety of data sources, reading them into tables, vectors or lists for exploration and analytic processing.  This in turn produces more data, from summary statistics and models to graphs and tables that enrich the original data, or derive new information from it. Doing this results in many different data structures, labeled with informal row and column names, and many files persisting data on disk. Working and collaborating with these requires keeping track of all their meaning, structure and file versions. 
+### 
 
-**Truenumbers** is a central cloud repository for creating, tagging and querying persistent data as a collection of facts in a domain-independent way. Facts can be numeric, textual, or categorical, and are represented in a pseudo-natural language. This simplifies the relationship between R analyses and data, because source data, results, and working storage are centralized in a single intelligible representation. 
+***tnum* is a data management companion for R.**  In using R, we draw from a variety of data sources, reading them into tables, vectors or lists for exploration and analytic processing.  This in turn produces more data, from summary statistics and models to graphs and tables that enrich the original data, or derive new information from it. Doing this results in many different data structures, labeled with informal row and column names, and many files persisting data on disk. Working and collaborating with these requires keeping track of all their meaning, structure and file versions. 
 
-Truenumber facts are expressed as the *value* of a *property* of a *subject*.  For example, this is a truenumber (tnum) in structured sentence form, with a single tag annotating it:
+**Truenumbers**, is a central cloud repository for creating, tagging and querying persistent data as a collection of self-describing facts represented in a pseudo-natural language. We call these facts *truenumbers*, *tnums* or *TNs*.  TNs mesh well with the way R allows descriptive attributes to be attached to data values, because R also recognizes the value of carrying descriptive informaton along with data values.  Using *tnum* provides a convenient and scalable way to manage data and results as a growing body of intelligible knowledge, without resorting to relational databases (which are usually far from intelligible).  
 
-> wing of F-35C aircraft has folded span = 29.83 ft   @users:US:navy
 
-It is equivalent to JSON structure:
-
-> { "subject" : "aircraft:F-35C/wing", 
-    "property" : "span:folded", 
-    "value" : { "magnitude" : "29.83", "units" : "ft"}, 
-    "tags" : ["user:US:navy"] }
-  }
-  
-We see the phrase **wing of F-35C aircraft** gets encoded as the path **aircraft:F-35C/wing** where the slash and colon operators denote the possessive and adjectival relationships of ordinary grammar.  These structured phrases are intended to describe data using natural language references the way column or row names do, but with an explicit structure. In contrast, an *aircraft* table might have a *type* column with "F-35C" as its value, and a *wingspan_ft* column with value "29.83".  That we're talking about the wing of an F-36 aircraft, and it's dimensions in feet, are implicit in the column names and values. The tnum fact makes this information explicit and available for computation and query. It separates a detailed description of the subject of the measurement, the type of measurement, and units of measure.  
-
-Data represented in this way is universal because phrases are.  Dimensionally, each tnum value is indexed by 2 or more categorical variables, being its subject, property and any number of tags. The categories are paths that have hierarchical structure, and participate in analytics and query.  In fact, in tnum data, the descriptive phrases are as much a part of the data as the value itself.   
-
-## *tnum* in action
+### Getting up and running
 
 After installing package *tnum*, it's necessary to authenticate with the *tnum* server.  Your sysadmin will give you a key, something like
 
-token <- "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoidXNlciIsInVzZXJJZCI6IjMzNzZlMWE2LWU0NDMtNDc5YS1hZTM1LWMzZDMzMm"
+`token <- "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoidXNlciIsInVzZXMzNzZlMWE2LWU0NDMtNDc5YS1hZTM1LWMzZDMzMm"`
 
 which must be passed to the authorization function of tnum as the **key** parameter:
 ```{r}
 library(tnum)
 tnum.authorize(key = token)
 ```
-*authorize* can take also take an argument **ip** representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation. The function displays a list of available numberspaces on the server. A *numberspace* is a separate repository for truenumber data.  The authorize() call sets the current numberspace to a numberspace defeined by your administrator.    
+*authorize* can also take an argument **ip** representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation. The function displays a list of available numberspaces on the server. A *numberspace* is a separate repository for truenumber data.  The authorize() call sets the current numberspace to a numberspace defined by your administrator.    
 
-#### Your first truenumber
+### Truenumber facts and phrases
 
-Let's make a few truenumbers from scratch and store them to the server, do a query to retrieve, then delete them. 
+A truenumber fact (a *tnum*) is equivalent to a sentence of the form **&lt;subject&gt; has &lt;property&gt; = &lt;value&gt;**, or **&lt;property&gt; of &lt;subject&gt; is &lt;value&gt;** for example:
+
+<br>
+<center>
+**number of fulltime undergraduate students of colorado state university is 15646**
+</center>
+<br>
+and
+<br>
+<center>
+**montclair state university has graduation rate = 58%**
+</center>
+<br>
+The subject  **fulltime undergraduate students of montclair state university ** is equivalent to a path **university:state:montclair/students:undergraduate:fulltime** where the separator **:** denotes an *adjective* relationship, and **/** denotes a possesive.
+
+Let's store these in the server:
 
 ```{r}
-# post a single tnum to the server
-tnum.postTruenumber(
-  subject = "aircraft:F-35C/wing",
-  property = "span:folded",
-  numeric.value = 29.83,
-  units = "ft",
-  tags = list("user:US:navy")
+# create a list of two objects and display one of them 
+tn <- list()
+
+tn[[1]] <- tnum.makeObject(
+  subject = "university:state:colorado/students:undergraduate:fulltime",
+  property = "number",
+  value = 15646
 )
+
+tn[[2]] <- tnum.makeObject(
+  subject = "university:state:montclair",
+  property = "rate:graduation",
+  value = 58,
+  unit = "%"
+)
+
+tn
 ```
-There's a similar function for making many tnums at once by passing lists as arguments:
+*tnum* provides a function to convert a list of tnum objects to a data.frame:
 ```{r}
-# post several tnums at once
-tnum.postTruenumbers(
-     subject = list("aircraft:A-10/wing","aircraft:A-10/fuselage"),
-     property = list("span","length"),
-     numeric.value = list(22.45,52.78),
-     units = list("ft","ft"),
-     tags = list(list("user:US:DoD","tnum/doc:gettingStarted"),list("as-built","user:US:DoD","tnum/doc:gettingStarted"))
- )
+df <- tnum.objectsToDf(tn)
+df
+
 ```
-Next, we query the server for these tnums by subject path starting with *aircraft#* , and any property by using path and string wildcards:
+
+Next, we post the object list to ther server, then query the server for these tnums by subject path starting with *university#* , allowing any property, by using path and string wildcards **#** and **\***:
 ```{r}
-# Run query and return tnums as rows of a data.frame
-tn.frame <- tnum.query("aircraft# has *")
-tn.frame
+result <- tnum.postObjects(tn)
+# Run query and convert tnums to rows of a data.frame
+
+returned.objects <- tnum.query("university# has *")
+returned.objects.frame <- tnum.objectsToDf(returned.objects)
+returned.objects.frame
 ```
 ### Visualizing description trees
 
@@ -81,117 +91,41 @@ Package *tnum* uses *data.tree* and *Diagrammer* for managing tree structures an
 
 # Use tnum function to generate a graph from the subject column of the data frame of tnums
 
-graph <- tnum.makePhraseGraphFromPathList(tn.frame$subject, rootLabel="Subjects")
+graph <- tnum.makePhraseGraphFromPathList(returned.objects.frame$subject, rootLabel="Subjects")
 
 # Use the tnum rendering function to display it as a graph:
 
 tnum.plotGraph(graph)
 ```
-These plots render tnum paths in keeping with their intent as encodings of descriptive phrases.  In the phrase "wing of A-10 aircraft", or **aircraft:A-10/wing**, "A-10" functions as an adjective modifying noun "aircraft" in a rounded shape. The square node and solid arrow denote that binding of adjective and noun as an entity description.  The "wing of" or **/wing** is a possessive form, equivalent to "A-10's wing", shown as the dotted relationship arrow.  It's important to keep in mind that these encode descriptions, not specific structural relationships as a class or entity-relationship diagram would.  Think of these as explicit versions of what would normally be unstructured metadata like variable names or column names. 
+These plots render tnum paths in keeping with their intent as encodings of descriptive phrases.  In the phrase "students of montclair state university", or **university:state:montclair/students**, "state" functions as an adjective modifying noun "university" in a rounded shape. The square node and solid arrow denote that binding of adjective and noun as an entity description.  The "students of" or **/students** is a possessive form, shown as the dotted relationship arrow.  It's important to keep in mind that these encode descriptions, not specific structural relationships as a class or entity-relationship diagram would.  Think of phrases as explicit versions of what would normally be unstructured metadata like variable names or column names. 
 
 ### Adding knowledge with tags
 
-The A-10 aircraft is nicknamed Warthog.  The F-35 is officially the Lightning-II, but Panther is gaining ground in the services.  Let's add this information to our tnums by applying appropriate tags.  While we're at it, we designate them as military aircraft:
+For now, we can assume that state universities are public institutions.  Let's add this information to our tnums by applying appropriate tag:
 ```{r}
-# add 2 tags to all A-10 tnums
-tnum.tagByQuery("aircraft:A-10# has *",list("aircraft:military","nickname:official:Warthog"))
+# add a tag to institutions named "... state university"
+tnum.tagByQuery("university:state# has *",list("institution:public"))
 
-# and 3 tags to any F-35 tnums (we only have F-35C variant)
-tnum.tagByQuery("aircraft:F-35* has *",list("aircraft:military","nickname:official:Lightning-II","nickname:unofficial:Panther"))
 ```
-Now let's use a function that graphs tnum subjects, properties and tags together.  Because too many tags can clutter the picture, we have to provide a regular expression to select the tags we want to see.  Without that argument, no tags will be shown:
+Now let's use a function that graphs tnum subjects, properties and tags together:
 ```{r}
 # first re-query the database to get the new tags
-tn.frame <- tnum.query("aircraft# has *")
+tn.objects <- tnum.query("university# has *")
 
-# create the graph with only nickname tags shown
-tgraph <- tnum.makeTnumPhraseGraph(tn.frame,tagMatch="^nickname.+")
-tnum.plotGraph(tgraph,style="tree", size=500)
+# create the graph and show all tags
+tgraph <- tnum.makeTnumPhraseGraph(tn.objects, tagMatch = ".+")
+
+tnum.plotGraph(tgraph, style = "neato", size = 750)
 ```
 
-### Cleaning up after our aircraft example
+### Cleaning up after our example
 
 If we use tags and phrases with enough specificity, we can keep our truenumbers around.  If we choose to clean some of them up, We can use a query not to retrieve, but to delete and select tnums:
 ```{r}
-tnum.deleteByQuery("aircraft# has *")
+tnum.deleteByQuery("university# has *")
 ```
 
 
 ## Using **twitteR** with **tnum**
 
-We have included a utility for working with Twitter data using Truenumbers. To do this, we have to represent data coming from the Twitter API as tnums.  This requires some thinking about what the truenumber *subjects*, *properties*, *values* and *tags* might be for best reflecting the intent of the data.  Let's begin by authenticating to the Twitter API.  If the following fails, you'll have to get your own set of keys from Twitter's developer site and use *twitteR::setup_twitter_oauth()* (see twitteR documentation).
 
-```{r}
-tnum.twitteR.authorize()
-```
-### Getting tweets
-
-Now we can perform a search using twitteR to retrieve 5 English-language tweets about the search for extraterrestial intelligence.  They come back as a nested list, but *twitteR* provides a function to convert it to a data.frame so we can more easily view them: 
-```{r}
-tweets <- twitteR::searchTwitter("#seti+aliens", n=5, lang="en")
-dftweets <- twitteR::twListToDF(tweets)
-dftweets
-```
-### Making truenumbers out of tweets
-
-A tweet needs to be identified by the *subject* of a set of truenumbers stating the properties of the tweet.  We can see that a tweet has a unique ID provided by Twitter, and also gives us the screen-name of the tweeter.  Our tnum.twitteR utility generates a subject for each tweet as a string operation essentially like this:
-```{r eval=FALSE}
-paste0("twitter/user:", screenName, "/tweet:", tweetID)
-
-```
-producing subjects such as *twitter/user:FredSmith131/tweet:462736536517*.  We've seen how such strings and numbers can be assemble into truenumbers and posted with *tnum.postTruenumber()*.  **tnum** provides a function that will take a nested tweet list as returned by twitteR::searchTwitter() and post a set of truenumbers representing them.  
-
-Once authenticated, we can post the tweets we obtained with twitteR::searchTwitter().  The *customTags* argument allows us to apply tags to the generated tnums so we can identify them easily.  *doProfiles=TRUE* means that information from user profiles for the users that tweeted these tweets will be extracted from the Twitter API and truenumbers for that information posted as well.  
-```{r}
-tnum.twitteR.post_tweets_as_tnums(
-  tweetList = tweets,
-  customTags = list("project:seti:tweets:1"),
-  doProfiles = TRUE
-  )
-```
-Now we query the tnums into a data.frame qualified by the simple query for the custom tag we added to them.
-```{r}
-dftnums <- tnum.query("@project:seti:tweets:1",max=100)
-dftnums
-```
-Now we make and render a graph that includes the properties of the truenumbers and all tags:
-```{r}
-graph2 <- tnum.makeTnumPhraseGraph(dftnums, tagMatch = ".+")
-
-# use a different layout than the tree shown above
-
-tnum.plotGraph(graph2)
-
-```
-That's quite a busy graph.  We can generate a summary graph by collecting on the terms in the subject paths by screen name and by tweet and profile id's:
-```{r}
-graph3 <- tnum.makeTnumPhraseGraph(dftnums, collectors = list("twitter/user:###/tweet:###","twitter/user:###/profile:###"))
-
-tnum.plotGraph(graph3,size=800)
-```
-### Adding tags post-facto based on analysis
-
-Next, we apply sentiment analysis from package *SentimentAnalysis*, and apply it to the tweet text tnums.  First, we query for those tnums, then we apply sentiment analysis, and convert the resulting scores to *positive negative* or *neutral* tokens.  We build a tag vector with them.
-```{r}
-library(SentimentAnalysis)
-
-tweetTexts <- tnum.query("* has text", max=100)
-sa <- SentimentAnalysis::analyzeSentiment(tweetTexts$string.value)
-posneg <- SentimentAnalysis::convertToDirection(sa$SentimentGI)
-saTags <- paste0("analysis:sentiment:",posneg)
-print(saTags)
-```
-Now we applythem element-wise to the text tnums specified by their GUID's, and fetch them again for display:
-```{r}
-tnum.tagByGuids(tweetTexts$guid,saTags)
-tweetTexts <- tnum.query("* has text", max=100)
-tweetTexts
-```
-Scroll right to see the sentiment tags in the tags column. We suppress display of neutral sentiment tags:
-
-```{r}
-
-graph4 <- tnum.makeTnumPhraseGraph(tweetTexts, tagMatch = "^analysis:sentiment:(positive|negative)")
-tnum.plotGraph(graph4, size = 700)
-```
-This shows us that user AR_Yngve's 2 tweets have strong sentiment signals relative to the others.   

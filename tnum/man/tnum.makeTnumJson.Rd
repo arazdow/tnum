@@ -9,7 +9,7 @@ tnum.makeTnumJson(
   property = "property",
   value = NA,
   numeric.error = NA,
-  units = "",
+  unit = "",
   tags = list(),
   noEmptyStrings = FALSE
 )
