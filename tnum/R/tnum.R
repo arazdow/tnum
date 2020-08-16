@@ -367,7 +367,8 @@ tnum.objectsToDf <- function(objs) {
   gid <- tnum.getAttrFromList(objs, "guid", NA)
   df <-
     data.frame(cbind(
-      subject = prop,
+      subject = subj,
+      property = prop,
       string.value = chrs,
       numeric.value = nums,
       error = errs,
@@ -376,7 +377,8 @@ tnum.objectsToDf <- function(objs) {
       date = dat,
       guid = gid)
     )
-  df$date <- as.Date(as.numeric(df$date),origin = "1970-01-01")
+  if(is.numeric(dat[[1]]))
+    df$date <- as.Date(as.numeric(df$date),origin = "1970-01-01")
   return(df)
 }
 
