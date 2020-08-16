@@ -309,26 +309,30 @@ tnum.tagByQuery <- function(query = "",
 }
 
 # utility to get attr from list
-tnum.getAttrFromListOld <- function(obs, attname, num, rval) {
-  al <- attr(obs[[1]], attname)
-  if (is.null(al))
-    return(rep(rval, num))
-  else
-    return(c(unlist(lapply(obs, attr, attname))))
-}
-tnum.getAttrFromList <- function(obs, attname, num, rval) {
+
+#' Title
+#'
+#' @param obs
+#' @param attname
+#' @param rval
+#'
+#' @return
+#' @export
+#'
+
+tnum.getAttrFromList <- function(obs, attname, rval=NA) {
   ll <- list()
   for(i in 1:length(obs)){
     atv <- attr(obs[[i]],attname)
     if(is.null(atv)){
       ll[[i]] <- rval
-    } else if(length(atv)>1){
-      ll[[i]] <- paste0('"',paste0(atv, collapse = ","),'"')
+    #} else if(length(atv)>1){
+    #  ll[[i]] <- paste0('"',paste0(atv, collapse = ","),'"')
     } else {
       ll[[i]] <- atv
     }
   }
-    return(unlist(ll))
+    return(ll)
 }
 
 
@@ -342,8 +346,8 @@ tnum.getAttrFromList <- function(obs, attname, num, rval) {
 #'
 tnum.objectsToDf <- function(objs) {
   len <- length(objs)
-  subj <- tnum.getAttrFromList(objs, "subject", len, NA)
-  prop <- tnum.getAttrFromList(objs, "property", len, NA)
+  subj <- tnum.getAttrFromList(objs, "subject", NA)
+  prop <- tnum.getAttrFromList(objs, "property", NA)
   chrs <- vector(mode = "character")
   nums <- vector(mode = "numeric")
   for (i in 1:len) {
@@ -356,11 +360,11 @@ tnum.objectsToDf <- function(objs) {
     }
   }
   errs <-
-    as.vector(mode = "numeric", tnum.getAttrFromList(objs, "error", len, NA))
-  uns <- tnum.getAttrFromList(objs, "unit", len, NA)
-  tgs <- tnum.getAttrFromList(objs, "tags", len, NA)
-  dat <- tnum.getAttrFromList(objs, "date", len, NA)
-  gid <- tnum.getAttrFromList(objs, "guid", len, NA)
+    as.vector(mode = "numeric", tnum.getAttrFromList(objs, "error", NA))
+  uns <- tnum.getAttrFromList(objs, "unit", NA)
+  tgs <- tnum.getAttrFromList(objs, "tags", NA)
+  dat <- tnum.getAttrFromList(objs, "date", NA)
+  gid <- tnum.getAttrFromList(objs, "guid", NA)
   df <-
     data.frame(
       "subject" = subj,
@@ -397,15 +401,20 @@ tnum.makeObject <-
            tags = NA,
            dat = NA,
            gid = NA) {
+    #if(!is.numeric(value) && !stringr::str_detect(value,"^[0-91-zA-Z-:/_]+$"))
+      #value <- paste0('"', value, '"')
+
     if (!is.na(error))
       attr(value, "error") <- error
     if (!is.na(unit))
       attr(value, "unit") <- unit
-    if (mode(tags) == "character")
-      attr(value, "tags") <- tags
-    if(is.list(tags)){
-      attr(value, "tags") <- unlist(tags)
-    }
+
+      if(is.list(tags) || (length(tags)>1)){
+        attr(value, "tags") <- tags
+      } else if(!is.na(tags)){
+        attr(value, "tags") <- list(tags)
+      }
+
 
     attr(value, 'class') <- "tnum"
     attr(value, 'subject') <- subject
@@ -418,7 +427,7 @@ tnum.makeObject <-
     else
       attr(value, "date") <- date()
 
-    return(value)##return(sticky::sticky(value))
+    return(value)
   }
 
 tnum.dateAsToken <- function() {
@@ -528,16 +537,6 @@ tnum.postFromLists <-
            tags = NA,
            noEmptyStrings = FALSE) {
     len <- length(subject)
-    if (len == 1) {
-      res <- tnum.postTnumFields(subject,
-                                 property,
-                                 value,
-                                 numeric.error,
-                                 unit,
-                                 tags,
-                                 noEmptyStrings)
-      return(res)
-    }
 
     if (is.logical(numeric.error))
       numeric.error <- rep(NA, len)
@@ -570,6 +569,7 @@ tnum.postFromLists <-
         jsonnums <- gsub(",\\{\\},", ",", jsonnums)
         jsonnums <- gsub("\\{\\},", "", jsonnums)
         jsonnums <- gsub(",\\{\\}", "", jsonnums)
+        #jsonnums <- gsub("\\\"\\\"","\\\"\\\\\"",jsonnums)
 
         assign("tnum.var.postedJSON", jsonnums, envir = tnum.env)
         args <-
@@ -597,43 +597,6 @@ tnum.postFromLists <-
     message(paste0("posted ", numnums, " tnums"))
   }
 
-# Post a single truenumber from parts
-#
-
-tnum.postTnumFields <-
-  function(subject = "something",
-           property = "property",
-           value = NA,
-           numeric.error = NA,
-           unit = "",
-           tags = list(),
-           noEmptyStrings = FALSE) {
-    jsonnum <-
-      tnum.makeTnumJson(subject,
-                        property,
-                        value,
-                        numeric.error,
-                        unit,
-                        tags,
-                        noEmptyStrings)
-    if (nchar(jsonnum) > 5) {
-      assign("tnum.var.postedJSON", jsonnum, envir = tnum.env)
-      args <-
-        list(numberspace = tnum.env$tnum.var.nspace)
-      result <- httr::POST(
-        paste0(
-          "http://",
-          tnum.env$tnum.var.ip,
-          "/v1/numberspace/numbers"
-        ),
-        query = args,
-        httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
-        body = paste0('{"truenumbers":[', jsonnum, ']}'),
-        httr::accept("application/json"),
-        httr::content_type("application/json")
-      )
-    }
-  }
 
 #' post a list or vector of tnum objects
 #'
@@ -644,11 +607,14 @@ tnum.postTnumFields <-
 
 tnum.postObjects <-
   function(objects) {
-    subject <- lapply(objects, attr, "subject")
-    property <- lapply(objects, attr, "property")
-    error <- lapply(objects, attr, "error")
-    unit <- lapply(objects, attr, "unit")
-    tags <- lapply(objects, attr, "tags")
+    if(!(is.list(objects) || is.vector(objects))){
+      objects <- list(objects)
+    }
+    subject <- tnum.getAttrFromList(objects, "subject","subject")
+    property <- tnum.getAttrFromList(objects, "property", "property")
+    error <- tnum.getAttrFromList(objects, "error")
+    unit <- tnum.getAttrFromList(objects, "unit")
+    tags <- tnum.getAttrFromList(objects, "tags")
     tnum.postFromLists(subject, property, objects, error, unit, tags)
   }
 
