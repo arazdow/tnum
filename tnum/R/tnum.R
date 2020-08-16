@@ -366,19 +366,17 @@ tnum.objectsToDf <- function(objs) {
   dat <- tnum.getAttrFromList(objs, "date", NA)
   gid <- tnum.getAttrFromList(objs, "guid", NA)
   df <-
-    data.frame(
-      "subject" = subj,
-      "property" = prop,
-      "string.value" = chrs,
-      "numeric.value" = nums,
-      "error" = errs,
-      "unit" = uns,
-      "tags" = tgs,
-      "date" = dat,
-      "id" = gid
+    data.frame(cbind(
+      subject = prop,
+      string.value = chrs,
+      numeric.value = nums,
+      error = errs,
+      unit = uns,
+      tags = tgs,
+      date = dat,
+      guid = gid)
     )
-  if(mode(df$date[[1]]) == "numeric")
-         df$date <- as.Date(df$date, origin = "1970-01-01")
+  df$date <- as.Date(as.numeric(df$date),origin = "1970-01-01")
   return(df)
 }
 
