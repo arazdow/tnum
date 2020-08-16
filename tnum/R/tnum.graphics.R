@@ -212,6 +212,7 @@ tnum.makePhraseGraphFromPathList <-
             newLineParity <- tnum.env$tnum.var.parity
             eaes <- rootEdgeAes
             naes <- tagAes
+            nodeLabel <- gsub("^[?]","",nodeLabel)
             nodeLabel <- gsub("[;]",":",gsub("[?]","/",nodeLabel))
             if(newLineParity==1){
               nodeLabel <- paste0("\\n",nodeLabel)
@@ -275,13 +276,13 @@ tnum.makePhraseGraphFromPathList <-
 #' Make full tnum graph from tnum.query return data frame
 #'
 #' @param tlist list of tnum objects as returned from tnum.query
-#' @param tagMatch regexp to select tags to include in graph
+#' @param tagpattern regexp to select tags to include in graph
 #' @param collectors list of gsub patterns for replacement with ### to aggregate subjects
 #'
 #' @return returns a DiagrammeR graph
 #' @export
 #'
-tnum.makeTnumPhraseGraph <- function(tlist, tagMatch = "", collectors = list()) {
+tnum.makeTnumPhraseGraph <- function(tlist, tagpattern = "", collectors = list()) {
   # make list of full-tnum paths using --- as "has"
   len <- length(tlist)
   subjAttrs <- tnum.getAttrFromList(tlist,"subject",  NA)
@@ -290,15 +291,16 @@ tnum.makeTnumPhraseGraph <- function(tlist, tagMatch = "", collectors = list()) 
   tnumList <- paste0(subjAttrs, "/---", propAttrs)
 
   # now add tags matching regexps in tags list
-  if(nchar(tagMatch)>0){
+  if(nchar(tagpattern)>0){
     newTnumList <- list()
     for(i in 1:length(tnumList)){
       newTnumList <- append(newTnumList,tnumList[[i]])
       if(length(tagAttrs[[i]])>0){
         rowtags <- tagAttrs[[i]]
-        for(tag in rowtags[[1]]){
-          if(stringr::str_detect(tag,tagMatch)){
+        for(tag in rowtags){
+          if(stringr::str_detect(tag,tagpattern)){
             guardedTag <- gsub("[/]","?",gsub("[:]",";",tag))
+            guardedTag <- paste0("?",guardedTag)
             newTnumList <- append(newTnumList, paste0(tnumList[[i]],"/",guardedTag))
           }
         }
