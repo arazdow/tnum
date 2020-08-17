@@ -321,7 +321,12 @@ tnum.tagByQuery <- function(query = "",
 #'
 
 tnum.getAttrFromList <- function(obs, attname, rval=NA) {
-  ll <- list()
+  if(!is.na(rval) && rval == "list"){
+    rval <- NA
+    ll <- list()
+  } else {
+    ll <- vector()
+  }
   for(i in 1:length(obs)){
     atv <- attr(obs[[i]],attname)
     if(is.null(atv)){
@@ -362,11 +367,18 @@ tnum.objectsToDf <- function(objs) {
   errs <-
     as.vector(mode = "numeric", tnum.getAttrFromList(objs, "error", NA))
   uns <- tnum.getAttrFromList(objs, "unit", NA)
-  tgs <- tnum.getAttrFromList(objs, "tags", NA)
+  tgs <- tnum.getAttrFromList(objs, "tags", "list")
+  tgschar <- vector(mode = "character")
+  for(i in 1:len){
+    if(is.list(tgs[[i]]))
+      tgschar[[i]] <- paste0(tgs[[i]],collapse = ",")
+    else tgschar[[i]] <- NA
+  }
+  tgs <- tgschar
   dat <- tnum.getAttrFromList(objs, "date", NA)
   gid <- tnum.getAttrFromList(objs, "guid", NA)
   df <-
-    data.frame(cbind(
+    data.frame(#cbind(
       subject = subj,
       property = prop,
       string.value = chrs,
@@ -375,7 +387,7 @@ tnum.objectsToDf <- function(objs) {
       unit = uns,
       tags = tgs,
       date = dat,
-      guid = gid)
+      guid = gid#)
     )
   if(is.numeric(dat[[1]]))
     df$date <- as.Date(as.numeric(df$date),origin = "1970-01-01")
