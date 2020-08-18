@@ -4,95 +4,44 @@
 #'
 #' @param taxonomy string, one of "subject", "property", or "tags"
 #' @param pattern  a tnum path with path-wildcard #, or string-wildcard * to restrict what tree is returned.
-#' @param levels   integer, how man levels down to extract
+#' @param levels How deep to go in the taxonomy
+#' @param max   integer, how many results to return max
+#' @param start.at  offset at which to begin returning max results
 #'
-#' @return a DiagrammeR graph, suitable for display
+#' @return a vector of paths in the taxonomy
 #' @export
 
-tnum.getDatabasePhraseGraph <-
+tnum.getDatabasePhraseList <-
   function(taxonomy = "subject",
            pattern = "",
-           levels = 10) {
-    # node and edge styles for DiagrammeR
-    adjAes <-
-      DiagrammeR::node_aes(
-        shape = "rectangle",
-        fillcolor = "white",
-        fixedsize = FALSE,
-        color = "black"
-      )
-    posAes <-
-      DiagrammeR::node_aes(
-        shape = "ellipse",
-        fixedsize = FALSE,
-        fillcolor = "white",
-        color = "black"
-      )
-    adjEdgeAes <-
-      DiagrammeR::edge_aes(
-        label = "adj",
-        fontcolor = "black",
-        color = "black",
-        dir = "back"
-      )
-    posEdgeAes <-
-      DiagrammeR::edge_aes(
-        label = "of",
-        fontcolor = "black",
-        color = "black",
-        style = "dashed",
-        dir = "back"
-      )
+           levels = NA,
+           max = 100,
+           start.at = 0
+           ) {
 
-    # recursive descent and other utilities
-
-    tnToNodeWalker <- function(grph, tnNode, gNodeId) {
-      newGrph <- grph
-      tkids <- tnNode$childrenCount
-      if (tkids > 0) {
-        for (i in 1:tnNode$childrenCount) {
-          tkid <- tnNode$children[[i]]
-          nodeLabel <- tkid$fullName
-          sep <- ""
-          naes <- posAes
-          eaes <- posEdgeAes
-          if (stringr::str_count(nodeLabel, "[:/]") > 0) {
-            nodeLabel <- stringr::str_extract(nodeLabel, "[/:][^/^:]+$")
-            sep <- substr(nodeLabel, 1, 1)
-          }
-          if (sep == ":") {
-            naes <- adjAes
-            eaes <- adjEdgeAes
-          }
-          newGrph <-
-            DiagrammeR::add_node(
-              newGrph,
-              label = nodeLabel,
-              from = gNodeId,
-              node_aes = naes,
-              edge_aes = eaes
-            )
-          nextId <- get_last_node_id(newGrph)
-          newGrph <- tnToNodeWalker(newGrph, tkid, nextId)
-        }
-      }
-      return(newGrph)
-    }
-
-    # hack for getting id of the last node added tp a graph
-    get_last_node_id <- function(grph) {
-      ndf <- DiagrammeR::get_node_df(grph)
-      return(tail(ndf$id, 1))
-    }
-
-    # get taxonomy as nested list
+    # get taxonomy as list
+    if(is.na(levels)){
     args <-
       list(
         numberspace = tnum.env$tnum.var.nspace,
         type = taxonomy,
         srd = pattern,
-        depth = levels
+        limit = max,
+        offset = start.at,
+        format = "list"
       )
+    } else {
+      args <-
+        list(
+          numberspace = tnum.env$tnum.var.nspace,
+          type = taxonomy,
+          srd = pattern,
+          limit = max,
+          depth = levels,
+          offset = start.at,
+          format = "list"
+        )
+    }
     result <- httr::GET(
       query = args,
       paste0(
@@ -104,16 +53,15 @@ tnum.getDatabasePhraseGraph <-
       httr::accept("application/json"),
       httr::content_type("application/json")
     )
-    #build a data.tree from the result
+    #build path vector from the result
 
     tnApiRoot <- httr::content(result)$data
-    dGraph <- DiagrammeR::create_graph()
-    dGraph <-
-      DiagrammeR::add_node(dGraph, label = tnApiRoot$fullName)
-    dGraphRoot <- get_last_node_id(dGraph)
-    dGraph <- tnToNodeWalker(dGraph, tnApiRoot, dGraphRoot)
-
-    return(dGraph)
+    if(!is.null(tnApiRoot) && length(tnApiRoot) > 0){
+    retvec <- vapply(tnApiRoot,function(x)x$name,character(1))
+    } else {
+      retvec <- NULL
+    }
+    return(retvec)
   }
 
 #' Get a DiagrammeR tree for rendering, from a list of SRD paths
@@ -244,10 +192,21 @@ tnum.makePhraseGraphFromPathList <-
       return(tail(ndf$id, 1))
     }
 
+    # function to determine if we have a forest
+
+    isForest <- function(plst){
+      roots <- gsub("[:/].+","",plst)
+      return(length(unique(roots)) > 1)
+    }
+
     # begin main function body
 
     # prepend the forest root, and insert data.tree separator / before :
-    pList <- paste0(rootLabel, "/", gsub(":", "/:", pathList))
+    if(isForest(pathList) || rootLabel != "ROOT"){
+      pList <- paste0(rootLabel, "/", gsub(":", "/:", pathList))
+    } else {
+      pList <- pathList
+    }
     df <- data.frame(paths = pList)
     tree <-
       data.tree::as.Node(df, pathName = "paths") # get node tree
