@@ -57,7 +57,16 @@ tnum.getDatabasePhraseList <-
 
     tnApiRoot <- httr::content(result)$data
     if(!is.null(tnApiRoot) && length(tnApiRoot) > 0){
-    retvec <- vapply(tnApiRoot,function(x)x$name,character(1))
+      retvec <- vector(mode="character")
+      count <- 1
+      retvec[[1]] <- tnApiRoot[[1]]$name
+      for(i in 1:length(tnApiRoot)){
+        listelement <- tnApiRoot[[i]]$name
+        if(!startsWith(retvec[[count]], listelement)){
+          count <- count + 1
+          retvec[[count]] <- listelement
+        }
+      }
     } else {
       retvec <- NULL
     }
