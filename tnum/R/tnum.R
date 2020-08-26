@@ -331,8 +331,6 @@ tnum.getAttrFromList <- function(obs, attname, rval=NA) {
     atv <- attr(obs[[i]],attname)
     if(is.null(atv)){
       ll[[i]] <- rval
-    #} else if(length(atv)>1){
-    #  ll[[i]] <- paste0('"',paste0(atv, collapse = ","),'"')
     } else {
       ll[[i]] <- atv
     }
@@ -626,7 +624,7 @@ tnum.postObjects <-
     property <- tnum.getAttrFromList(objects, "property", "property")
     error <- tnum.getAttrFromList(objects, "error")
     unit <- tnum.getAttrFromList(objects, "unit")
-    tags <- tnum.getAttrFromList(objects, "tags")
+    tags <- tnum.getAttrFromList(objects, "tags", rval = "list")
     tnum.postFromLists(subject, property, objects, error, unit, tags)
   }
 
