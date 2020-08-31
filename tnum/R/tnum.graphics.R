@@ -214,7 +214,7 @@ tnum.makePhraseGraphFromPathList <-
     if(isForest(pathList) || rootLabel != "ROOT"){
       pList <- paste0(rootLabel, "/", gsub(":", "/:", pathList))
     } else {
-      pList <- pathList
+      pList <- gsub(":", "/:", pathList)
     }
     df <- data.frame(paths = pList)
     tree <-
@@ -227,11 +227,16 @@ tnum.makePhraseGraphFromPathList <-
       attr = "overlap",
       value = "false",
       attr_type = "graph")
+    if(tree$name == "ROOT"){
+      nn <- rootAes
+    } else {
+      nn <- posAes
+    }
     dGraph <-
       DiagrammeR::add_node(
         dGraph,
         label = tree$name,
-        node_aes = rootAes,
+        node_aes = nn,
         edge_aes = rootEdgeAes
       )
     dGraphRoot <- get_last_node_id(dGraph)
