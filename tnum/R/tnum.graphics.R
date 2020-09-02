@@ -158,8 +158,8 @@ tnum.makePhraseGraphFromPathList <-
             naes <- adjAes
             eaes <- adjEdgeAes
           }
-          if (gNodeId == 1) {
-            eaes <- rootEdgeAes
+          if (gNodeId == 1 && dtNode$name == "ROOT") {
+              eaes <- rootEdgeAes
           }
           if(stringr::str_starts(nodeLabel,"---")){
             eaes <- propertyEdgeAes
@@ -232,10 +232,15 @@ tnum.makePhraseGraphFromPathList <-
     } else {
       nn <- posAes
     }
+    if(tree$name == "ROOT"){
+      lab <- tree$name
+    } else {
+      lab <- paste0(tree$name,"\\n(root)")
+    }
     dGraph <-
       DiagrammeR::add_node(
         dGraph,
-        label = tree$name,
+        label = lab,
         node_aes = nn,
         edge_aes = rootEdgeAes
       )
