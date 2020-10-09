@@ -71,7 +71,7 @@ df
 
 ```
 
-Next, we post the object list to ther server, then query the server for these tnums by subject path starting with *university#* , allowing any property, by using path and string wildcards **#** and **\***:
+Next, we post the object list to the server, then query the server for these tnums by subject path starting with *university#* , allowing any property, by using path and string wildcards **#** and **\***:
 ```{r}
 result <- tnum.postObjects(tn)
 # Run query and convert tnums to rows of a data.frame
@@ -91,7 +91,7 @@ Package *tnum* uses *data.tree* and *Diagrammer* for managing tree structures an
 
 # Use tnum function to generate a graph from the subject column of the data frame of tnums
 
-graph <- tnum.makePhraseGraphFromPathList(returned.objects.frame$subject, rootLabel="Subjects")
+graph <- tnum.makePhraseGraphFromPathList(returned.objects.frame$subject)
 
 # Use the tnum rendering function to display it as a graph:
 
