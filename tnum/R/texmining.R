@@ -64,6 +64,7 @@ tnBooksFromLines <- function(books){
       if(blanks == 0){
         sentencenum <- 0
         sentence <- ""
+        paragraph <- paragraph+1
       }
     } else {
     blanks <- 0
@@ -74,17 +75,25 @@ tnBooksFromLines <- function(books){
     }
     else {
        # process text (headers eliminated above)
-         ln <- line
+         ln <- str_replace_all(line,"Mrs.","Mrs")
+         ln <- str_replace_all(ln,"Mr.","Mr")
+         ln <- str_replace_all(ln,"Esq.","Esq")
          if(stringr::str_detect(ln,"\\.")){
            matchs <- stringr::str_locate_all(pattern ='\\.', ln)
            beg <- 0
-           for(i in matchs[[1]]){
+           for(i in matchs[[1]][,1]){
              sentence <- paste0(sentence,substr(ln,beg,i),collapse="")
              beg <- i
              subj <- paste0("austen:jane:",tolower(bk),"/",tolower(str_replace(chapter,"\\s+","-")),"/paragraph-",paragraph+1,"/sentence-",sentencenum+1,collapse = '')
-             tn[[length(tn)+1]] <- tnum.makeObject(subj,"text",sentence,"")
+             tn[[length(tn)+1]] <- tnum.makeObject(subj,"text",trimws(sentence),"")
+             if(length(tn) > 30){
+               x <- 2+4
+             }
+             sentencenum <- sentencenum + 1
            }
-           sentence <- trimws(substr(ln,beg+1,nchar(ln)))
+           sentence <- paste0(substr(ln,beg+1,nchar(ln))," ")
+         } else {
+           sentence <- paste0(sentence,ln," ", collapse="")
          }
        }
     }
