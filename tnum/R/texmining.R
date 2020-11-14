@@ -8,11 +8,11 @@ detectAllCap <- function(line) {
   return (line == lline)
 }
 detectChapter <- function(line) {
-  return (detectAllCap(line) && startsWith(line, "CHAPTER"))
+  return (startsWith(toupper(line), "CHAPTER"))
 }
 
 detectVolume <- function(line) {
-  return (detectAllCap(line) && startsWith(line, "VOLUME"))
+  return (startsWith(line, "VOLUME "))
 }
 
 detectBreak <- function(line) {
@@ -27,16 +27,6 @@ detectBreak <- function(line) {
   return(FALSE)
 }
 
-detectBook <- function(line) {
-  if (detectAllCap(line)) {
-    if (detectChapter(line))
-      return(FALSE)
-    if (detectVolume(line))
-      return(FALSE)
-    return(TRUE)
-  } else
-    return(FALSE)
-}
 
 #' Title Truenumbers from books
 #'
@@ -45,14 +35,17 @@ detectBook <- function(line) {
 #' @export
 #'
 tnBooksFromLines <- function(books) {
+  curbook <- ""
+
   chapter <- ""
   volume <- ""
   sentence <- ""
   sentencenum <- 0
   paragraph <- 0
   curline <- 0
+
   state <- "header"
-  blanks <- 0
+  blanks <- FALSE
   bks <- as.matrix(books)
   bklen <- length(books$text)
   tn <- list()
@@ -60,62 +53,76 @@ tnBooksFromLines <- function(books) {
     bookrow <- bks[j, ]
     line <- bookrow[[1]]
     bk <- bookrow[[2]]
+    if (bk != curbook) {
+      curbook <- bk
+      volume <- ""
+      chapter <- ""
+      sentence <- ""
+      paragraph <- 0
+      sentencenum <- 0
+    }
     bk <- stringr::str_replace_all(bk, " ", "_")
     bk <- stringr::str_replace_all(bk, "&", "and")
     curline <- curline + 1
     line <- trimws(line)
     lline <- toupper(line)
     if (detectBreak(line)) {
-      blanks <= blanks + 1
-      if (blanks == 0) {
+      if (blanks == FALSE) {
         sentencenum <- 0
         sentence <- ""
         paragraph <- paragraph + 1
+        blanks <- TRUE
       }
-    } else {
-      blanks <- 0
-      if (detectAllCap(line)) {
-        if (detectChapter(line))
-          chapter <- line
-        if (detectVolume(line))
-          volume <- line
+    } else
+      if (detectChapter(line)) {
+        chapter <- line
         paragraph <- 0
-      }
-      else {
-        # process text (headers eliminated above)
-        ln <- str_replace_all(line, "Mrs.", "Mrs")
-        ln <- str_replace_all(ln, "Mr.", "Mr")
-        ln <- str_replace_all(ln, "Esq.", "Esq")
-        if (stringr::str_detect(ln, "\\.")) {
-          matchs <- stringr::str_locate_all(pattern = '\\.', ln)
-          beg <- 0
-          for (i in matchs[[1]][, 1]) {
-            sentence <- paste0(sentence, substr(ln, beg, i), collapse = "")
-            beg <- i
-            subj <-
-              paste0(
-                "austen:jane:",
-                tolower(bk),
-                "/",
-                tolower(str_replace(chapter, "\\s+", "-")),
-                "/paragraph-",
-                paragraph + 1,
-                "/sentence-",
-                sentencenum + 1,
-                collapse = ''
-              )
-            tn[[length(tn) + 1]] <-
-              tnum.makeObject(subj, "text", trimws(sentence), "")
-            if (length(tn) > 30) {
-              res <- tnum.postObjects(tn)
-              tn <- list()
-            }
-            sentencenum <- sentencenum + 1
-          }
-          sentence <- paste0(substr(ln, beg + 1, nchar(ln)), " ")
-        } else {
-          sentence <- paste0(sentence, ln, " ", collapse = "")
+
+      } else
+        if (detectVolume(line)) {
+          volume <- paste0("/",stringr::str_replace_all(trimws(tolower(line)), " ", "-"))
+          paragraph <- 0
+
         }
+
+    else {
+      blanks <- FALSE
+      # process text (headers eliminated above)
+      ln <- str_replace_all(line, "Mrs.", "Mrs")
+      ln <- str_replace_all(ln, "Mr.", "Mr")
+      ln <- str_replace_all(ln, "Esq.", "Esq")
+      if (stringr::str_detect(ln, "\\.")) {
+        matchs <- stringr::str_locate_all(pattern = '\\.', ln)
+        beg <- 0
+        for (i in matchs[[1]][, 1]) {
+          sentence <- paste0(sentence, substr(ln, beg, i), collapse = "")
+          beg <- i
+          subj <-
+            paste0(
+              "austen:jane:",
+              tolower(bk),volume,
+              "/",
+
+              tolower(str_replace(chapter, "\\s+", "-")),
+              "/paragraph-",
+              paragraph + 1,
+              "/sentence-",
+              sentencenum + 1,
+              collapse = ''
+            )
+          sentence <- str_replace_all(sentence, "\"", "/iQ/")
+          tn[[length(tn) + 1]] <-
+            tnum.makeObject(subj, "text", trimws(sentence), "")
+
+          if (length(tn) == 30) {
+            res <- tnum.postObjects(tn)
+            tn <- list()
+          }
+          sentencenum <- sentencenum + 1
+        }
+        sentence <- paste0(substr(ln, beg + 1, nchar(ln)), " ")
+      } else {
+        sentence <- paste0(sentence, ln, " ", collapse = "")
       }
     }
   }

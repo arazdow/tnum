@@ -495,6 +495,7 @@ tnum.makeTnumJson <- function(subject = "something",
       numval <- value
       if (!stringr::str_starts(numval, '"') &&
           !stringr::str_detect(numval, "^[0-9a-zA-Z/:\\-_]+$")) {
+        numval <- str_replace_all(numval,"\"","\\\\\\\"")
         numval <-
           paste0("\\\"", numval, "\\\"") ## if not SRD, and not quoted text, then add quotes
       }
@@ -580,6 +581,7 @@ tnum.postFromLists <-
         jsonnums <- gsub("\\{\\},", "", jsonnums)
         jsonnums <- gsub(",\\{\\}", "", jsonnums)
         #jsonnums <- gsub("\\\"\\\"","\\\"\\\\\"",jsonnums)
+        jsonnums <- gsub("/iQ/", "\\\\\"", jsonnums)
 
         assign("tnum.var.postedJSON", jsonnums, envir = tnum.env)
         args <-
@@ -598,7 +600,11 @@ tnum.postFromLists <-
           httr::accept("application/json"),
           httr::content_type("application/json")
         )
+        if(result$status_code > 199 && result$status_code < 230)
         message(paste0("Posting ", chunkcount, " characters"))
+        else {
+          message(paste0("ERROR CODE: ",result$status_code," in POST "))
+        }
         chunkcount <- 0
         jsonnums <- ""
       }
