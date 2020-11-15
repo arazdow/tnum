@@ -14,11 +14,21 @@ tnum.env <- new.env()
 #' @return  List of numberspaces available on the server. The first one on the list is set as current
 #' @export
 
-tnum.authorize <- function(ip = "54.166.186.11", key) {
+tnum.authorize <- function(ip = "54.166.186.11") {
   assign("tnum.var.ip", ip, envir = tnum.env)
-  assign("tnum.var.token", key, envir = tnum.env)
 
-  token <- key
+
+  ## Get token
+  result <- httr::POST(
+    paste0("http://", tnum.env$tnum.var.ip, "/v1/gateway/"),
+    httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
+    body = '{"email":"shared-user-1"}',
+    httr::accept("application/json"),
+    httr::content_type("application/json")
+  )
+  payload <- httr::content(result)
+  token <- payload$data$token
+  assign("tnum.var.token", token, envir = tnum.env)
 
   ## get list of numberspaces
   result <- httr::GET(
