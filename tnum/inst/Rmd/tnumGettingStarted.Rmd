@@ -15,14 +15,10 @@ output: html_notebook
 
 ### Getting up and running
 
-After installing package *tnum*, it's necessary to authenticate with the *tnum* server.  Your sysadmin will give you a key, something like
-
-`token <- "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoidXNlciIsInVzZXMzNzZlMWE2LWU0NDMtNDc5YS1hZTM1LWMzZDMzMm"`
-
-which must be passed to the authorization function of tnum as the **key** parameter:
+After installing package *tnum*, it's necessary to authenticate with the *tnum* server:
 ```{r}
 library(tnum)
-tnum.authorize(key = token)
+tnum.authorize()
 ```
 *authorize* can also take an argument **ip** representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation. The function displays a list of available numberspaces on the server. A *numberspace* is a separate repository for truenumber data.  The authorize() call sets the current numberspace to a numberspace defined by your administrator.    
 
