@@ -41,6 +41,7 @@ tnBooksFromLines <- function(books) {
   volume <- ""
   sentence <- ""
   sentencenum <- 0
+  ordinal <- 0
   paragraph <- 0
   curline <- 0
 
@@ -60,6 +61,7 @@ tnBooksFromLines <- function(books) {
       sentence <- ""
       paragraph <- 0
       sentencenum <- 0
+      ordinal <- 0
     }
     bk <- stringr::str_replace_all(bk, " ", "_")
     bk <- stringr::str_replace_all(bk, "&", "and")
@@ -77,12 +79,13 @@ tnBooksFromLines <- function(books) {
       if (detectChapter(line)) {
         chapter <- line
         paragraph <- 0
+        ordinal <- 0
 
       } else
         if (detectVolume(line)) {
           volume <- paste0("/",stringr::str_replace_all(trimws(tolower(line)), " ", "-"))
           paragraph <- 0
-
+          ordinal <- 0
         }
 
     else {
@@ -112,13 +115,18 @@ tnBooksFromLines <- function(books) {
             )
           sentence <- str_replace_all(sentence, "\"", "/iQ/")
           tn[[length(tn) + 1]] <-
-            tnum.makeObject(subj, "text", trimws(sentence), "")
+            tnum.makeObject(subj, "text", trimws(sentence))
+          tn[[length(tn) + 1]] <-
+            tnum.makeObject(subj, "ordinal", ordinal+1)
+          tn[[length(tn) + 1]] <-
+            tnum.makeObject(subj, "count:word", stringr::str_count(trimws(sentence)," "))
 
-          if (length(tn) == 30) {
+          if (length(tn) >= 30) {
             res <- tnum.postObjects(tn)
             tn <- list()
           }
           sentencenum <- sentencenum + 1
+          ordinal <- ordinal + 1
         }
         sentence <- paste0(substr(ln, beg + 1, nchar(ln)), " ")
       } else {
