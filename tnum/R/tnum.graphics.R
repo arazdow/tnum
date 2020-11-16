@@ -37,7 +37,7 @@ tnum.getDatabasePhraseList <-
           type = taxonomy,
           srd = pattern,
           limit = max,
-          ##depth = levels,
+          depth = levels,
           offset = start.at,
           format = "list"
         )
@@ -55,10 +55,6 @@ tnum.getDatabasePhraseList <-
     )
     #build path vector from the result
 
-    if(is.na(levels)){
-      levels <- 100
-    }
-
     tnApiRoot <- httr::content(result)$data
     if(!is.null(tnApiRoot) && length(tnApiRoot) > 0){
       retvec <- vector(mode="character")
@@ -67,8 +63,7 @@ tnum.getDatabasePhraseList <-
       retvec[[1]] <- ""
       for(i in 1:length(tnApiRoot)){
         listelement <- tnApiRoot[[i]]$name
-        levs <- stringr::str_count(listelement,"[:/]")
-        if(levs < levels && !startsWith(retvec[[count]], listelement)){
+        if(!startsWith(retvec[[count]], listelement)){
           count <- count + 1
           retvec[[count]] <- listelement
         }
