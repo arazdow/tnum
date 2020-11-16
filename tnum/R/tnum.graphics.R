@@ -21,6 +21,10 @@ tnum.getDatabasePhraseList <-
 
     # get taxonomy as list
     if(is.na(levels)){
+      levels <- 100
+    }
+
+    if(is.na(levels)){
     args <-
       list(
         numberspace = tnum.env$tnum.var.nspace,
