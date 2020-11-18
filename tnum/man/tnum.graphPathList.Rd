@@ -17,6 +17,8 @@ tnum.graphPathList(
 \item{rootLabel}{a lable for the root of the graph}
 
 \item{levels}{limit for how many levels down paths to graph}
+
+\item{style}{what DiagrammeR calls "layout" = tree,nicely,neato,kk, or fr}
 }
 \description{
 Make and render a graph from a list of phrase paths

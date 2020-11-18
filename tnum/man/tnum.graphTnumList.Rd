@@ -4,7 +4,12 @@
 \alias{tnum.graphTnumList}
 \title{Make full tnum graph from tnum.query return data frame}
 \usage{
-tnum.graphTnumList(tlist, tagpattern = "", collectors = list())
+tnum.graphTnumList(
+  tlist,
+  tagpattern = "",
+  collectors = list(),
+  style = "neato"
+)
 }
 \arguments{
 \item{tlist}{list of tnum objects as returned from tnum.query}
@@ -12,6 +17,8 @@ tnum.graphTnumList(tlist, tagpattern = "", collectors = list())
 \item{tagpattern}{regexp to select tags to include in graph}
 
 \item{collectors}{list of gsub patterns for replacement with ### to aggregate subjects}
+
+\item{style}{what DiagrammeR calls "layout" = tree,nicely,neato,kk, or fr}
 }
 \description{
 Make full tnum graph from tnum.query return data frame

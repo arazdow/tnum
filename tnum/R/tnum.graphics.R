@@ -371,6 +371,7 @@ tnum.getDBPathList <-
 #' @param pathList list of phrase path strings
 #' @param rootLabel  a lable for the root of the graph
 #' @param levels  limit for how many levels down paths to graph
+#' @param style what DiagrammeR calls "layout" = tree,nicely,neato,kk, or fr
 #'
 #' @export
 
@@ -388,10 +389,11 @@ tnum.graphPathList <-
 #' @param tlist list of tnum objects as returned from tnum.query
 #' @param tagpattern regexp to select tags to include in graph
 #' @param collectors list of gsub patterns for replacement with ### to aggregate subjects
+#' @param style what DiagrammeR calls "layout" = tree,nicely,neato,kk, or fr
 #'
 #' @export
 #'
-tnum.graphTnumList <- function(tlist, tagpattern = "", collectors = list()) {
+tnum.graphTnumList <- function(tlist, tagpattern = "", collectors = list(), style = "neato") {
   gph <- tnum.makeTnumPhraseGraph(tlist,tagpattern,collectors)
   tnum.plotGraph(gph,style,0)
 }
