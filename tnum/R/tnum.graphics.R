@@ -78,6 +78,7 @@ tnum.getDatabasePhraseList <-
     return(retvec)
   }
 
+
 #' Get a DiagrammeR tree for rendering, from a list of SRD paths
 #'
 #' @param pathList list of phrase path strings
@@ -339,4 +340,58 @@ tnum.plotGraph <- function(gph,style="neato", size=0){
   }
 
   return(res)
+}
+
+##Aliases (maybe deprecate the original badly named functions above in the future)
+
+#' Get phrase taxonomies
+#'
+#' @param taxonomy string, one of "subject", "property", or "tags"
+#' @param pattern  a tnum path with path-wildcard #, or string-wildcard * to restrict what tree is returned.
+#' @param levels How deep to go in the taxonomy
+#' @param max   integer, how many results to return max
+#' @param start.at  offset at which to begin returning max results
+#'
+#' @return a vector of paths in the taxonomy
+#' @export
+
+tnum.getDBPathList <-
+  function(taxonomy = "subject",
+           pattern = "",
+           levels = NA,
+           max = 100,
+           start.at = 0
+  ) {
+    return(tnum.getDatabasePhraseList(taxonomy,pattern,levels,max,start.at))
+  }
+
+
+#' Make and render a graph from a list of phrase paths
+#'
+#' @param pathList list of phrase path strings
+#' @param rootLabel  a lable for the root of the graph
+#' @param levels  limit for how many levels down paths to graph
+#'
+#' @export
+
+tnum.graphPathList <-
+  function(pathList = list(),
+           rootLabel = "ROOT",
+           levels = 10,
+           style="neato") {
+    gph <- tnum.makePhraseGraphFromPathList(pathList,rootLabel,levels)
+    tnum.plotGraph(gph,style,0)
+  }
+
+#' Make full tnum graph from tnum.query return data frame
+#'
+#' @param tlist list of tnum objects as returned from tnum.query
+#' @param tagpattern regexp to select tags to include in graph
+#' @param collectors list of gsub patterns for replacement with ### to aggregate subjects
+#'
+#' @export
+#'
+tnum.graphTnumList <- function(tlist, tagpattern = "", collectors = list()) {
+  gph <- tnum.makeTnumPhraseGraph(tlist,tagpattern,collectors)
+  tnum.plotGraph(gph,style,0)
 }
