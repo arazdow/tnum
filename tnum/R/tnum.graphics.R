@@ -270,7 +270,7 @@ tnum.makeTnumPhraseGraph <- function(tlist, tagpattern = "", collectors = list()
   len <- length(tlist)
   subjAttrs <- tnum.getAttrFromList(tlist,"subject",  NA)
   propAttrs <- tnum.getAttrFromList(tlist,"property",  NA)
-  tagAttrs <- tnum.getAttrFromList(tlist,"tags",  NA)
+  tagAttrs <- tnum.getAttrFromList(tlist,"tags",  "list")
   tnumList <- paste0(subjAttrs, "/---", propAttrs)
 
   # now add tags matching regexps in tags list

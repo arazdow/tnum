@@ -39,7 +39,7 @@ and
 <br>
 The subject  **fulltime undergraduate students of montclair state university ** is equivalent to a path **university:state:montclair/students:undergraduate:fulltime** where the separator **:** denotes an *adjective* relationship, and **/** denotes a possesive.
 
-Let's store these in the server:
+Let's make truenum objects for them:
 
 ```{r}
 # create a list of two objects and display one of them 

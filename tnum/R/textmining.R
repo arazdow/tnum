@@ -119,7 +119,7 @@ tnBooksFromLines <- function(books) {
           tn[[length(tn) + 1]] <-
             tnum.makeObject(subj, "ordinal", ordinal+1)
           tn[[length(tn) + 1]] <-
-            tnum.makeObject(subj, "count:word", stringr::str_count(trimws(sentence)," "))
+            tnum.makeObject(subj, "count:word", stringr::str_count(trimws(sentence)+1," "))
 
           if (length(tn) >= 30) {
             res <- tnum.postObjects(tn)
