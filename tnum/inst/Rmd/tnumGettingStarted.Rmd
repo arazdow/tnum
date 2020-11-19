@@ -111,7 +111,7 @@ tn.objects <- tnum.query("university# has *")
 # create the graph and show all tags
 tgraph <- tnum.makeTnumPhraseGraph(tn.objects, tagpattern = ".+")
 
-tnum.plotGraph(tgraph, style = "tree")
+tnum.plotGraph(tgraph)
 ```
 
 ### Cleaning up after our example

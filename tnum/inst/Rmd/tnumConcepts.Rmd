@@ -1,0 +1,13 @@
+---
+title: "Truenumbers for R:  Concepts"
+author: "[True Engineering Technology, LLC](http://truenum.com) Boston MA" 
+output: html_notebook
+---
+###
+The basic requirement for data in a computer is that values of interest may be stored and retrieved.  At the hardware level, this comes down to binary values in memory referenced by memory addresses, where
+
+
+```{r}
+plot(cars)
+```
+

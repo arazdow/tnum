@@ -14,7 +14,7 @@ tnum.env <- new.env()
 #' @return  List of numberspaces available on the server. The first one on the list is set as current
 #' @export
 
-tnum.authorize <- function(ip = "54.166.186.11") {
+tnum.authorize <- function(ip = "54.158.136.133") {
   assign("tnum.var.ip", ip, envir = tnum.env)
 
 
