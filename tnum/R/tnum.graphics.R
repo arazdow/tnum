@@ -9,7 +9,6 @@
 #' @param start.at  offset at which to begin returning max results
 #'
 #' @return a vector of paths in the taxonomy
-#' @export
 
 tnum.getDatabasePhraseList <-
   function(taxonomy = "subject",
@@ -86,7 +85,6 @@ tnum.getDatabasePhraseList <-
 #' @param levels  limit for how many levels down paths to graph
 #'
 #' @return  Diagrammer graph object
-#' @export
 
 tnum.makePhraseGraphFromPathList <-
   function(pathList = list(),
@@ -264,8 +262,7 @@ tnum.makePhraseGraphFromPathList <-
 #' @param collectors list of gsub patterns for replacement with ### to aggregate subjects
 #'
 #' @return returns a DiagrammeR graph
-#' @export
-#'
+
 tnum.makeTnumPhraseGraph <- function(tlist, tagpattern = "", collectors = list()) {
   # make list of full-tnum paths using --- as "has"
   len <- length(tlist)
@@ -330,7 +327,6 @@ tnum.makeTnumPhraseGraph <- function(tlist, tagpattern = "", collectors = list()
 #' @param size size of plot in pixels
 #'
 #' @return  result of render_graph() call
-#' @export
 
 tnum.plotGraph <- function(gph,style="neato", size=0){
   if(size > 0){
