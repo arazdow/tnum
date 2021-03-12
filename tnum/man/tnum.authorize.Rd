@@ -4,7 +4,7 @@
 \alias{tnum.authorize}
 \title{Connect and authenticate to Truenumbers server}
 \usage{
-tnum.authorize(ip = "54.166.186.11")
+tnum.authorize(ip = "54.158.136.133")
 }
 \arguments{
 \item{ip}{The endpoint address of the server. Default is a public cloud server}

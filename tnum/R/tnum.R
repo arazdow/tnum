@@ -22,7 +22,7 @@ tnum.authorize <- function(ip = "54.158.136.133") {
   result <- httr::POST(
     paste0("http://", tnum.env$tnum.var.ip, "/v1/gateway/"),
     httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
-    body = '{"email":"shared-user-1"}',
+    body = '{"email":"admin@truenumbers.com"}',
     httr::accept("application/json"),
     httr::content_type("application/json")
   )
@@ -46,8 +46,8 @@ tnum.authorize <- function(ip = "54.158.136.133") {
     assign("tnum.var.nspace", nspaces[[1]], envir = tnum.env)
     assign("tnum.var.nspaces", nspaces, envir = tnum.env)
     assign("tnum.var.token", token, envir = tnum.env)
-    tnum.setSpace("shared-testspace")
-    message(paste0("Available spaces: ", paste0(nspaces, collapse = ", ")))
+    tnum.setSpace("testspace")
+    message(paste0("Available spaces: ", paste0(unique(nspaces), collapse = ", ")))
     message(paste0("Numberspace set to: ", tnum.getSpace()))
   }
 }
