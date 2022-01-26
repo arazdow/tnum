@@ -14,42 +14,47 @@ tnum.env <- new.env()
 #' @return  List of numberspaces available on the server. The first one on the list is set as current
 #' @export
 
-tnum.authorize <- function(ip = "54.158.136.133") {
+tnum.authorize <- function(ip = NULL, generation = 1) {
+
+  if(generation == 1){
+    ip = "metrics.truenum.com"
+    message(paste0("Truenumbers Generation One (",ip, ")"))
+  } else if(generation == 2){
+    ip = "pub.truenum.com"
+    message(paste0("Truenumbers Generation Two, (",ip, ")"))
+  } else {
+    message("Generation can only be 1 or 2");
+    return;
+  }
   assign("tnum.var.ip", ip, envir = tnum.env)
-
-
-  ## Get token
-  result <- httr::POST(
-    paste0("http://", tnum.env$tnum.var.ip, "/v1/gateway/"),
-    httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
-    body = '{"email":"admin@truenumbers.com"}',
-    httr::accept("application/json"),
-    httr::content_type("application/json")
-  )
-  payload <- httr::content(result)
-  token <- payload$data$token
-  assign("tnum.var.token", token, envir = tnum.env)
+  assign("tnum.var.generation", generation, envir = tnum.env)
 
   ## get list of numberspaces
+ if(generation == 2){
   result <- httr::GET(
-    paste0("http://", ip, "/v1/numberspace/"),
-    httr::add_headers(Authorization = paste0("Bearer ", token))
+    paste0("http://", ip, "/v2/numberspace/"),
   )
   nspaces <- list()
   payload <- httr::content(result)
   if (!is.null(payload$code)) {
-    message(payload$code)
+    message(payload)
+    return
   } else {
-    for (x in httr::content(result)$data) {
+    for (x in httr::content(result)) {
       nspaces <- append(nspaces, x[[2]])
     }
+  }
+ } else {
+   ## gen 1
+
+ }
     assign("tnum.var.nspace", nspaces[[1]], envir = tnum.env)
     assign("tnum.var.nspaces", nspaces, envir = tnum.env)
-    assign("tnum.var.token", token, envir = tnum.env)
+
     tnum.setSpace("testspace")
     message(paste0("Available spaces: ", paste0(unique(nspaces), collapse = ", ")))
     message(paste0("Numberspace set to: ", tnum.getSpace()))
-  }
+
 }
 
 #' Create new numberspace
@@ -150,7 +155,7 @@ tnum.query <- function(query = "* has *",
 }
 
 #' Convert tnum query result to an object list
-#'
+#' @noRd
 #' @param result from a tnum API query
 #' @param SI if TRUE, the object will reflect numerical SI values
 #' @param max maximum rows to return
@@ -322,17 +327,17 @@ tnum.tagByQuery <- function(query = "",
 
 #' Title
 #'
-#' @param obs
-#' @param attname
-#' @param rval
+#' @param obs list of tnum objects
+#' @param attname attribute name
+#' @param defaultValue default value to use if attribute not present
 #'
 #' @return
 #' @export
 #'
 
-tnum.getAttrFromList <- function(obs, attname, rval=NA) {
-  if(!is.na(rval) && rval == "list"){
-    rval <- NA
+tnum.getAttrFromList <- function(obs, attname, defaultValue=NA) {
+  if(is.list(defaultValue)){
+    defaultValue <- NA
     ll <- list()
   } else {
     ll <- vector()
@@ -340,7 +345,7 @@ tnum.getAttrFromList <- function(obs, attname, rval=NA) {
   for(i in 1:length(obs)){
     atv <- attr(obs[[i]],attname)
     if(is.null(atv)){
-      ll[[i]] <- rval
+      ll[[i]] <- defaultValue
     } else {
       ll[[i]] <- atv
     }
@@ -375,7 +380,7 @@ tnum.objectsToDf <- function(objs) {
   errs <-
     as.vector(mode = "numeric", tnum.getAttrFromList(objs, "error", NA))
   uns <- tnum.getAttrFromList(objs, "unit", NA)
-  tgs <- tnum.getAttrFromList(objs, "tags", "list")
+  tgs <- tnum.getAttrFromList(objs, "tags", list())
   tgschar <- vector(mode = "character")
   for(i in 1:len){
     if(is.list(tgs[[i]]))
@@ -461,7 +466,7 @@ tnum.dateAsToken <- function() {
 
 
 #' Create a JSON truenumber from parts
-#'
+#' @noRd
 #' @param subject
 #' @param property
 #' @param value
@@ -640,7 +645,7 @@ tnum.postObjects <-
     property <- tnum.getAttrFromList(objects, "property", "property")
     error <- tnum.getAttrFromList(objects, "error")
     unit <- tnum.getAttrFromList(objects, "unit")
-    tags <- tnum.getAttrFromList(objects, "tags", rval = "list")
+    tags <- tnum.getAttrFromList(objects, "tags", defaultValue = list())
     tnum.postFromLists(subject, property, objects, error, unit, tags)
   }
 
