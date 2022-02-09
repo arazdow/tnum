@@ -1,7 +1,7 @@
 ## retrieve taxonomies
 
 #' Get phrase taxonomies
-#'
+#' @noRd
 #' @param taxonomy string, one of "subject", "property", or "tags"
 #' @param pattern  a tnum path with path-wildcard #, or string-wildcard * to restrict what tree is returned.
 #' @param levels How deep to go in the taxonomy
@@ -80,6 +80,7 @@ tnum.getDatabasePhraseList <-
 
 #' Get a DiagrammeR tree for rendering, from a list of SRD paths
 #'
+#' @noRd
 #' @param pathList list of phrase path strings
 #' @param rootLabel  a lable for the root of the graph
 #' @param levels  limit for how many levels down paths to graph
@@ -256,7 +257,7 @@ tnum.makePhraseGraphFromPathList <-
   }
 
 #' Make full tnum graph from tnum.query return data frame
-#'
+#' @noRd
 #' @param tlist list of tnum objects as returned from tnum.query
 #' @param tagpattern regexp to select tags to include in graph
 #' @param collectors list of gsub patterns for replacement with ### to aggregate subjects
@@ -321,7 +322,7 @@ tnum.makeTnumPhraseGraph <- function(tlist, tagpattern = "", collectors = list()
 }
 
 #' Plot DiagrammeR graph
-#'
+#' @noRd
 #' @param gph the graph df
 #' @param style what DiagrammeR calls "layout" = tree,nicely,neato,kk, or fr
 #' @param size size of plot in pixels
@@ -380,7 +381,7 @@ tnum.graphPathList <-
     tnum.plotGraph(gph,style,0)
   }
 
-#' Make full tnum graph from tnum.query return data frame
+#' Make full tnum graph from list of tnum objects
 #'
 #' @param tlist list of tnum objects as returned from tnum.query
 #' @param tagpattern regexp to select tags to include in graph

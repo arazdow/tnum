@@ -14,13 +14,17 @@ tnum.env <- new.env()
 #' @return  List of numberspaces available on the server. The first one on the list is set as current
 #' @export
 
-tnum.authorize <- function(ip = NULL, generation = 1) {
+tnum.authorize <- function(ip = NULL, generation = 1, creds="user:password") {
 
   if(generation == 1){
-    ip = "metrics.truenum.com"
+    if(is.null(ip)){
+      ip = "metrics.truenum.com:8080"
+    }
     message(paste0("Truenumbers Generation One (",ip, ")"))
   } else if(generation == 2){
-    ip = "pub.truenum.com"
+    if(is.null(ip)){
+      ip = "pub.truenum.com"
+    }
     message(paste0("Truenumbers Generation Two, (",ip, ")"))
   } else {
     message("Generation can only be 1 or 2");
@@ -28,11 +32,12 @@ tnum.authorize <- function(ip = NULL, generation = 1) {
   }
   assign("tnum.var.ip", ip, envir = tnum.env)
   assign("tnum.var.generation", generation, envir = tnum.env)
+  assign("tnum.var.auth", creds, envir = tnum.env)
 
   ## get list of numberspaces
  if(generation == 2){
   result <- httr::GET(
-    paste0("http://", ip, "/v2/numberspace/"),
+    paste0("http://", ip, "/v2/numberflow/numberspace/"),
   )
   nspaces <- list()
   payload <- httr::content(result)
@@ -40,18 +45,33 @@ tnum.authorize <- function(ip = NULL, generation = 1) {
     message(payload)
     return
   } else {
-    for (x in httr::content(result)) {
-      nspaces <- append(nspaces, x[[2]])
+    for (x in payload$numberspace) {
+      x <- substr(x,21, nchar(x))
+      nspaces <- append(nspaces, x)
     }
   }
  } else {
    ## gen 1
+   result <- httr::GET(
+     paste0("http://", ip, "/Numberflow/API?cmd=get-spaces&auth=", creds)
+   )
+   nspaces <- list()
+   payload <- httr::content(result, as = "text", encoding = "UTF-8")
+   jResult = fromJSON(payload)
+   if (!is.null(jResult$error)) {
+     message(jResult$error)
+     return()
+   } else {
+     for (x in jResult$numberspaces) {
+       nspaces <- append(nspaces, x)
+     }
+   }
 
  }
-    assign("tnum.var.nspace", nspaces[[1]], envir = tnum.env)
+
     assign("tnum.var.nspaces", nspaces, envir = tnum.env)
 
-    tnum.setSpace("testspace")
+    tnum.setSpace(nspaces[1])
     message(paste0("Available spaces: ", paste0(unique(nspaces), collapse = ", ")))
     message(paste0("Numberspace set to: ", tnum.getSpace()))
 
@@ -64,6 +84,7 @@ tnum.authorize <- function(ip = NULL, generation = 1) {
 #' @export
 
 tnum.createSpace <- function(name) {
+  if(tnum.env$tnum.var.generation == 2){
   result <- httr::POST(
     paste0("http://", tnum.env$tnum.var.ip, "/v1/numberspace/"),
     httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
@@ -72,6 +93,10 @@ tnum.createSpace <- function(name) {
     httr::content_type("application/json")
   )
   return(httr::content(result))
+  } else {
+    ##gen1
+    message("Gen 1: Use web dashboard to create numberspaces")
+  }
 }
 
 #' Set a particular numberspace as current
@@ -116,6 +141,7 @@ tnum.query <- function(query = "* has *",
                        SI = FALSE,
                        max = 10,
                        start = 0) {
+
   args <-
     list(
       numberspace = tnum.env$tnum.var.nspace,
@@ -123,7 +149,7 @@ tnum.query <- function(query = "* has *",
       offset = start,
       tnql = query
     )
-
+  if(tnum.env$tnum.var.generation == 2){
   result <-
     httr::content(httr::GET(
       paste0("http://", tnum.env$tnum.var.ip, "/v1/numberspace/numbers"),
@@ -152,6 +178,39 @@ tnum.query <- function(query = "* has *",
 
   assign("tnum.var.result", result, envir = tnum.env)
   return(tnum.queryResultToObjects(result, SI, max))
+  } else {
+    ##gen1
+    result <- httr::GET(paste0("http://", tnum.env$tnum.var.ip, "/Numberflow/API"),
+          query =list( cmd="dashboard-search", ns = tnum.env$tnum.var.nspace,
+                      auth = tnum.env$tnum.var.auth,
+                      string = "json", qry = query))
+
+    payload <- httr::content(result, as = "text", encoding = "UTF-8")
+    jResult = fromJSON(payload)
+    numReturned <- length(result$data$truenumbers)
+    if (numReturned > max) {
+      numReturned <- max
+    }
+    first <- 0
+    if (numReturned > 0) {
+      first <- start + 1
+    }
+    message(
+      paste0(
+        "Returned ",
+        first,
+        " thru ",
+        start + numReturned,
+        " of ",
+        result$data$meta$records,
+        " results"
+      )
+    )
+
+    assign("tnum.var.result", result, envir = tnum.env)
+    return(tnum.queryResultToObjects(result, SI, max))
+
+  }
 }
 
 #' Convert tnum query result to an object list

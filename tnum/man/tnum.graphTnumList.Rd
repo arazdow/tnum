@@ -2,7 +2,7 @@
 % Please edit documentation in R/tnum.graphics.R
 \name{tnum.graphTnumList}
 \alias{tnum.graphTnumList}
-\title{Make full tnum graph from tnum.query return data frame}
+\title{Make full tnum graph from list of tnum objects}
 \usage{
 tnum.graphTnumList(
   tlist,
@@ -21,5 +21,5 @@ tnum.graphTnumList(
 \item{style}{what DiagrammeR calls "layout" = tree,nicely,neato,kk, or fr}
 }
 \description{
-Make full tnum graph from tnum.query return data frame
+Make full tnum graph from list of tnum objects
 }

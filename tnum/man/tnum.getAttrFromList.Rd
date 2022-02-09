@@ -4,10 +4,14 @@
 \alias{tnum.getAttrFromList}
 \title{Title}
 \usage{
-tnum.getAttrFromList(obs, attname, rval = NA)
+tnum.getAttrFromList(obs, attname, defaultValue = NA)
 }
 \arguments{
-\item{rval}{}
+\item{obs}{list of tnum objects}
+
+\item{attname}{attribute name}
+
+\item{defaultValue}{default value to use if attribute not present}
 }
 \value{
 
