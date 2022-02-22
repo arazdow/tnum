@@ -1,6 +1,8 @@
 
 
 
+
+
 # Vars local to this file
 
 #' @export
@@ -14,60 +16,33 @@ tnum.env <- new.env()
 #' @return  List of numberspaces available on the server. The first one on the list is set as current
 #' @export
 
-tnum.authorize <- function(ip = NULL, generation = 1, creds="user:password") {
-
-  if(generation == 1){
-    if(is.null(ip)){
-      ip = "metrics.truenum.com:8080"
-    }
-    message(paste0("Truenumbers Generation One (",ip, ")"))
-  } else if(generation == 2){
-    if(is.null(ip)){
-      ip = "pub.truenum.com"
-    }
-    message(paste0("Truenumbers Generation Two, (",ip, ")"))
-  } else {
-    message("Generation can only be 1 or 2");
-    return;
+tnum.authorize <- function(ip = NULL, creds = "user:password") {
+  if (is.null(ip)) {
+    ip = "metrics.truenum.com:8080"
   }
+  message(paste0("Truenumbers (", ip, ")"))
+
   assign("tnum.var.ip", ip, envir = tnum.env)
-  assign("tnum.var.generation", generation, envir = tnum.env)
   assign("tnum.var.auth", creds, envir = tnum.env)
 
   ## get list of numberspaces
- if(generation == 2){
-  result <- httr::GET(
-    paste0("http://", ip, "/v2/numberflow/numberspace/"),
-  )
+
+  result <- httr::GET(paste0(
+    "http://",
+    ip,
+    "/Numberflow/API?cmd=get-spaces&auth=",
+    creds
+  ))
   nspaces <- list()
-  payload <- httr::content(result)
-  if (!is.null(payload$code)) {
-    message(payload)
-    return
+  payload <- httr::content(result, as = "text", encoding = "UTF-8")
+  jResult = fromJSON(payload)
+  if (!is.null(jResult$error)) {
+    message(jResult$error)
+    return()
   } else {
-    for (x in payload$numberspace) {
-      x <- substr(x,21, nchar(x))
+    for (x in jResult$numberspaces) {
       nspaces <- append(nspaces, x)
     }
-  }
- } else {
-   ## gen 1
-   result <- httr::GET(
-     paste0("http://", ip, "/Numberflow/API?cmd=get-spaces&auth=", creds)
-   )
-   nspaces <- list()
-   payload <- httr::content(result, as = "text", encoding = "UTF-8")
-   jResult = fromJSON(payload)
-   if (!is.null(jResult$error)) {
-     message(jResult$error)
-     return()
-   } else {
-     for (x in jResult$numberspaces) {
-       nspaces <- append(nspaces, x)
-     }
-   }
-
- }
 
     assign("tnum.var.nspaces", nspaces, envir = tnum.env)
 
@@ -75,6 +50,7 @@ tnum.authorize <- function(ip = NULL, generation = 1, creds="user:password") {
     message(paste0("Available spaces: ", paste0(unique(nspaces), collapse = ", ")))
     message(paste0("Numberspace set to: ", tnum.getSpace()))
 
+  }
 }
 
 #' Create new numberspace
@@ -84,19 +60,7 @@ tnum.authorize <- function(ip = NULL, generation = 1, creds="user:password") {
 #' @export
 
 tnum.createSpace <- function(name) {
-  if(tnum.env$tnum.var.generation == 2){
-  result <- httr::POST(
-    paste0("http://", tnum.env$tnum.var.ip, "/v1/numberspace/"),
-    httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token)),
-    body = paste0('{"numberspace":"', name, '"}'),
-    httr::accept("application/json"),
-    httr::content_type("application/json")
-  )
-  return(httr::content(result))
-  } else {
-    ##gen1
-    message("Gen 1: Use web dashboard to create numberspaces")
-  }
+  message("Use web dashboard to create numberspaces")
 }
 
 #' Set a particular numberspace as current
@@ -141,7 +105,6 @@ tnum.query <- function(query = "* has *",
                        SI = FALSE,
                        max = 10,
                        start = 0) {
-
   args <-
     list(
       numberspace = tnum.env$tnum.var.nspace,
@@ -149,17 +112,27 @@ tnum.query <- function(query = "* has *",
       offset = start,
       tnql = query
     )
-  if(tnum.env$tnum.var.generation == 2){
+
+  ##gen1
   result <-
-    httr::content(httr::GET(
-      paste0("http://", tnum.env$tnum.var.ip, "/v1/numberspace/numbers"),
-      query = args,
-      httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token))
-    ))
-  numReturned <- length(result$data$truenumbers)
-  if (numReturned > max) {
-    numReturned <- max
-  }
+    httr::GET(
+      paste0("http://", tnum.env$tnum.var.ip, "/Numberflow/API"),
+      query = list(
+        cmd = "dashboard-search",
+        ns = tnum.env$tnum.var.nspace,
+        auth = tnum.env$tnum.var.auth,
+        string = "json",
+        qry = query,
+        limit = max,
+        offset = start
+      )
+    )
+
+  payload <-
+    httr::content(result, as = "text", encoding = "UTF-8")
+  jResult = fromJSON(payload)
+  numReturned <- length(jResult$truenumbers$subject)
+
   first <- 0
   if (numReturned > 0) {
     first <- start + 1
@@ -167,50 +140,17 @@ tnum.query <- function(query = "* has *",
   message(
     paste0(
       "Returned ",
-      first,
-      " thru ",
-      start + numReturned,
-      " of ",
-      result$data$meta$records,
+       numReturned,
+
       " results"
     )
   )
 
-  assign("tnum.var.result", result, envir = tnum.env)
-  return(tnum.queryResultToObjects(result, SI, max))
-  } else {
-    ##gen1
-    result <- httr::GET(paste0("http://", tnum.env$tnum.var.ip, "/Numberflow/API"),
-          query =list( cmd="dashboard-search", ns = tnum.env$tnum.var.nspace,
-                      auth = tnum.env$tnum.var.auth,
-                      string = "json", qry = query))
+  assign("tnum.var.result", jResult, envir = tnum.env)
+  return(jResult$truenumbers)
+ # return(tnum.queryResultToObjects(result, SI, max, start))
 
-    payload <- httr::content(result, as = "text", encoding = "UTF-8")
-    jResult = fromJSON(payload)
-    numReturned <- length(result$data$truenumbers)
-    if (numReturned > max) {
-      numReturned <- max
-    }
-    first <- 0
-    if (numReturned > 0) {
-      first <- start + 1
-    }
-    message(
-      paste0(
-        "Returned ",
-        first,
-        " thru ",
-        start + numReturned,
-        " of ",
-        result$data$meta$records,
-        " results"
-      )
-    )
 
-    assign("tnum.var.result", result, envir = tnum.env)
-    return(tnum.queryResultToObjects(result, SI, max))
-
-  }
 }
 
 #' Convert tnum query result to an object list
@@ -222,7 +162,7 @@ tnum.query <- function(query = "* has *",
 
 
 tnum.queryResultToObjects <-
-  function(result, SI = FALSE, max = 100) {
+  function(result, SI = FALSE, max = 100, start = 0) {
     decodenumber <- function(tn) {
       subj <- tn$subject[[1]]
       prop <- tn$property[[1]]
@@ -236,9 +176,9 @@ tnum.queryResultToObjects <-
       dat <- as.Date(tn$agent$dateCreated)
 
       if (SI) {
-        valstruc <- tn$si - value
+        valstruc <- tn$value$si_value
       } else {
-        valstruc <- tn$value
+        valstruc <- tn$value$value
       }
 
       if (valstruc$type == "numeric" ||
@@ -332,7 +272,9 @@ tnum.deleteByQuery <- function(query = "") {
 
   result <-
     httr::content(httr::DELETE(
-      paste0("http://", tnum.env$tnum.var.ip, "/v1/numberspace/numbers"),
+      paste0("http://",
+             tnum.env$tnum.var.ip,
+             "/v1/numberspace/numbers"),
       query = args,
       httr::add_headers(Authorization = paste0("Bearer ", tnum.env$tnum.var.token))
     ))
@@ -394,23 +336,24 @@ tnum.tagByQuery <- function(query = "",
 #' @export
 #'
 
-tnum.getAttrFromList <- function(obs, attname, defaultValue=NA) {
-  if(is.list(defaultValue)){
-    defaultValue <- NA
-    ll <- list()
-  } else {
-    ll <- vector()
-  }
-  for(i in 1:length(obs)){
-    atv <- attr(obs[[i]],attname)
-    if(is.null(atv)){
-      ll[[i]] <- defaultValue
+tnum.getAttrFromList <-
+  function(obs, attname, defaultValue = NA) {
+    if (is.list(defaultValue)) {
+      defaultValue <- NA
+      ll <- list()
     } else {
-      ll[[i]] <- atv
+      ll <- vector()
     }
-  }
+    for (i in 1:length(obs)) {
+      atv <- attr(obs[[i]], attname)
+      if (is.null(atv)) {
+        ll[[i]] <- defaultValue
+      } else {
+        ll[[i]] <- atv
+      }
+    }
     return(ll)
-}
+  }
 
 
 
@@ -441,16 +384,18 @@ tnum.objectsToDf <- function(objs) {
   uns <- tnum.getAttrFromList(objs, "unit", NA)
   tgs <- tnum.getAttrFromList(objs, "tags", list())
   tgschar <- vector(mode = "character")
-  for(i in 1:len){
-    if(is.list(tgs[[i]]))
-      tgschar[[i]] <- paste0(tgs[[i]],collapse = ",")
-    else tgschar[[i]] <- NA
+  for (i in 1:len) {
+    if (is.list(tgs[[i]]))
+      tgschar[[i]] <- paste0(tgs[[i]], collapse = ",")
+    else
+      tgschar[[i]] <- NA
   }
   tgs <- tgschar
   dat <- tnum.getAttrFromList(objs, "date", NA)
   gid <- tnum.getAttrFromList(objs, "guid", NA)
   df <-
-    data.frame(#cbind(
+    data.frame(
+      #cbind(
       subject = subj,
       property = prop,
       string.value = chrs,
@@ -461,8 +406,8 @@ tnum.objectsToDf <- function(objs) {
       date = dat,
       guid = gid#)
     )
-  if(is.numeric(dat[[1]]))
-    df$date <- as.Date(as.numeric(df$date),origin = "1970-01-01")
+  if (is.numeric(dat[[1]]))
+    df$date <- as.Date(as.numeric(df$date), origin = "1970-01-01")
   return(df)
 }
 
@@ -486,18 +431,18 @@ tnum.makeObject <-
            dat = NA,
            gid = NA) {
     #if(!is.numeric(value) && !stringr::str_detect(value,"^[0-91-zA-Z-:/_]+$"))
-      #value <- paste0('"', value, '"')
+    #value <- paste0('"', value, '"')
 
     if (!is.na(error))
       attr(value, "error") <- error
     if (!is.na(unit))
       attr(value, "unit") <- unit
 
-      if(is.list(tags) || (length(tags)>1)){
-        attr(value, "tags") <- tags
-      } else if(!is.na(tags)){
-        attr(value, "tags") <- list(tags)
-      }
+    if (is.list(tags) || (length(tags) > 1)) {
+      attr(value, "tags") <- tags
+    } else if (!is.na(tags)) {
+      attr(value, "tags") <- list(tags)
+    }
 
 
     attr(value, 'class') <- "tnum"
@@ -569,7 +514,7 @@ tnum.makeTnumJson <- function(subject = "something",
       numval <- value
       if (!stringr::str_starts(numval, '"') &&
           !stringr::str_detect(numval, "^[0-9a-zA-Z/:\\-_]+$")) {
-        numval <- str_replace_all(numval,"\"","\\\\\\\"")
+        numval <- str_replace_all(numval, "\"", "\\\\\\\"")
         numval <-
           paste0("\\\"", numval, "\\\"") ## if not SRD, and not quoted text, then add quotes
       }
@@ -674,10 +619,10 @@ tnum.postFromLists <-
           httr::accept("application/json"),
           httr::content_type("application/json")
         )
-        if(result$status_code > 199 && result$status_code < 230)
-        message(paste0("Posting ", chunkcount, " characters"))
+        if (result$status_code > 199 && result$status_code < 230)
+          message(paste0("Posting ", chunkcount, " characters"))
         else {
-          message(paste0("ERROR CODE: ",result$status_code," in POST "))
+          message(paste0("ERROR CODE: ", result$status_code, " in POST "))
         }
         chunkcount <- 0
         jsonnums <- ""
@@ -697,14 +642,16 @@ tnum.postFromLists <-
 
 tnum.postObjects <-
   function(objects) {
-    if(!(is.list(objects) || is.vector(objects))){
+    if (!(is.list(objects) || is.vector(objects))) {
       objects <- list(objects)
     }
-    subject <- tnum.getAttrFromList(objects, "subject","subject")
-    property <- tnum.getAttrFromList(objects, "property", "property")
+    subject <- tnum.getAttrFromList(objects, "subject", "subject")
+    property <-
+      tnum.getAttrFromList(objects, "property", "property")
     error <- tnum.getAttrFromList(objects, "error")
     unit <- tnum.getAttrFromList(objects, "unit")
-    tags <- tnum.getAttrFromList(objects, "tags", defaultValue = list())
+    tags <-
+      tnum.getAttrFromList(objects, "tags", defaultValue = list())
     tnum.postFromLists(subject, property, objects, error, unit, tags)
   }
 
