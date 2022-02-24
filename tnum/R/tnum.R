@@ -169,7 +169,7 @@ tnum.deleteByQuery <- function(query = "") {
 #' @param unit
 #' @param notes
 #'
-tnum.buildTnStatement <- function(subject = "something",
+tnum.buildStatement <- function(subject = "something",
                             property = "property",
                             value = NA,
                             error = NA,
