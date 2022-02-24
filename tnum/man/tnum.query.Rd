@@ -2,22 +2,20 @@
 % Please edit documentation in R/tnum.R
 \name{tnum.query}
 \alias{tnum.query}
-\title{Query the truenumber DB}
+\title{Query the truenumber server}
 \usage{
-tnum.query(query = "* has *", SI = FALSE, max = 10, start = 0)
+tnum.query(query = "* has *", max = 10, start = 0)
 }
 \arguments{
 \item{query}{string in tnum query language}
 
-\item{SI}{if TRUE, returns the SI value}
-
-\item{max}{maximum nuber of truenumbers to return}
+\item{max}{maximum number of truenumbers to return}
 
 \item{start}{begin return with this sequence number}
 }
 \value{
-a list of tnum class vaues
+a list of json truenumbers
 }
 \description{
-Query the truenumber DB
+Query the truenumber server
 }

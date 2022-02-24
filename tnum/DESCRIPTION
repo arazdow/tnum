@@ -1,14 +1,14 @@
 Package: tnum
 Type: Package
-Title: An R Interface for Truenumbers
-Version: 0.3.3
-Author: Allen Razdow
+Title: An R Interface for Truenumbers (Generation 1)
+Version: 1.0.3
+Author: Allen Razdow - True Engineering Technology (www.truenum.com)
 Maintainer: <arazdow@truenum.com>
 Description: Truenumbers (TN) is a novel data representation that is domain independent and human readable. It can integrate varied data source under a single query language, and allow annotation for classification, quality metrics, and analysis results.
 License: MIT
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.2
 Imports:
-  httr, jsonlite,utils, data.tree, stringr, DiagrammeR, sticky
+  httr, jsonlite,utils, data.tree, stringr, DiagrammeR
 Suggested:

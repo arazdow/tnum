@@ -9,9 +9,6 @@ tnum.setSpace(name = "testspace")
 \arguments{
 \item{name}{Name of numberspace}
 }
-\value{
--none-
-}
 \description{
 Set a particular numberspace as current
 }

@@ -7,7 +7,7 @@
 tnum.getSpace()
 }
 \value{
--none-
+name of the current numberspace
 }
 \description{
 Get current numberspace name
