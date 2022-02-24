@@ -13,9 +13,6 @@ tnum.buildStatement(
   notes = ""
 )
 }
-\arguments{
-\item{notes}{}
-}
 \description{
 Build a truenumber sentence from parts
 }

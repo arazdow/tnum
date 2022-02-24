@@ -168,6 +168,7 @@ tnum.deleteByQuery <- function(query = "") {
 #' @param error
 #' @param unit
 #' @param notes
+#' @export
 #'
 tnum.buildStatement <- function(subject = "something",
                             property = "property",
@@ -183,7 +184,7 @@ tnum.buildStatement <- function(subject = "something",
       unitSuffix <- paste0(" ", unit)
     }
     if (!(is.null(error) || is.na(error))) {
-      numval <- paste0(value, " +/- ", numeric.error, unitSuffix)
+      numval <- paste0(value, " +/- ", error, unitSuffix)
     } else {
       numval <- paste0(value, unitSuffix)
     }
