@@ -2,17 +2,16 @@
 % Please edit documentation in R/tnum.R
 \name{tnum.buildStatement}
 \alias{tnum.buildStatement}
-\title{Build a truenumber sentence from parts}
+\title{Build a truenumber statement from parts}
 \usage{
 tnum.buildStatement(
   subject = "something",
   property = "property",
   value = NA,
   error = NA,
-  unit = "",
-  notes = ""
+  unit = ""
 )
 }
 \description{
-Build a truenumber sentence from parts
+Build a truenumber statement from parts
 }

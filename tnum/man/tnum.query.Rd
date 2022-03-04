@@ -14,7 +14,7 @@ tnum.query(query = "* has *", max = 10, start = 0)
 \item{start}{begin return with this sequence number}
 }
 \value{
-a list of json truenumbers
+list of json truenumber as received from server
 }
 \description{
 Query the truenumber server

@@ -105,7 +105,7 @@ tnum.getSpace <- function() {
 #' @param max    maximum number of truenumbers to return
 #' @param start  begin return with this sequence number
 #'
-#' @return  a list of json truenumbers
+#' @returns list of json truenumber as received from server
 #' @export
 #'
 
@@ -160,22 +160,77 @@ tnum.deleteByQuery <- function(query = "") {
 # Truenumber creation functions  #
 
 ########################################################
-#' Build a truenumber sentence from parts
+#'@title add a tag to a truenumber
+#'
+#' @param guid  ID of the tn to be tagged
+#' @param tag  path of tag
+#' @param text comment for tagging action
+#' @export
+#'
+
+# create tag (fails quietly if exists already)
+tnum.addTag <- function(guid, tag, text = "") {
+  tnum.callApi("create-tag", list(
+    srd = tag,
+    comment = text,
+    nspace = tnum.env$tnum.var.nspace
+  )
+  )
+
+# apply tag
+
+  jResult <-
+    tnum.callApi("tag-base", list(
+      srd = tag,
+      comment = text,
+      nspace = tnum.env$tnum.var.nspace,
+      base = guid
+    )
+    )
+
+}
+
+########################################################
+#'@title add a part to a truenumber (internal only)
+#'
+#' @param guid  ID of the tn to be tagged
+#' @param tag  path of tag
+#' @param text comment for tagging action
+#' @noRd
+#'
+
+tnum.addPart <- function(guid, tag, text = "") {
+  jResult <-
+    tnum.callApi("tag-base", list(
+      srd = tag,
+      comment = text,
+      nspace = tnum.env$tnum.var.nspace,
+      part = TRUE,
+      base = guid
+    )
+    )
+
+}
+
+
+
+
+########################################################
+#' Build a truenumber statement from parts
 #'
 #' @param subject
 #' @param property
 #' @param value
 #' @param error
 #' @param unit
-#' @param notes
 #' @export
 #'
 tnum.buildStatement <- function(subject = "something",
                             property = "property",
                             value = NA,
                             error = NA,
-                            unit = "",
-                            notes = "")
+                            unit = ""
+                            )
 {
   numval <- NA
   if (mode(value) == "numeric") {
@@ -206,15 +261,57 @@ tnum.buildStatement <- function(subject = "something",
            ' = ',
            numval)
 
-  if(notes != ""){
-    thenumber <-
-      paste0(
-        thenumber,
-        ' //',
-        notes
-      )
-  }
 
   return(thenumber)
 }
+
+########################################################
+#' Post a truenumber statement
+#'
+#' @param stmt  well-formed truenumber sentence
+#' @param  notes  text description associated with the truenumber
+#' @param tags   a list of tags. Each can be a tag or c("tag","comment"). default is timestamp "R:2022:02:26:12:24:33:EST"
+#' @returns GUID of the new truenumber
+#' @export
+#'
+tnum.postStatement <- function(stmt,
+                               notes = "",
+                               tags = list(`source:R` = tnum.dateToken())
+                               )
+{
+  if(chars(notes) > 0){
+    stmt = paste0(stmt," // ",notes)
+  }
+
+  theTn = tnum.callApi("enter-unibox",
+                        list(
+                           ubox = stmt,
+                           ns = tnum.env$tnum.var.nspace,
+                           nostore = "true"
+                           )
+             )
+
+  strtGuid <- stringr::str_locate(theTn, "\\?guid=")[[2]]+1
+  endGuid <- stringr::str_locate(theTn, "\\&base=")[[1]]
+  theGuid <- stringr::str_sub(theTn, strtGuid, endGuid )
+
+  for(tg in tags){
+    tnum.addTag(theGUid, tg)
+  }
+
+ theGuid
+
+}
+
+########################################################
+########################################################
+#' Utility functions
+#' @noRd
+#'
+
+tnum.dateToken <- function(){
+  tokenized = stringr::str_replace_all(now(), " ","_")
+  tokenized = stringr::str_replace_all(tokenized, ":",".")
+}
+
 
