@@ -12,6 +12,17 @@ tnum.buildStatement(
   unit = ""
 )
 }
+\arguments{
+\item{subject}{TN subject}
+
+\item{property}{TN property}
+
+\item{value}{TN value}
+
+\item{error}{std error for numerical value}
+
+\item{unit}{units of measure like m/s^2}
+}
 \description{
 Build a truenumber statement from parts
 }

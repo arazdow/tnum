@@ -42,66 +42,23 @@ The subject  **fulltime undergraduate students of montclair state university ** 
 Let's make truenum JSON objects for them:
 
 ```{r}
-
 tn1 <- tnum.postStatement(
   stmt = "number of fulltime undergraduate students of colorado state university is 15646",
   notes = "Our first truenumber"
 )
 
 tn2 <- tnum.postStatement( stmt = "montclair state university has graduation rate = 58%", notes = "Our second truenumber")
-
-View(tn1)
-
 ```
 
 ```{r}
+df <- tnum.jsonArray(list(tn1,tn2))
+
+kable(df[,1:7])
+```
+```{r}
+kable(df[,8:length(df)])
 
 ```
+
 ### Visualizing description trees
-
-Truenumber path phrases naturally imply trees the way filename paths do, revealing  relationships among data items in a useful way.  
-
-Package *tnum* uses *data.tree* and *Diagrammer* for managing tree structures and graphs in its truenumber plotting functions. Let's see them in action.  First, we try a utility that creates a graph from a list of tnum paths, delimited by the **:** and **/** characters. We apply it to the *subject* column of the tnum data frame of aircraft data: 
-
-
-```{r}
-
-# Use tnum function to generate a graph from the subject column of the data frame of tnums
-
-graph <- tnum.makePhraseGraphFromPathList(returned.objects.frame$subject)
-
-# Use the tnum rendering function to display it as a graph:
-
-tnum.plotGraph(graph)
-```
-These plots render tnum paths in keeping with their intent as encodings of descriptive phrases.  In the phrase "students of montclair state university", or **university:state:montclair/students**, "state" functions as an adjective modifying noun "university" in a rounded shape. The square node and solid arrow denote that binding of adjective and noun as an entity description.  The "students of" or **/students** is a possessive form, shown as the dotted relationship arrow.  It's important to keep in mind that these encode descriptions, not specific structural relationships as a class or entity-relationship diagram would.  Think of phrases as explicit versions of what would normally be unstructured metadata like variable names or column names. 
-
-### Adding knowledge with tags
-
-For now, we can assume that state universities are public institutions.  Let's add this information to our tnums by applying appropriate tag:
-```{r}
-# add a tag to institutions named "... state university"
-tnum.tagByQuery("university:state# has *",list("institution:public"))
-
-```
-Now let's use a function that graphs tnum subjects, properties and tags together:
-```{r}
-# first re-query the database to get the new tags
-tn.objects <- tnum.query("university# has *")
-
-# create the graph and show all tags
-tgraph <- tnum.makeTnumPhraseGraph(tn.objects, tagpattern = ".+")
-
-tnum.plotGraph(tgraph)
-```
-
-### Cleaning up after our example
-
-If we use tags and phrases with enough specificity, we can keep our truenumbers around.  If we choose to clean some of them up, We can use a query not to retrieve, but to delete and select tnums:
-```{r}
-tnum.deleteByQuery("university# has *")
-```
-
-
-
 

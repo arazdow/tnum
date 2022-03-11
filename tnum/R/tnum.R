@@ -255,13 +255,13 @@ tnum.removeTag <- function(tag, number) {
 }
 
 ########################################################
-#' Build a truenumber statement from parts
+#' @title Build a truenumber statement from parts
 #'
-#' @param subject
-#' @param property
-#' @param value
-#' @param error
-#' @param unit
+#' @param subject TN subject
+#' @param property TN property
+#' @param value TN value
+#' @param error std error for numerical value
+#' @param unit  units of measure like m/s^2
 #' @export
 #'
 tnum.buildStatement <- function(subject = "something",
@@ -329,6 +329,10 @@ tnum.postStatement <- function(stmt,
 
   theTn = tnum.callApi("enter-unibox", args)
 
+  if(!is.null(theTn$error)){
+    return(theTn$error)
+  }
+
   strtGuid <- stringr::str_locate(theTn, "\\?guid=")[[2]]+1
   endGuid <- stringr::str_locate(theTn, "\\&base=")[[1]] -1
   theGuid <- stringr::str_sub(theTn, strtGuid, endGuid )
@@ -340,10 +344,31 @@ tnum.postStatement <- function(stmt,
       tnum.addTag(theGUid, tg)
     }
   }
+  theTn <- tnum.callApi("htn-from-guid", list(guid = theGuid, core = "yes"))
 
- return(theCore)
+  return(theTn)
 
 }
+
+########################################################
+#' @title make a json array from a list of json objects
+#' @param objectList  the list of json objects
+#' @returns json array in R format (jsonlite)
+#' @export
+
+tnum.jsonArray <- function(objectList){
+  jsonString <- "["
+  delim <- ""
+  for(ob in objectList){
+    jsonString <- paste0(jsonString,delim,toJSON(ob))
+    delim <- ","
+  }
+  jsonString <- paste0(jsonString,"]")
+
+  return(fromJSON(jsonString))
+}
+
+
 
 ########################################################
 ########################################################
