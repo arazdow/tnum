@@ -4,12 +4,12 @@
 \alias{tnum.removeTag}
 \title{remove a tag from a truenumber}
 \usage{
-tnum.removeTag(tag, number)
+tnum.removeTag(number, tag)
 }
 \arguments{
-\item{tag}{matching the tag(s) to remove}
-
 \item{number}{GUID of the number}
+
+\item{tag}{matching the tag(s) to remove}
 }
 \description{
 remove a tag from a truenumber

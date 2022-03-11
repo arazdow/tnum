@@ -16,15 +16,16 @@ library(httr)
 #' @noRd
 
 tnum.callApi <- function(command = "version", params = list()){
+  qr <- c(list(
+    cmd = command,
+    ns = tnum.env$tnum.var.nspace[[1]],
+    auth = tnum.env$tnum.var.auth
+  ), params)
+
   result <-
     httr::GET(
       paste0("http://", tnum.env$tnum.var.ip, "/Numberflow/API"),
-      query = c(list(
-        cmd = command,
-        ns = tnum.env$tnum.var.nspace,
-        auth = tnum.env$tnum.var.auth
-      ), params)
-
+      query = qr
       )
   payload <- httr::content(result, as = "text", encoding = "UTF-8")
   jResult = fromJSON(payload)
@@ -151,7 +152,7 @@ tnum.getTagsOfTn <- function(id) {
                  guid = id
                )
   )
-  return(jResult)
+  return(jResult$tags)
 
 }
 
@@ -192,7 +193,7 @@ tnum.deleteByQuery <- function(query = "") {
 
 # create tag (fails quietly if exists already)
 tnum.addTag <- function(guid, tag, text = "") {
-  tnum.callApi("create-tag", list(
+  mkTag <- tnum.callApi("create-tag", list(
     srd = tag,
     comment = text,
     nspace = tnum.env$tnum.var.nspace
@@ -237,18 +238,15 @@ tnum.addPart <- function(guid, tag, text = "") {
 ########################################################
 #'@title remove a tag from a truenumber
 #'
-#' @param tag  matching the tag(s) to remove
 #' @param number  GUID of the number
+#' @param tag  matching the tag(s) to remove
 #' @export
 #'
-tnum.removeTag <- function(tag, number) {
+tnum.removeTag <- function(number, tag) {
   jResult <-
-    tnum.callApi("tag-base", list(
-      srd = tag,
-      comment = text,
-      nspace = tnum.env$tnum.var.nspace,
-      part = TRUE,
-      base = guid
+    tnum.callApi("delete-tag-instance", list(
+      tag = tag,
+      guid = number
     )
     )
 
@@ -341,7 +339,7 @@ tnum.postStatement <- function(stmt,
     if(length(tg)>1){
       tnum.addTag(theGuid,tg[[1]],tg[[2]])
     } else {
-      tnum.addTag(theGUid, tg)
+      tnum.addTag(theGuid, tg)
     }
   }
   theTn <- tnum.callApi("htn-from-guid", list(guid = theGuid, core = "yes"))

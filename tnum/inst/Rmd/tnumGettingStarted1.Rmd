@@ -39,7 +39,7 @@ and
 <br>
 The subject  **fulltime undergraduate students of montclair state university ** is equivalent to a path **university:state:montclair/students:undergraduate:fulltime** where the separator **:** denotes an *adjective* relationship, and **/** denotes a possesive.
 
-Let's make truenum JSON objects for them:
+Let's make truenum JSON objects for the above examples:
 
 ```{r}
 tn1 <- tnum.postStatement(
@@ -49,7 +49,23 @@ tn1 <- tnum.postStatement(
 
 tn2 <- tnum.postStatement( stmt = "montclair state university has graduation rate = 58%", notes = "Our second truenumber")
 ```
+Posting returns the created truenumber, which is a json structure.  (We use the jsonlite package for representing json in R structures). The TN is quite a rich structure, we see the field names below, and some of them are nested having structure as well.
+```{r}
+names(tn1)
+```
+###Looking at the json TN
+We won't detail what all these elements are, but will describe the ones you will use a lot. The $subject and $property are the parts of the truenumber statement encoded as phrase paths. The $wrapper is the original statement given to create the TN. 
+```{r}
+tn1$subject
+tn1$property
+tn1$wrapper
 
+```
+Every TN has a unique identifier (GUID) given in element $id.  This id can be used as an argument to other TNUM functions. The $date, $author and $server fields tell us who created the TN, the server address where it lives, and dat/time it was posted in UTC.  
+```{r}
+c(tn1$id,tn1$author,tn1$server,tn1$date)
+```
+To carry more than one TN around, we can of course put them in a list, but we also provide a function to convert that list into a jsonlite json array structure.  Here, we do that and then display it in two parts being 16 fields wide.  
 ```{r}
 df <- tnum.jsonArray(list(tn1,tn2))
 
@@ -59,6 +75,29 @@ kable(df[,1:7])
 kable(df[,8:length(df)])
 
 ```
+*NOTE* that the second part generates warnings because two of the elements $value and $si_value are nested json structures. We can flatten the strucure using jsonlite::flatten()
+```{r}
+names(flatten(df))
+```
+which we can see, lifts the nested elements given them names using dot notation, like #value.quant#
 
-### Visualizing description trees
+### TN value structures
+
+What are these value structures?  Truenumber values carry the details intrinsic to measures, which are normally implicit (or forgotten) when real-world information is represented as just a numerical value for computation.  The $value structure retains those details as specified in the original TN.  The $si_value structure has that information converted to canonical form.  The prefix "si" refers to the metric unit system [Systeme Internationale](https://www.nist.gov/pml/weights-and-measures/metric-si/si-units) standard in science and engineering, but Truenumbers uses canonical forms not neccessarily part of that system.  For example, a TN value of 58% will have dimensionless si_value 0.58.  
+
+##Value types
+
+Not all TN values are numbers. They may also be quoted strings (we call them TsLiteral) or phrase paths like $subject and $property are (we call them TsSRD for "structured resource descriptor").  Numerical values are of type TsNumber.  We can see the type in element $value_type.  TsNumber is the most complex type, let's make one with complex units of measure.
+```{r}
+tn3 <- tnum.postStatement("the hudson river has an average flow rate = 21.4 thousand feet^3/second", 
+                          tags = list("location:NY:Troy",c("demonstration","just for demonstrating TNUM")))
+
+tnum.getTagsOfTn(tn3$id)
+```
+We can remove one of the tags we added
+```{r}
+tnum.removeTag(tn3$id, "demonstration")
+
+tnum.getTagsOfTn(tn3$id) #see if it's really gone
+```
 
