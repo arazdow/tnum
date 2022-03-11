@@ -4,6 +4,9 @@
 
 #' @export
 tnum.env <- new.env()
+library(jsonlite)
+library(lubridate)
+library(httr)
 
 ########################################################
 #'@title Call Gen1 Truenumber API
@@ -135,6 +138,22 @@ tnum.query <- function(query = "* has *",
   return(jResult$truenumbers)
 }
 
+########################################################
+#'@title Get tags of TN guid
+#'
+#' @param guid  class id of  truenumber
+#' @export
+
+tnum.getTagsOfTn <- function(id) {
+
+  jResult <-tnum.callApi("tags-of-guid",
+               list(
+                 guid = id
+               )
+  )
+  return(jResult)
+
+}
 
 ########################################################
 #'@title  Delete tnums specified by a query
@@ -151,8 +170,11 @@ tnum.deleteByQuery <- function(query = "") {
         qry = paste0(query," DELETE!")
       )
     )
-
-  return(jResult)
+  if(length(jResult) == 0){
+    return("OK")
+  } else {
+    return(jResult)
+  }
 }
 
 
@@ -212,8 +234,25 @@ tnum.addPart <- function(guid, tag, text = "") {
 
 }
 
+########################################################
+#'@title remove a tag from a truenumber
+#'
+#' @param tag  matching the tag(s) to remove
+#' @param number  GUID of the number
+#' @export
+#'
+tnum.removeTag <- function(tag, number) {
+  jResult <-
+    tnum.callApi("tag-base", list(
+      srd = tag,
+      comment = text,
+      nspace = tnum.env$tnum.var.nspace,
+      part = TRUE,
+      base = guid
+    )
+    )
 
-
+}
 
 ########################################################
 #' Build a truenumber statement from parts
@@ -271,35 +310,38 @@ tnum.buildStatement <- function(subject = "something",
 #' @param stmt  well-formed truenumber sentence
 #' @param  notes  text description associated with the truenumber
 #' @param tags   a list of tags. Each can be a tag or c("tag","comment"). default is timestamp "R:2022:02:26:12:24:33:EST"
-#' @returns GUID of the new truenumber
+#' @returns the new truenumber JSON object
 #' @export
 #'
 tnum.postStatement <- function(stmt,
                                notes = "",
-                               tags = list(`source:R` = tnum.dateToken())
+                               tags = list(c("source:R",tnum.dateToken()))
                                )
 {
-  if(chars(notes) > 0){
-    stmt = paste0(stmt," // ",notes)
+  args <- list(
+    ubox = stmt,
+    ns = tnum.env$tnum.var.nspace
+     )
+
+  if(nchar(notes) > 1){
+    args <- c(args, list(description = notes))
   }
 
-  theTn = tnum.callApi("enter-unibox",
-                        list(
-                           ubox = stmt,
-                           ns = tnum.env$tnum.var.nspace,
-                           nostore = "true"
-                           )
-             )
+  theTn = tnum.callApi("enter-unibox", args)
 
   strtGuid <- stringr::str_locate(theTn, "\\?guid=")[[2]]+1
-  endGuid <- stringr::str_locate(theTn, "\\&base=")[[1]]
+  endGuid <- stringr::str_locate(theTn, "\\&base=")[[1]] -1
   theGuid <- stringr::str_sub(theTn, strtGuid, endGuid )
 
   for(tg in tags){
-    tnum.addTag(theGUid, tg)
+    if(length(tg)>1){
+      tnum.addTag(theGuid,tg[[1]],tg[[2]])
+    } else {
+      tnum.addTag(theGUid, tg)
+    }
   }
 
- theGuid
+ return(theCore)
 
 }
 

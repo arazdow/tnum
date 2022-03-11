@@ -1,6 +1,6 @@
 ---
 title: "Getting Started wth **tnum** for R"
-author: "[True Engineering Technology, LLC](http://truenum.com) Boston MA" 
+author: "[True Engineering Technology, LLC](http://truenum.com) Lincoln, MA" 
 output: html_notebook
 ---
 
@@ -8,9 +8,9 @@ output: html_notebook
 
 ### 
 
-***tnum* is a data management companion for R.**  In using R, we draw from a variety of data sources, reading them into tables, vectors or lists for exploration and analytic processing.  This in turn produces more data, from summary statistics and models to graphs and tables that enrich the original data, or derive new information from it. Doing this results in many different data structures, labeled with informal row and column names, and many files persisting data on disk. Working and collaborating with these requires keeping track of all their meaning, structure and file versions. 
+***tnum* is a data management companion for R.**  In using R, we draw from a variety of data sources, reading them into data frames, vectors or lists for exploration and analytic processing.  This in turn produces more data, from summary statistics and models to graphs and tables that enrich the original data, or derive new information from it. Doing this results in many different data structures, labeled with informal row and column names, and many files persisting source data and results on the user's hard-drive. Working and collaborating with these requires keeping track of them, their meaning, structure and file versions. 
 
-**Truenumbers**, is a central cloud repository for creating, tagging and querying persistent data as a collection of facts using a structured pseudo-natural language to describe them. We call these facts *truenumbers*, *tnums* or *TNs*.  TNs mesh well with the way R allows descriptive attributes to be attached to data values.  Like TN, R also recognizes the value of carrying descriptive informaton along with data values.  Using *tnum* provides a convenient and scalable way to manage data and results as a growing body of intelligible knowledge, without resorting to relational databases (which are usually far from intelligible).  
+**Truenumbers**, is a central cloud repository for creating, tagging and querying persistent data as a collection of facts using a structured pseudo-natural language to describe them. We call these facts *truenumbers*, *tnums* or *TNs*.  Using *tnum* provides a convenient and scalable way to manage data and results centrally, as a growing body of intelligible knowledge, without resorting to relational databases (which are usually far from intelligible).  
 
 
 ### Getting up and running
@@ -18,9 +18,9 @@ output: html_notebook
 After installing package *tnum*, it's necessary to authenticate with the *tnum* server:
 ```{r}
 library(tnum)
-tnum.authorize()
+tnum.authorize(ip="metrics.truenum.com:8080",creds = "demo@truenum.com:pinecone")
 ```
-*authorize* can also take an argument **ip** representing the URL or IP address of the *tnum* server endpoint.  The default will be the endpoint for your particular installation. The function displays a list of available numberspaces on the server. A *numberspace* is a separate repository for truenumber data.  The authorize() call sets the current numberspace to a numberspace defined by your administrator.    
+*authorize* takes two arguments: **ip** representing the URL or IP address of the *tnum* server endpoint.  **creds** is a string containiny your username and password, separated b a colon. The function displays a list of available numberspaces on the server. A *numberspace* is a separate repository for truenumber data.  The authorize() call sets the current numberspace to a numberspace defined by your administrator.    
 
 ### Truenumber facts and phrases
 
@@ -39,42 +39,27 @@ and
 <br>
 The subject  **fulltime undergraduate students of montclair state university ** is equivalent to a path **university:state:montclair/students:undergraduate:fulltime** where the separator **:** denotes an *adjective* relationship, and **/** denotes a possesive.
 
-Let's make truenum objects for them:
+Let's make truenum JSON objects for them:
 
 ```{r}
-# create a list of two objects and display one of them 
+# create a TN and post to the numberspace
 tn <- list()
 
-tn[[1]] <- tnum.makeObject(
-  subject = "university:state:colorado/students:undergraduate:fulltime",
-  property = "number",
-  value = 15646
+tn[[1]] <- tnum.postStatement(
+  stmt = "number of fulltime undergraduate students of colorado state university is 15646",
+  notes = "Our first truenumber"
 )
 
-tn[[2]] <- tnum.makeObject(
-  subject = "university:state:montclair",
-  property = "rate:graduation",
-  value = 58,
-  unit = "%"
+tn[[2]] <- tnum.postStatement(
+  stmt = "montclair state university has graduation rate = 58%"
 )
 
-tn
-```
-*tnum* provides a function to convert a list of tnum objects to a data.frame:
-```{r}
-df <- tnum.objectsToDf(tn)
-df
+View(tn[[1]])
 
 ```
 
-Next, we post the object list to the server, then query the server for these tnums by subject path starting with *university#* , allowing any property, by using path and string wildcards **#** and **\***:
 ```{r}
-result <- tnum.postObjects(tn)
-# Run query and convert tnums to rows of a data.frame
 
-returned.objects <- tnum.query("university# has *")
-returned.objects.frame <- tnum.objectsToDf(returned.objects)
-returned.objects.frame
 ```
 ### Visualizing description trees
 

@@ -7,7 +7,7 @@
 tnum.postStatement(
   stmt,
   notes = "",
-  tags = list(`source:R` = tnum.dateToken())
+  tags = list(c("source:R", tnum.dateToken()))
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ tnum.postStatement(
 \item{tags}{a list of tags. Each can be a tag or c("tag","comment"). default is timestamp "R:2022:02:26:12:24:33:EST"}
 }
 \value{
-GUID of the new truenumber
+the new truenumber JSON object
 }
 \description{
 Post a truenumber statement
