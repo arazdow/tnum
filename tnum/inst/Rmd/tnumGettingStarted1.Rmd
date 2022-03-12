@@ -78,7 +78,7 @@ kable(df[,8:length(df)])
 ```
 *NOTE* that the second part generates warnings because two of the elements $value and $si_value are nested json structures. We can flatten the strucure using jsonlite::flatten()
 ```{r}
-names(flatten(df))
+names(jsonlite::flatten(df))
 ```
 which we can see, lifts the nested elements given them names using dot notation, like #value.quant#
 
@@ -131,4 +131,18 @@ This will return TNs expressing a numerical density greater than 3 (the density 
 
 The **tnum.deleteByQuery()** function takes a query string as argument, but instead of retreiving matching TNs, __it deletes them__. Be very careful when using this function, making sure that your query is specific enough to delete only what you wish to.   
 
+### TNUM Graphics
+
+THe package has 2 graphics functions, here are examples of use, we will provide more detail on the parameters soon.  
+
+We can graph path lists
+```{r}
+nums <- tnum.query()
+
+tnum.graphPathList(nums$subject)
+```
+and sets of TNs
+```{r}
+tnum.graphTnumList(nums, tagpattern = ".*")
+```
 
