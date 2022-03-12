@@ -243,11 +243,11 @@ Numberspace set to: demospace</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p><em>authorize</em> takes two arguments: <strong>ip</strong> representing the URL or IP address of the <em>tnum</em> server endpoint. <strong>creds</strong> is a string containiny your username and password, separated b a colon. The function displays a list of available numberspaces on the server. A <em>numberspace</em> is a separate repository for truenumber data. The authorize() call sets the current numberspace to a numberspace defined by your administrator.</p>
+<p><em>authorize</em> takes two arguments: <strong>ip</strong> representing the URL or IP address of the <em>tnum</em> server endpoint. <strong>creds</strong> is a string containing your username and password, separated by a colon. The function returns a list of available numberspaces on the server, and reports one of them as the currently active numberspace. A <em>numberspace</em> is a separate repository for truenumber data.</p>
 </div>
 <div id="truenumber-facts-and-phrases" class="section level3">
 <h3>Truenumber facts and phrases</h3>
-<p>A truenumber fact (a <em>tnum</em>) is equivalent to a sentence of the form <strong>&lt;subject&gt; has &lt;property&gt; = &lt;value&gt;</strong>, or <strong>&lt;property&gt; of &lt;subject&gt; is &lt;value&gt;</strong> for example:</p>
+<p>A truenumber fact is equivalent to a sentence of the form <strong>&lt;subject&gt; has &lt;property&gt; = &lt;value&gt;</strong>, or <strong>&lt;property&gt; of &lt;subject&gt; is &lt;value&gt;</strong> for example:</p>
 <br>
 <center>
 <strong>number of fulltime undergraduate students of colorado state university is 15646</strong>
@@ -257,7 +257,7 @@ Numberspace set to: demospace</code></pre>
 <strong>montclair state university has graduation rate = 58%</strong>
 </center>
 <p><br> The subject <strong>fulltime undergraduate students of montclair state university </strong> is equivalent to a path <strong>university:state:montclair/students:undergraduate:fulltime</strong> where the separator <strong>:</strong> denotes an <em>adjective</em> relationship, and <strong>/</strong> denotes a possesive.</p>
-<p>Let’s make truenum JSON objects for the above examples:</p>
+<p>Let’s make TN JSON objects for the above examples:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG4xIDwtIHRudW0ucG9zdFN0YXRlbWVudChcbiAgc3RtdCA9IFwibnVtYmVyIG9mIGZ1bGx0aW1lIHVuZGVyZ3JhZHVhdGUgc3R1ZGVudHMgb2YgY29sb3JhZG8gc3RhdGUgdW5pdmVyc2l0eSBpcyAxNTY0NlwiLFxuICBub3RlcyA9IFwiT3VyIGZpcnN0IHRydWVudW1iZXJcIlxuKVxuXG50bjIgPC0gdG51bS5wb3N0U3RhdGVtZW50KCBzdG10ID0gXCJtb250Y2xhaXIgc3RhdGUgdW5pdmVyc2l0eSBoYXMgZ3JhZHVhdGlvbiByYXRlID0gNTglXCIsIG5vdGVzID0gXCJPdXIgc2Vjb25kIHRydWVudW1iZXJcIilcbmBgYCJ9 -->
@@ -270,7 +270,7 @@ tn2 &lt;- tnum.postStatement( stmt = &quot;montclair state university has gradua
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Posting returns the created truenumber, which is a json structure. (We use the jsonlite package for representing json in R structures). The TN is quite a rich structure, we see the field names below, and some of them are nested having structure as well.</p>
+<p>Posting returns the created truenumber, as a json structure. (We use the jsonlite package for representing json in R structures). The TN is quite a rich structure, we see the field names below, and some of them are nested having structure as well.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXModG4xKVxuYGBgIn0= -->
@@ -282,7 +282,10 @@ tn2 &lt;- tnum.postStatement( stmt = &quot;montclair state university has gradua
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>###Looking at the json TN We won’t detail what all these elements are, but will describe the ones you will use a lot. The $subject and $property are the parts of the truenumber statement encoded as phrase paths. The $wrapper is the original statement given to create the TN.</p>
+</div>
+<div id="looking-at-the-json-tn" class="section level3">
+<h3>Looking at the json TN</h3>
+<p>We won’t detail what all these elements are, but will describe some that you will use a lot. The $subject and $property are the parts of the truenumber statement encoded as phrase paths. The $wrapper is the original statement given to create the TN.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG4xJHN1YmplY3RcbmBgYCJ9 -->
@@ -305,15 +308,15 @@ tn2 &lt;- tnum.postStatement( stmt = &quot;montclair state university has gradua
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Every TN has a unique identifier (GUID) given in element $id. This id can be used as an argument to other TNUM functions. The $date, $author and $server fields tell us who created the TN, the server address where it lives, and dat/time it was posted in UTC.</p>
+<p>Every TN has a unique identifier (GUID) given in element $id. This id can be used as an argument to other TNUM functions. The $date, $author and $server fields tell us who created the TN, the server address where it lives, and date/time it was posted in UTC.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYyh0bjEkaWQsdG4xJGF1dGhvcix0bjEkc2VydmVyLHRuMSRkYXRlKVxuYGBgIn0= -->
 <pre class="r"><code>c(tn1$id,tn1$author,tn1$server,tn1$date)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiNTNjMjA4MTctMTI2OS00NmQwLTg0NDctOGRmYzk2ODEzMGY5XCIgICAgICAgIFwiZGVtb1wiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiaHR0cDovL21ldHJpY3MudHJ1ZW51bS5jb206ODA4MC9OdW1iZXJmbG93L1wiXG5bNF0gXCIyMDIyLTAzLTExIDIxOjU2OjMyXCIgICAgICAgICAgICAgICAgICAgICAgICBcbiJ9 -->
-<pre><code>[1] &quot;53c20817-1269-46d0-8447-8dfc968130f9&quot;        &quot;demo&quot;                                        &quot;http://metrics.truenum.com:8080/Numberflow/&quot;
-[4] &quot;2022-03-11 21:56:32&quot;                        </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiMGU3NzM3NmUtY2QxNS00ZmZmLWIzOWUtYWQyZDRiMTY5ZWUzXCIgICAgICAgIFwiZGVtb1wiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFwiaHR0cDovL21ldHJpY3MudHJ1ZW51bS5jb206ODA4MC9OdW1iZXJmbG93L1wiXG5bNF0gXCIyMDIyLTAzLTEyIDAxOjM1OjIzXCIgICAgICAgICAgICAgICAgICAgICAgICBcbiJ9 -->
+<pre><code>[1] &quot;0e77376e-cd15-4fff-b39e-ad2d4b169ee3&quot;        &quot;demo&quot;                                        &quot;http://metrics.truenum.com:8080/Numberflow/&quot;
+[4] &quot;2022-03-12 01:35:23&quot;                        </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -351,7 +354,7 @@ kable(df[,1:7])</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2022-03-11 21:56:32</td>
+<td align="left">2022-03-12 01:35:23</td>
 <td align="left"></td>
 <td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
 <td align="left">Our first truenumber</td>
@@ -360,7 +363,7 @@ kable(df[,1:7])</code></pre>
 <td align="left">university:state:colorado/students:undergraduate:fulltime</td>
 </tr>
 <tr class="even">
-<td align="left">2022-03-11 21:56:32</td>
+<td align="left">2022-03-12 01:35:23</td>
 <td align="left"></td>
 <td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
 <td align="left">Our second truenumber</td>
@@ -417,22 +420,22 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <tr class="odd">
 <td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
 <td align="left">15646</td>
-<td align="left">53c20817-1269-46d0-8447-8dfc968130f9</td>
+<td align="left">0e77376e-cd15-4fff-b39e-ad2d4b169ee3</td>
 <td align="left">demospace</td>
 <td align="left">number</td>
 <td align="left"></td>
-<td align="left">53c20817-1269-46d0-8447-8dfc968130f9</td>
+<td align="left">0e77376e-cd15-4fff-b39e-ad2d4b169ee3</td>
 <td align="left">TsNumber</td>
 <td align="left">15646</td>
 </tr>
 <tr class="even">
 <td align="left">montclair state university has graduation rate = 58 %</td>
 <td align="left">0.58</td>
-<td align="left">bc1149b4-bccb-408b-bf19-ef41cb884724</td>
+<td align="left">46313ce7-c1ae-4677-bfee-50356775049e</td>
 <td align="left">demospace</td>
 <td align="left">rate:graduation</td>
 <td align="left"></td>
-<td align="left">bc1149b4-bccb-408b-bf19-ef41cb884724</td>
+<td align="left">46313ce7-c1ae-4677-bfee-50356775049e</td>
 <td align="left">TsNumber</td>
 <td align="left">58</td>
 </tr>
@@ -462,9 +465,10 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 </div>
 <div id="tn-value-structures" class="section level3">
 <h3>TN value structures</h3>
-<p>What are these value structures? Truenumber values carry the details intrinsic to measures, which are normally implicit (or forgotten) when real-world information is represented as just a numerical value for computation. The $value structure retains those details as specified in the original TN. The $si_value structure has that information converted to canonical form. The prefix “si” refers to the metric unit system <a href="https://www.nist.gov/pml/weights-and-measures/metric-si/si-units">Systeme Internationale</a> standard in science and engineering, but Truenumbers uses canonical forms not neccessarily part of that system. For example, a TN value of 58% will have dimensionless si_value 0.58.</p>
-<p>##Value types</p>
-<p>Not all TN values are numbers. They may also be quoted strings (we call them TsLiteral) or phrase paths like $subject and $property are (we call them TsSRD for “structured resource descriptor”). Numerical values are of type TsNumber. We can see the type in element $value_type. TsNumber is the most complex type, let’s make one with complex units of measure.</p>
+<p>What are these value structures? Truenumber values carry the details intrinsic to measures, which are normally implicit (or forgotten) when real-world information is represented as just a numerical value for computation. The $value structure retains those details as specified in the original TN. The $si_value structure has the same information converted to canonical form. The prefix “si” refers to the metric unit system <a href="https://www.nist.gov/pml/weights-and-measures/metric-si/si-units">Systeme Internationale</a> standard in science and engineering, but Truenumbers uses canonical forms not necessarily part of that system. For example, a TN value of 58% will have dimensionless si_value 0.58.</p>
+<div id="value-types-and-tagging" class="section level4">
+<h4>Value types and tagging</h4>
+<p>Not all TN values are numbers. They may also be quoted strings (we call them TsLiteral) or phrase paths like $subject and $property are (we call them TsSRD for “structured resource descriptor”). Numerical values are of type TsNumber. We can see the type in element $value_type. TsNumber is the most complex type, let’s make one with complex units of measure. While we’re at it, we can add tags to it. A tag is either a phrase path, or a phrase path and comment. Below, we add two tags, the second having a comment.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG4zIDwtIHRudW0ucG9zdFN0YXRlbWVudChcInRoZSBodWRzb24gcml2ZXIgaGFzIGFuIGF2ZXJhZ2UgZmxvdyByYXRlID0gMjEuNCB0aG91c2FuZCBmZWV0XjMvc2Vjb25kXCIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICB0YWdzID0gbGlzdChcImxvY2F0aW9uOk5ZOlRyb3lcIixjKFwiZGVtb25zdHJhdGlvblwiLFwianVzdCBmb3IgZGVtb25zdHJhdGluZyBUTlVNXCIpKSlcblxudG51bS5nZXRUYWdzT2ZUbih0bjMkaWQpXG5gYGAifQ== -->
@@ -491,10 +495,166 @@ tnum.getTagsOfTn(tn3$id) #see if it&#39;s really gone</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+</div>
+<div id="querying-the-numberspace" class="section level3">
+<h3>Querying the numberspace</h3>
+<p>We can retrieve sets of TNs from the numberspace with the <strong>tnum.query()</strong> function. For example:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVzdWx0IDwtIHRudW0ucXVlcnkoXCJzdWJqOnVuaXZlcnNpdHkjXCIpXG5gYGAifQ== -->
+<pre class="r"><code>result &lt;- tnum.query(&quot;subj:university#&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmV0dXJuZWQgMiByZXN1bHRzXG4ifQ== -->
+<pre><code>Returned 2 results</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2FibGUocmVzdWx0KVxuYGBgIn0= -->
+<pre class="r"><code>kable(result)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZyBpbiBgWzwtLmRhdGEuZnJhbWVgKGAqdG1wKmAsICwgaiwgdmFsdWUgPSBsaXN0KG1hZyA9IGMoXCIxNTY0Ni4wMFwiLCAgOlxuICBwcm92aWRlZCA1IHZhcmlhYmxlcyB0byByZXBsYWNlIDEgdmFyaWFibGVzXG5XYXJuaW5nIGluIGBbPC0uZGF0YS5mcmFtZWAoYCp0bXAqYCwgLCBqLCB2YWx1ZSA9IGxpc3QobWFnID0gYyhcIjE1NjQ2XCIsICA6XG4gIHByb3ZpZGVkIDcgdmFyaWFibGVzIHRvIHJlcGxhY2UgMSB2YXJpYWJsZXNcbiJ9 -->
+<pre><code>Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646.00&quot;,  :
+  provided 5 variables to replace 1 variables
+Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&quot;,  :
+  provided 7 variables to replace 1 variables</code></pre>
+<!-- rnb-output-end -->
+
+<!-- rnb-html-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImtuaXRfYXNpcyJdLCJzaXppbmdQb2xpY3kiOltdfX0= -->
+
+<table>
+<colgroup>
+<col width="4%" />
+<col width="3%" />
+<col width="10%" />
+<col width="11%" />
+<col width="2%" />
+<col width="1%" />
+<col width="14%" />
+<col width="19%" />
+<col width="2%" />
+<col width="9%" />
+<col width="2%" />
+<col width="3%" />
+<col width="1%" />
+<col width="9%" />
+<col width="2%" />
+<col width="1%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">date</th>
+<th align="left">html_varname</th>
+<th align="left">server</th>
+<th align="left">notes</th>
+<th align="left">quantity</th>
+<th align="left">author</th>
+<th align="left">subject</th>
+<th align="left">wrapper</th>
+<th align="left">si_value</th>
+<th align="left">htn_id</th>
+<th align="left">context</th>
+<th align="left">property</th>
+<th align="left">parts</th>
+<th align="left">id</th>
+<th align="left">value-type</th>
+<th align="left">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2022-03-12 01:35:23</td>
+<td align="left"></td>
+<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
+<td align="left">Our first truenumber, Our first truenumber</td>
+<td align="left">magnitude</td>
+<td align="left">demo</td>
+<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
+<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
+<td align="left">15646.00</td>
+<td align="left">0e77376e-cd15-4fff-b39e-ad2d4b169ee3</td>
+<td align="left">demospace</td>
+<td align="left">number</td>
+<td align="left"></td>
+<td align="left">0e77376e-cd15-4fff-b39e-ad2d4b169ee3</td>
+<td align="left">TsNumber</td>
+<td align="left">15646</td>
+</tr>
+<tr class="even">
+<td align="left">2022-03-12 01:35:23</td>
+<td align="left"></td>
+<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
+<td align="left">Our second truenumber, Our second truenumber</td>
+<td align="left">magnitude</td>
+<td align="left">demo</td>
+<td align="left">university:state:montclair</td>
+<td align="left">montclair state university has graduation rate = 58 %</td>
+<td align="left">0.58</td>
+<td align="left">46313ce7-c1ae-4677-bfee-50356775049e</td>
+<td align="left">demospace</td>
+<td align="left">rate:graduation</td>
+<td align="left"></td>
+<td align="left">46313ce7-c1ae-4677-bfee-50356775049e</td>
+<td align="left">TsNumber</td>
+<td align="left">58</td>
+</tr>
+</tbody>
+</table>
+
+
+<!-- rnb-html-end -->
+
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>This was simple one-term query, using the term prefix <strong>subj:</strong> to query by subject. The term itself will match the path form of the TN subjects. For subject <strong>fulltime undergraduate students of colorado state university</strong> the path is <strong>university:state:colorado/students:undergraduate:fulltime</strong>. Our query term used the path wildcard <strong>#</strong> which will match any (or no) path following <strong>university</strong>. The __*__ character can be used in the usual way as a character wildcard. So <strong>pigeon*</strong> would match both <strong>pigeonhole</strong> and <strong>pigeon:carrier</strong>, but <strong>pigeon#</strong> would match only <strong>pigeon:carrier</strong>.</p>
+<div id="term-prefixes" class="section level4">
+<h4>Term prefixes</h4>
+<p>This table covers the types of terms allowed in a query. Multiple terms must be separated by <strong>and</strong> or <strong>or</strong> boolean operators. These can be preceded by negation <strong>not</strong>, and can be grouped using parens.</p>
+<table>
+<thead>
+<tr class="header">
+<th>prefix</th>
+<th>term syntax</th>
+<th>effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>subj:</td>
+<td>path,#,*</td>
+<td>matches subject</td>
+</tr>
+<tr class="even">
+<td>prop:</td>
+<td>path,#,*</td>
+<td>matches property</td>
+</tr>
+<tr class="odd">
+<td>(no prefix)</td>
+<td>path,#,*</td>
+<td>matches tag</td>
+</tr>
+<tr class="even">
+<td>numval:</td>
+<td>&gt; 2.5, &lt; 2.5, etc.</td>
+<td>matches si numerical value</td>
+</tr>
+<tr class="odd">
+<td>stringval:</td>
+<td>regular expression</td>
+<td>matches string or path values</td>
+</tr>
+</tbody>
+</table>
+<p>Example query string: <strong>“(prop:density and numval:&gt;3) or material:density:high”</strong>.</p>
+<p>This will return TNs expressing a numerical density greater than 3 (the density of stone) or anything tagged as a high density material.</p>
+</div>
+</div>
+<div id="deleting-truenumbers" class="section level3">
+<h3>Deleting truenumbers</h3>
+<p>The <strong>tnum.deleteByQuery()</strong> function takes a query string as argument, but instead of retreiving matching TNs, <strong>it deletes them</strong>. Be very careful when using this function, making sure that your query is specific enough to delete only what you wish to.</p>
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkdldHRpbmcgU3RhcnRlZCB3dGggKip0bnVtKiogZm9yIFIiDQphdXRob3I6ICJbVHJ1ZSBFbmdpbmVlcmluZyBUZWNobm9sb2d5LCBMTENdKGh0dHA6Ly90cnVlbnVtLmNvbSkgTGluY29sbiwgTUEiIA0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KKioqDQoNCiMjIyANCg0KKioqdG51bSogaXMgYSBkYXRhIG1hbmFnZW1lbnQgY29tcGFuaW9uIGZvciBSLioqICBJbiB1c2luZyBSLCB3ZSBkcmF3IGZyb20gYSB2YXJpZXR5IG9mIGRhdGEgc291cmNlcywgcmVhZGluZyB0aGVtIGludG8gZGF0YSBmcmFtZXMsIHZlY3RvcnMgb3IgbGlzdHMgZm9yIGV4cGxvcmF0aW9uIGFuZCBhbmFseXRpYyBwcm9jZXNzaW5nLiAgVGhpcyBpbiB0dXJuIHByb2R1Y2VzIG1vcmUgZGF0YSwgZnJvbSBzdW1tYXJ5IHN0YXRpc3RpY3MgYW5kIG1vZGVscyB0byBncmFwaHMgYW5kIHRhYmxlcyB0aGF0IGVucmljaCB0aGUgb3JpZ2luYWwgZGF0YSwgb3IgZGVyaXZlIG5ldyBpbmZvcm1hdGlvbiBmcm9tIGl0LiBEb2luZyB0aGlzIHJlc3VsdHMgaW4gbWFueSBkaWZmZXJlbnQgZGF0YSBzdHJ1Y3R1cmVzLCBsYWJlbGVkIHdpdGggaW5mb3JtYWwgcm93IGFuZCBjb2x1bW4gbmFtZXMsIGFuZCBtYW55IGZpbGVzIHBlcnNpc3Rpbmcgc291cmNlIGRhdGEgYW5kIHJlc3VsdHMgb24gdGhlIHVzZXIncyBoYXJkLWRyaXZlLiBXb3JraW5nIGFuZCBjb2xsYWJvcmF0aW5nIHdpdGggdGhlc2UgcmVxdWlyZXMga2VlcGluZyB0cmFjayBvZiB0aGVtLCB0aGVpciBtZWFuaW5nLCBzdHJ1Y3R1cmUgYW5kIGZpbGUgdmVyc2lvbnMuIA0KDQoqKlRydWVudW1iZXJzKiosIGlzIGEgY2VudHJhbCBjbG91ZCByZXBvc2l0b3J5IGZvciBjcmVhdGluZywgdGFnZ2luZyBhbmQgcXVlcnlpbmcgcGVyc2lzdGVudCBkYXRhIGFzIGEgY29sbGVjdGlvbiBvZiBmYWN0cyB1c2luZyBhIHN0cnVjdHVyZWQgcHNldWRvLW5hdHVyYWwgbGFuZ3VhZ2UgdG8gZGVzY3JpYmUgdGhlbS4gV2UgY2FsbCB0aGVzZSBmYWN0cyAqdHJ1ZW51bWJlcnMqLCAqdG51bXMqIG9yICpUTnMqLiAgVXNpbmcgKnRudW0qIHByb3ZpZGVzIGEgY29udmVuaWVudCBhbmQgc2NhbGFibGUgd2F5IHRvIG1hbmFnZSBkYXRhIGFuZCByZXN1bHRzIGNlbnRyYWxseSwgYXMgYSBncm93aW5nIGJvZHkgb2YgaW50ZWxsaWdpYmxlIGtub3dsZWRnZSwgd2l0aG91dCByZXNvcnRpbmcgdG8gcmVsYXRpb25hbCBkYXRhYmFzZXMgKHdoaWNoIGFyZSB1c3VhbGx5IGZhciBmcm9tIGludGVsbGlnaWJsZSkuICANCg0KDQojIyMgR2V0dGluZyB1cCBhbmQgcnVubmluZw0KDQpBZnRlciBpbnN0YWxsaW5nIHBhY2thZ2UgKnRudW0qLCBpdCdzIG5lY2Vzc2FyeSB0byBhdXRoZW50aWNhdGUgd2l0aCB0aGUgKnRudW0qIHNlcnZlcjoNCmBgYHtyfQ0KbGlicmFyeSh0bnVtKQ0KdG51bS5hdXRob3JpemUoaXA9Im1ldHJpY3MudHJ1ZW51bS5jb206ODA4MCIsY3JlZHMgPSAiZGVtb0B0cnVlbnVtLmNvbTpwaW5lY29uZSIpDQpgYGANCiphdXRob3JpemUqIHRha2VzIHR3byBhcmd1bWVudHM6ICoqaXAqKiByZXByZXNlbnRpbmcgdGhlIFVSTCBvciBJUCBhZGRyZXNzIG9mIHRoZSAqdG51bSogc2VydmVyIGVuZHBvaW50LiAgKipjcmVkcyoqIGlzIGEgc3RyaW5nIGNvbnRhaW5pbnkgeW91ciB1c2VybmFtZSBhbmQgcGFzc3dvcmQsIHNlcGFyYXRlZCBiIGEgY29sb24uIFRoZSBmdW5jdGlvbiBkaXNwbGF5cyBhIGxpc3Qgb2YgYXZhaWxhYmxlIG51bWJlcnNwYWNlcyBvbiB0aGUgc2VydmVyLiBBICpudW1iZXJzcGFjZSogaXMgYSBzZXBhcmF0ZSByZXBvc2l0b3J5IGZvciB0cnVlbnVtYmVyIGRhdGEuICBUaGUgYXV0aG9yaXplKCkgY2FsbCBzZXRzIHRoZSBjdXJyZW50IG51bWJlcnNwYWNlIHRvIGEgbnVtYmVyc3BhY2UgZGVmaW5lZCBieSB5b3VyIGFkbWluaXN0cmF0b3IuICAgIA0KDQojIyMgVHJ1ZW51bWJlciBmYWN0cyBhbmQgcGhyYXNlcw0KDQpBIHRydWVudW1iZXIgZmFjdCAoYSAqdG51bSopIGlzIGVxdWl2YWxlbnQgdG8gYSBzZW50ZW5jZSBvZiB0aGUgZm9ybSAqKiZsdDtzdWJqZWN0Jmd0OyBoYXMgJmx0O3Byb3BlcnR5Jmd0OyA9ICZsdDt2YWx1ZSZndDsqKiwgb3IgKiombHQ7cHJvcGVydHkmZ3Q7IG9mICZsdDtzdWJqZWN0Jmd0OyBpcyAmbHQ7dmFsdWUmZ3Q7KiogZm9yIGV4YW1wbGU6DQoNCjxicj4NCjxjZW50ZXI+DQoqKm51bWJlciBvZiBmdWxsdGltZSB1bmRlcmdyYWR1YXRlIHN0dWRlbnRzIG9mIGNvbG9yYWRvIHN0YXRlIHVuaXZlcnNpdHkgaXMgMTU2NDYqKg0KPC9jZW50ZXI+DQo8YnI+DQphbmQNCjxicj4NCjxjZW50ZXI+DQoqKm1vbnRjbGFpciBzdGF0ZSB1bml2ZXJzaXR5IGhhcyBncmFkdWF0aW9uIHJhdGUgPSA1OCUqKg0KPC9jZW50ZXI+DQo8YnI+DQpUaGUgc3ViamVjdCAgKipmdWxsdGltZSB1bmRlcmdyYWR1YXRlIHN0dWRlbnRzIG9mIG1vbnRjbGFpciBzdGF0ZSB1bml2ZXJzaXR5ICoqIGlzIGVxdWl2YWxlbnQgdG8gYSBwYXRoICoqdW5pdmVyc2l0eTpzdGF0ZTptb250Y2xhaXIvc3R1ZGVudHM6dW5kZXJncmFkdWF0ZTpmdWxsdGltZSoqIHdoZXJlIHRoZSBzZXBhcmF0b3IgKio6KiogZGVub3RlcyBhbiAqYWRqZWN0aXZlKiByZWxhdGlvbnNoaXAsIGFuZCAqKi8qKiBkZW5vdGVzIGEgcG9zc2VzaXZlLg0KDQpMZXQncyBtYWtlIHRydWVudW0gSlNPTiBvYmplY3RzIGZvciB0aGUgYWJvdmUgZXhhbXBsZXM6DQoNCmBgYHtyfQ0KdG4xIDwtIHRudW0ucG9zdFN0YXRlbWVudCgNCiAgc3RtdCA9ICJudW1iZXIgb2YgZnVsbHRpbWUgdW5kZXJncmFkdWF0ZSBzdHVkZW50cyBvZiBjb2xvcmFkbyBzdGF0ZSB1bml2ZXJzaXR5IGlzIDE1NjQ2IiwNCiAgbm90ZXMgPSAiT3VyIGZpcnN0IHRydWVudW1iZXIiDQopDQoNCnRuMiA8LSB0bnVtLnBvc3RTdGF0ZW1lbnQoIHN0bXQgPSAibW9udGNsYWlyIHN0YXRlIHVuaXZlcnNpdHkgaGFzIGdyYWR1YXRpb24gcmF0ZSA9IDU4JSIsIG5vdGVzID0gIk91ciBzZWNvbmQgdHJ1ZW51bWJlciIpDQpgYGANClBvc3RpbmcgcmV0dXJucyB0aGUgY3JlYXRlZCB0cnVlbnVtYmVyLCB3aGljaCBpcyBhIGpzb24gc3RydWN0dXJlLiAgKFdlIHVzZSB0aGUganNvbmxpdGUgcGFja2FnZSBmb3IgcmVwcmVzZW50aW5nIGpzb24gaW4gUiBzdHJ1Y3R1cmVzKS4gVGhlIFROIGlzIHF1aXRlIGEgcmljaCBzdHJ1Y3R1cmUsIHdlIHNlZSB0aGUgZmllbGQgbmFtZXMgYmVsb3csIGFuZCBzb21lIG9mIHRoZW0gYXJlIG5lc3RlZCBoYXZpbmcgc3RydWN0dXJlIGFzIHdlbGwuDQpgYGB7cn0NCm5hbWVzKHRuMSkNCmBgYA0KIyMjTG9va2luZyBhdCB0aGUganNvbiBUTg0KV2Ugd29uJ3QgZGV0YWlsIHdoYXQgYWxsIHRoZXNlIGVsZW1lbnRzIGFyZSwgYnV0IHdpbGwgZGVzY3JpYmUgdGhlIG9uZXMgeW91IHdpbGwgdXNlIGEgbG90LiBUaGUgJHN1YmplY3QgYW5kICRwcm9wZXJ0eSBhcmUgdGhlIHBhcnRzIG9mIHRoZSB0cnVlbnVtYmVyIHN0YXRlbWVudCBlbmNvZGVkIGFzIHBocmFzZSBwYXRocy4gVGhlICR3cmFwcGVyIGlzIHRoZSBvcmlnaW5hbCBzdGF0ZW1lbnQgZ2l2ZW4gdG8gY3JlYXRlIHRoZSBUTi4gDQpgYGB7cn0NCnRuMSRzdWJqZWN0DQp0bjEkcHJvcGVydHkNCnRuMSR3cmFwcGVyDQoNCmBgYA0KRXZlcnkgVE4gaGFzIGEgdW5pcXVlIGlkZW50aWZpZXIgKEdVSUQpIGdpdmVuIGluIGVsZW1lbnQgJGlkLiAgVGhpcyBpZCBjYW4gYmUgdXNlZCBhcyBhbiBhcmd1bWVudCB0byBvdGhlciBUTlVNIGZ1bmN0aW9ucy4gVGhlICRkYXRlLCAkYXV0aG9yIGFuZCAkc2VydmVyIGZpZWxkcyB0ZWxsIHVzIHdobyBjcmVhdGVkIHRoZSBUTiwgdGhlIHNlcnZlciBhZGRyZXNzIHdoZXJlIGl0IGxpdmVzLCBhbmQgZGF0L3RpbWUgaXQgd2FzIHBvc3RlZCBpbiBVVEMuICANCmBgYHtyfQ0KYyh0bjEkaWQsdG4xJGF1dGhvcix0bjEkc2VydmVyLHRuMSRkYXRlKQ0KYGBgDQpUbyBjYXJyeSBtb3JlIHRoYW4gb25lIFROIGFyb3VuZCwgd2UgY2FuIG9mIGNvdXJzZSBwdXQgdGhlbSBpbiBhIGxpc3QsIGJ1dCB3ZSBhbHNvIHByb3ZpZGUgYSBmdW5jdGlvbiB0byBjb252ZXJ0IHRoYXQgbGlzdCBpbnRvIGEganNvbmxpdGUganNvbiBhcnJheSBzdHJ1Y3R1cmUuICBIZXJlLCB3ZSBkbyB0aGF0IGFuZCB0aGVuIGRpc3BsYXkgaXQgaW4gdHdvIHBhcnRzIGJlaW5nIDE2IGZpZWxkcyB3aWRlLiAgDQpgYGB7cn0NCmRmIDwtIHRudW0uanNvbkFycmF5KGxpc3QodG4xLHRuMikpDQoNCmthYmxlKGRmWywxOjddKQ0KYGBgDQpgYGB7cn0NCmthYmxlKGRmWyw4Omxlbmd0aChkZildKQ0KDQpgYGANCipOT1RFKiB0aGF0IHRoZSBzZWNvbmQgcGFydCBnZW5lcmF0ZXMgd2FybmluZ3MgYmVjYXVzZSB0d28gb2YgdGhlIGVsZW1lbnRzICR2YWx1ZSBhbmQgJHNpX3ZhbHVlIGFyZSBuZXN0ZWQganNvbiBzdHJ1Y3R1cmVzLiBXZSBjYW4gZmxhdHRlbiB0aGUgc3RydWN1cmUgdXNpbmcganNvbmxpdGU6OmZsYXR0ZW4oKQ0KYGBge3J9DQpuYW1lcyhmbGF0dGVuKGRmKSkNCmBgYA0Kd2hpY2ggd2UgY2FuIHNlZSwgbGlmdHMgdGhlIG5lc3RlZCBlbGVtZW50cyBnaXZlbiB0aGVtIG5hbWVzIHVzaW5nIGRvdCBub3RhdGlvbiwgbGlrZSAjdmFsdWUucXVhbnQjDQoNCiMjIyBUTiB2YWx1ZSBzdHJ1Y3R1cmVzDQoNCldoYXQgYXJlIHRoZXNlIHZhbHVlIHN0cnVjdHVyZXM/ICBUcnVlbnVtYmVyIHZhbHVlcyBjYXJyeSB0aGUgZGV0YWlscyBpbnRyaW5zaWMgdG8gbWVhc3VyZXMsIHdoaWNoIGFyZSBub3JtYWxseSBpbXBsaWNpdCAob3IgZm9yZ290dGVuKSB3aGVuIHJlYWwtd29ybGQgaW5mb3JtYXRpb24gaXMgcmVwcmVzZW50ZWQgYXMganVzdCBhIG51bWVyaWNhbCB2YWx1ZSBmb3IgY29tcHV0YXRpb24uICBUaGUgJHZhbHVlIHN0cnVjdHVyZSByZXRhaW5zIHRob3NlIGRldGFpbHMgYXMgc3BlY2lmaWVkIGluIHRoZSBvcmlnaW5hbCBUTi4gIFRoZSAkc2lfdmFsdWUgc3RydWN0dXJlIGhhcyB0aGF0IGluZm9ybWF0aW9uIGNvbnZlcnRlZCB0byBjYW5vbmljYWwgZm9ybS4gIFRoZSBwcmVmaXggInNpIiByZWZlcnMgdG8gdGhlIG1ldHJpYyB1bml0IHN5c3RlbSBbU3lzdGVtZSBJbnRlcm5hdGlvbmFsZV0oaHR0cHM6Ly93d3cubmlzdC5nb3YvcG1sL3dlaWdodHMtYW5kLW1lYXN1cmVzL21ldHJpYy1zaS9zaS11bml0cykgc3RhbmRhcmQgaW4gc2NpZW5jZSBhbmQgZW5naW5lZXJpbmcsIGJ1dCBUcnVlbnVtYmVycyB1c2VzIGNhbm9uaWNhbCBmb3JtcyBub3QgbmVjY2Vzc2FyaWx5IHBhcnQgb2YgdGhhdCBzeXN0ZW0uICBGb3IgZXhhbXBsZSwgYSBUTiB2YWx1ZSBvZiA1OCUgd2lsbCBoYXZlIGRpbWVuc2lvbmxlc3Mgc2lfdmFsdWUgMC41OC4gIA0KDQojI1ZhbHVlIHR5cGVzDQoNCk5vdCBhbGwgVE4gdmFsdWVzIGFyZSBudW1iZXJzLiBUaGV5IG1heSBhbHNvIGJlIHF1b3RlZCBzdHJpbmdzICh3ZSBjYWxsIHRoZW0gVHNMaXRlcmFsKSBvciBwaHJhc2UgcGF0aHMgbGlrZSAkc3ViamVjdCBhbmQgJHByb3BlcnR5IGFyZSAod2UgY2FsbCB0aGVtIFRzU1JEIGZvciAic3RydWN0dXJlZCByZXNvdXJjZSBkZXNjcmlwdG9yIikuICBOdW1lcmljYWwgdmFsdWVzIGFyZSBvZiB0eXBlIFRzTnVtYmVyLiAgV2UgY2FuIHNlZSB0aGUgdHlwZSBpbiBlbGVtZW50ICR2YWx1ZV90eXBlLiAgVHNOdW1iZXIgaXMgdGhlIG1vc3QgY29tcGxleCB0eXBlLCBsZXQncyBtYWtlIG9uZSB3aXRoIGNvbXBsZXggdW5pdHMgb2YgbWVhc3VyZS4NCmBgYHtyfQ0KdG4zIDwtIHRudW0ucG9zdFN0YXRlbWVudCgidGhlIGh1ZHNvbiByaXZlciBoYXMgYW4gYXZlcmFnZSBmbG93IHJhdGUgPSAyMS40IHRob3VzYW5kIGZlZXReMy9zZWNvbmQiLCANCiAgICAgICAgICAgICAgICAgICAgICAgICAgdGFncyA9IGxpc3QoImxvY2F0aW9uOk5ZOlRyb3kiLGMoImRlbW9uc3RyYXRpb24iLCJqdXN0IGZvciBkZW1vbnN0cmF0aW5nIFROVU0iKSkpDQoNCnRudW0uZ2V0VGFnc09mVG4odG4zJGlkKQ0KYGBgDQpXZSBjYW4gcmVtb3ZlIG9uZSBvZiB0aGUgdGFncyB3ZSBhZGRlZA0KYGBge3J9DQp0bnVtLnJlbW92ZVRhZyh0bjMkaWQsICJkZW1vbnN0cmF0aW9uIikNCg0KdG51bS5nZXRUYWdzT2ZUbih0bjMkaWQpICNzZWUgaWYgaXQncyByZWFsbHkgZ29uZQ0KYGBgDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkdldHRpbmcgU3RhcnRlZCB3dGggKip0bnVtKiogZm9yIFIiDQphdXRob3I6ICJbVHJ1ZSBFbmdpbmVlcmluZyBUZWNobm9sb2d5LCBMTENdKGh0dHA6Ly90cnVlbnVtLmNvbSkgTGluY29sbiwgTUEiIA0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KKioqDQoNCiMjIyANCg0KKioqdG51bSogaXMgYSBkYXRhIG1hbmFnZW1lbnQgY29tcGFuaW9uIGZvciBSLioqICBJbiB1c2luZyBSLCB3ZSBkcmF3IGZyb20gYSB2YXJpZXR5IG9mIGRhdGEgc291cmNlcywgcmVhZGluZyB0aGVtIGludG8gZGF0YSBmcmFtZXMsIHZlY3RvcnMgb3IgbGlzdHMgZm9yIGV4cGxvcmF0aW9uIGFuZCBhbmFseXRpYyBwcm9jZXNzaW5nLiAgVGhpcyBpbiB0dXJuIHByb2R1Y2VzIG1vcmUgZGF0YSwgZnJvbSBzdW1tYXJ5IHN0YXRpc3RpY3MgYW5kIG1vZGVscyB0byBncmFwaHMgYW5kIHRhYmxlcyB0aGF0IGVucmljaCB0aGUgb3JpZ2luYWwgZGF0YSwgb3IgZGVyaXZlIG5ldyBpbmZvcm1hdGlvbiBmcm9tIGl0LiBEb2luZyB0aGlzIHJlc3VsdHMgaW4gbWFueSBkaWZmZXJlbnQgZGF0YSBzdHJ1Y3R1cmVzLCBsYWJlbGVkIHdpdGggaW5mb3JtYWwgcm93IGFuZCBjb2x1bW4gbmFtZXMsIGFuZCBtYW55IGZpbGVzIHBlcnNpc3Rpbmcgc291cmNlIGRhdGEgYW5kIHJlc3VsdHMgb24gdGhlIHVzZXIncyBoYXJkLWRyaXZlLiBXb3JraW5nIGFuZCBjb2xsYWJvcmF0aW5nIHdpdGggdGhlc2UgcmVxdWlyZXMga2VlcGluZyB0cmFjayBvZiB0aGVtLCB0aGVpciBtZWFuaW5nLCBzdHJ1Y3R1cmUgYW5kIGZpbGUgdmVyc2lvbnMuIA0KDQoqKlRydWVudW1iZXJzKiosIGlzIGEgY2VudHJhbCBjbG91ZCByZXBvc2l0b3J5IGZvciBjcmVhdGluZywgdGFnZ2luZyBhbmQgcXVlcnlpbmcgcGVyc2lzdGVudCBkYXRhIGFzIGEgY29sbGVjdGlvbiBvZiBmYWN0cyB1c2luZyBhIHN0cnVjdHVyZWQgcHNldWRvLW5hdHVyYWwgbGFuZ3VhZ2UgdG8gZGVzY3JpYmUgdGhlbS4gV2UgY2FsbCB0aGVzZSBmYWN0cyAqdHJ1ZW51bWJlcnMqLCAqdG51bXMqIG9yICpUTnMqLiAgVXNpbmcgKnRudW0qIHByb3ZpZGVzIGEgY29udmVuaWVudCBhbmQgc2NhbGFibGUgd2F5IHRvIG1hbmFnZSBkYXRhIGFuZCByZXN1bHRzIGNlbnRyYWxseSwgYXMgYSBncm93aW5nIGJvZHkgb2YgaW50ZWxsaWdpYmxlIGtub3dsZWRnZSwgd2l0aG91dCByZXNvcnRpbmcgdG8gcmVsYXRpb25hbCBkYXRhYmFzZXMgKHdoaWNoIGFyZSB1c3VhbGx5IGZhciBmcm9tIGludGVsbGlnaWJsZSkuICANCg0KDQojIyMgR2V0dGluZyB1cCBhbmQgcnVubmluZw0KDQpBZnRlciBpbnN0YWxsaW5nIHBhY2thZ2UgKnRudW0qLCBpdCdzIG5lY2Vzc2FyeSB0byBhdXRoZW50aWNhdGUgd2l0aCB0aGUgKnRudW0qIHNlcnZlcjoNCmBgYHtyfQ0KbGlicmFyeSh0bnVtKQ0KdG51bS5hdXRob3JpemUoaXA9Im1ldHJpY3MudHJ1ZW51bS5jb206ODA4MCIsY3JlZHMgPSAiZGVtb0B0cnVlbnVtLmNvbTpwaW5lY29uZSIpDQpgYGANCiphdXRob3JpemUqIHRha2VzIHR3byBhcmd1bWVudHM6ICoqaXAqKiByZXByZXNlbnRpbmcgdGhlIFVSTCBvciBJUCBhZGRyZXNzIG9mIHRoZSAqdG51bSogc2VydmVyIGVuZHBvaW50LiAgKipjcmVkcyoqIGlzIGEgc3RyaW5nIGNvbnRhaW5pbmcgeW91ciB1c2VybmFtZSBhbmQgcGFzc3dvcmQsIHNlcGFyYXRlZCBieSBhIGNvbG9uLiBUaGUgZnVuY3Rpb24gcmV0dXJucyBhIGxpc3Qgb2YgYXZhaWxhYmxlIG51bWJlcnNwYWNlcyBvbiB0aGUgc2VydmVyLCBhbmQgcmVwb3J0cyBvbmUgb2YgdGhlbSBhcyB0aGUgY3VycmVudGx5IGFjdGl2ZSBudW1iZXJzcGFjZS4gQSAqbnVtYmVyc3BhY2UqIGlzIGEgc2VwYXJhdGUgcmVwb3NpdG9yeSBmb3IgdHJ1ZW51bWJlciBkYXRhLiAgDQoNCiMjIyBUcnVlbnVtYmVyIGZhY3RzIGFuZCBwaHJhc2VzDQoNCkEgdHJ1ZW51bWJlciBmYWN0IGlzIGVxdWl2YWxlbnQgdG8gYSBzZW50ZW5jZSBvZiB0aGUgZm9ybSAqKiZsdDtzdWJqZWN0Jmd0OyBoYXMgJmx0O3Byb3BlcnR5Jmd0OyA9ICZsdDt2YWx1ZSZndDsqKiwgb3IgKiombHQ7cHJvcGVydHkmZ3Q7IG9mICZsdDtzdWJqZWN0Jmd0OyBpcyAmbHQ7dmFsdWUmZ3Q7KiogZm9yIGV4YW1wbGU6DQoNCjxicj4NCjxjZW50ZXI+DQoqKm51bWJlciBvZiBmdWxsdGltZSB1bmRlcmdyYWR1YXRlIHN0dWRlbnRzIG9mIGNvbG9yYWRvIHN0YXRlIHVuaXZlcnNpdHkgaXMgMTU2NDYqKg0KPC9jZW50ZXI+DQo8YnI+DQphbmQNCjxicj4NCjxjZW50ZXI+DQoqKm1vbnRjbGFpciBzdGF0ZSB1bml2ZXJzaXR5IGhhcyBncmFkdWF0aW9uIHJhdGUgPSA1OCUqKg0KPC9jZW50ZXI+DQo8YnI+DQpUaGUgc3ViamVjdCAgKipmdWxsdGltZSB1bmRlcmdyYWR1YXRlIHN0dWRlbnRzIG9mIG1vbnRjbGFpciBzdGF0ZSB1bml2ZXJzaXR5ICoqIGlzIGVxdWl2YWxlbnQgdG8gYSBwYXRoICoqdW5pdmVyc2l0eTpzdGF0ZTptb250Y2xhaXIvc3R1ZGVudHM6dW5kZXJncmFkdWF0ZTpmdWxsdGltZSoqIHdoZXJlIHRoZSBzZXBhcmF0b3IgKio6KiogZGVub3RlcyBhbiAqYWRqZWN0aXZlKiByZWxhdGlvbnNoaXAsIGFuZCAqKi8qKiBkZW5vdGVzIGEgcG9zc2VzaXZlLg0KDQpMZXQncyBtYWtlIFROIEpTT04gb2JqZWN0cyBmb3IgdGhlIGFib3ZlIGV4YW1wbGVzOg0KDQpgYGB7cn0NCnRuMSA8LSB0bnVtLnBvc3RTdGF0ZW1lbnQoDQogIHN0bXQgPSAibnVtYmVyIG9mIGZ1bGx0aW1lIHVuZGVyZ3JhZHVhdGUgc3R1ZGVudHMgb2YgY29sb3JhZG8gc3RhdGUgdW5pdmVyc2l0eSBpcyAxNTY0NiIsDQogIG5vdGVzID0gIk91ciBmaXJzdCB0cnVlbnVtYmVyIg0KKQ0KDQp0bjIgPC0gdG51bS5wb3N0U3RhdGVtZW50KCBzdG10ID0gIm1vbnRjbGFpciBzdGF0ZSB1bml2ZXJzaXR5IGhhcyBncmFkdWF0aW9uIHJhdGUgPSA1OCUiLCBub3RlcyA9ICJPdXIgc2Vjb25kIHRydWVudW1iZXIiKQ0KYGBgDQpQb3N0aW5nIHJldHVybnMgdGhlIGNyZWF0ZWQgdHJ1ZW51bWJlciwgYXMgYSBqc29uIHN0cnVjdHVyZS4gIChXZSB1c2UgdGhlIGpzb25saXRlIHBhY2thZ2UgZm9yIHJlcHJlc2VudGluZyBqc29uIGluIFIgc3RydWN0dXJlcykuIFRoZSBUTiBpcyBxdWl0ZSBhIHJpY2ggc3RydWN0dXJlLCB3ZSBzZWUgdGhlIGZpZWxkIG5hbWVzIGJlbG93LCBhbmQgc29tZSBvZiB0aGVtIGFyZSBuZXN0ZWQgaGF2aW5nIHN0cnVjdHVyZSBhcyB3ZWxsLg0KYGBge3J9DQpuYW1lcyh0bjEpDQpgYGANCiMjIyBMb29raW5nIGF0IHRoZSBqc29uIFRODQoNCldlIHdvbid0IGRldGFpbCB3aGF0IGFsbCB0aGVzZSBlbGVtZW50cyBhcmUsIGJ1dCB3aWxsIGRlc2NyaWJlIHNvbWUgdGhhdCB5b3Ugd2lsbCB1c2UgYSBsb3QuIFRoZSAkc3ViamVjdCBhbmQgJHByb3BlcnR5IGFyZSB0aGUgcGFydHMgb2YgdGhlIHRydWVudW1iZXIgc3RhdGVtZW50IGVuY29kZWQgYXMgcGhyYXNlIHBhdGhzLiBUaGUgJHdyYXBwZXIgaXMgdGhlIG9yaWdpbmFsIHN0YXRlbWVudCBnaXZlbiB0byBjcmVhdGUgdGhlIFROLiANCmBgYHtyfQ0KdG4xJHN1YmplY3QNCnRuMSRwcm9wZXJ0eQ0KdG4xJHdyYXBwZXINCg0KYGBgDQpFdmVyeSBUTiBoYXMgYSB1bmlxdWUgaWRlbnRpZmllciAoR1VJRCkgZ2l2ZW4gaW4gZWxlbWVudCAkaWQuICBUaGlzIGlkIGNhbiBiZSB1c2VkIGFzIGFuIGFyZ3VtZW50IHRvIG90aGVyIFROVU0gZnVuY3Rpb25zLiBUaGUgJGRhdGUsICRhdXRob3IgYW5kICRzZXJ2ZXIgZmllbGRzIHRlbGwgdXMgd2hvIGNyZWF0ZWQgdGhlIFROLCB0aGUgc2VydmVyIGFkZHJlc3Mgd2hlcmUgaXQgbGl2ZXMsIGFuZCBkYXRlL3RpbWUgaXQgd2FzIHBvc3RlZCBpbiBVVEMuICANCmBgYHtyfQ0KYyh0bjEkaWQsdG4xJGF1dGhvcix0bjEkc2VydmVyLHRuMSRkYXRlKQ0KYGBgDQpUbyBjYXJyeSBtb3JlIHRoYW4gb25lIFROIGFyb3VuZCwgd2UgY2FuIG9mIGNvdXJzZSBwdXQgdGhlbSBpbiBhIGxpc3QsIGJ1dCB3ZSBhbHNvIHByb3ZpZGUgYSBmdW5jdGlvbiB0byBjb252ZXJ0IHRoYXQgbGlzdCBpbnRvIGEganNvbmxpdGUganNvbiBhcnJheSBzdHJ1Y3R1cmUuICBIZXJlLCB3ZSBkbyB0aGF0IGFuZCB0aGVuIGRpc3BsYXkgaXQgaW4gdHdvIHBhcnRzIGJlaW5nIDE2IGZpZWxkcyB3aWRlLiAgDQpgYGB7cn0NCmRmIDwtIHRudW0uanNvbkFycmF5KGxpc3QodG4xLHRuMikpDQoNCmthYmxlKGRmWywxOjddKQ0KYGBgDQpgYGB7cn0NCmthYmxlKGRmWyw4Omxlbmd0aChkZildKQ0KDQpgYGANCipOT1RFKiB0aGF0IHRoZSBzZWNvbmQgcGFydCBnZW5lcmF0ZXMgd2FybmluZ3MgYmVjYXVzZSB0d28gb2YgdGhlIGVsZW1lbnRzICR2YWx1ZSBhbmQgJHNpX3ZhbHVlIGFyZSBuZXN0ZWQganNvbiBzdHJ1Y3R1cmVzLiBXZSBjYW4gZmxhdHRlbiB0aGUgc3RydWN1cmUgdXNpbmcganNvbmxpdGU6OmZsYXR0ZW4oKQ0KYGBge3J9DQpuYW1lcyhmbGF0dGVuKGRmKSkNCmBgYA0Kd2hpY2ggd2UgY2FuIHNlZSwgbGlmdHMgdGhlIG5lc3RlZCBlbGVtZW50cyBnaXZlbiB0aGVtIG5hbWVzIHVzaW5nIGRvdCBub3RhdGlvbiwgbGlrZSAjdmFsdWUucXVhbnQjDQoNCiMjIyBUTiB2YWx1ZSBzdHJ1Y3R1cmVzDQoNCldoYXQgYXJlIHRoZXNlIHZhbHVlIHN0cnVjdHVyZXM/ICBUcnVlbnVtYmVyIHZhbHVlcyBjYXJyeSB0aGUgZGV0YWlscyBpbnRyaW5zaWMgdG8gbWVhc3VyZXMsIHdoaWNoIGFyZSBub3JtYWxseSBpbXBsaWNpdCAob3IgZm9yZ290dGVuKSB3aGVuIHJlYWwtd29ybGQgaW5mb3JtYXRpb24gaXMgcmVwcmVzZW50ZWQgYXMganVzdCBhIG51bWVyaWNhbCB2YWx1ZSBmb3IgY29tcHV0YXRpb24uICBUaGUgJHZhbHVlIHN0cnVjdHVyZSByZXRhaW5zIHRob3NlIGRldGFpbHMgYXMgc3BlY2lmaWVkIGluIHRoZSBvcmlnaW5hbCBUTi4gIFRoZSAkc2lfdmFsdWUgc3RydWN0dXJlIGhhcyB0aGUgc2FtZSBpbmZvcm1hdGlvbiBjb252ZXJ0ZWQgdG8gY2Fub25pY2FsIGZvcm0uICBUaGUgcHJlZml4ICJzaSIgcmVmZXJzIHRvIHRoZSBtZXRyaWMgdW5pdCBzeXN0ZW0gW1N5c3RlbWUgSW50ZXJuYXRpb25hbGVdKGh0dHBzOi8vd3d3Lm5pc3QuZ292L3BtbC93ZWlnaHRzLWFuZC1tZWFzdXJlcy9tZXRyaWMtc2kvc2ktdW5pdHMpIHN0YW5kYXJkIGluIHNjaWVuY2UgYW5kIGVuZ2luZWVyaW5nLCBidXQgVHJ1ZW51bWJlcnMgdXNlcyBjYW5vbmljYWwgZm9ybXMgbm90IG5lY2Vzc2FyaWx5IHBhcnQgb2YgdGhhdCBzeXN0ZW0uICBGb3IgZXhhbXBsZSwgYSBUTiB2YWx1ZSBvZiA1OCUgd2lsbCBoYXZlIGRpbWVuc2lvbmxlc3Mgc2lfdmFsdWUgMC41OC4gIA0KDQojIyMjIFZhbHVlIHR5cGVzIGFuZCB0YWdnaW5nDQoNCk5vdCBhbGwgVE4gdmFsdWVzIGFyZSBudW1iZXJzLiBUaGV5IG1heSBhbHNvIGJlIHF1b3RlZCBzdHJpbmdzICh3ZSBjYWxsIHRoZW0gVHNMaXRlcmFsKSBvciBwaHJhc2UgcGF0aHMgbGlrZSAkc3ViamVjdCBhbmQgJHByb3BlcnR5IGFyZSAod2UgY2FsbCB0aGVtIFRzU1JEIGZvciAic3RydWN0dXJlZCByZXNvdXJjZSBkZXNjcmlwdG9yIikuICBOdW1lcmljYWwgdmFsdWVzIGFyZSBvZiB0eXBlIFRzTnVtYmVyLiAgV2UgY2FuIHNlZSB0aGUgdHlwZSBpbiBlbGVtZW50ICR2YWx1ZV90eXBlLiAgVHNOdW1iZXIgaXMgdGhlIG1vc3QgY29tcGxleCB0eXBlLCBsZXQncyBtYWtlIG9uZSB3aXRoIGNvbXBsZXggdW5pdHMgb2YgbWVhc3VyZS4gIFdoaWxlIHdlJ3JlIGF0IGl0LCB3ZSBjYW4gYWRkIHRhZ3MgdG8gaXQuICBBIHRhZyBpcyBlaXRoZXIgYSBwaHJhc2UgcGF0aCwgb3IgYSBwaHJhc2UgcGF0aCBhbmQgY29tbWVudC4gIEJlbG93LCB3ZSBhZGQgdHdvIHRhZ3MsIHRoZSBzZWNvbmQgaGF2aW5nIGEgY29tbWVudC4gIA0KYGBge3J9DQp0bjMgPC0gdG51bS5wb3N0U3RhdGVtZW50KCJ0aGUgaHVkc29uIHJpdmVyIGhhcyBhbiBhdmVyYWdlIGZsb3cgcmF0ZSA9IDIxLjQgdGhvdXNhbmQgZmVldF4zL3NlY29uZCIsIA0KICAgICAgICAgICAgICAgICAgICAgICAgICB0YWdzID0gbGlzdCgibG9jYXRpb246Tlk6VHJveSIsYygiZGVtb25zdHJhdGlvbiIsImp1c3QgZm9yIGRlbW9uc3RyYXRpbmcgVE5VTSIpKSkNCg0KdG51bS5nZXRUYWdzT2ZUbih0bjMkaWQpDQpgYGANCldlIGNhbiByZW1vdmUgb25lIG9mIHRoZSB0YWdzIHdlIGFkZGVkDQpgYGB7cn0NCnRudW0ucmVtb3ZlVGFnKHRuMyRpZCwgImRlbW9uc3RyYXRpb24iKQ0KDQp0bnVtLmdldFRhZ3NPZlRuKHRuMyRpZCkgI3NlZSBpZiBpdCdzIHJlYWxseSBnb25lDQpgYGANCiMjIyBRdWVyeWluZyB0aGUgbnVtYmVyc3BhY2UNCg0KV2UgY2FuIHJldHJpZXZlIHNldHMgb2YgVE5zIGZyb20gdGhlIG51bWJlcnNwYWNlIHdpdGggdGhlICoqdG51bS5xdWVyeSgpKiogZnVuY3Rpb24uICBGb3IgZXhhbXBsZToNCmBgYHtyfQ0KcmVzdWx0IDwtIHRudW0ucXVlcnkoInN1Ymo6dW5pdmVyc2l0eSMiKQ0KDQprYWJsZShyZXN1bHQpDQpgYGANClRoaXMgd2FzIHNpbXBsZSBvbmUtdGVybSBxdWVyeSwgdXNpbmcgdGhlIHRlcm0gcHJlZml4ICoqc3ViajoqKiB0byBxdWVyeSBieSBzdWJqZWN0LiAgVGhlIHRlcm0gaXRzZWxmIHdpbGwgbWF0Y2ggdGhlIHBhdGggZm9ybSBvZiB0aGUgVE4gc3ViamVjdHMuICBGb3Igc3ViamVjdCAqKmZ1bGx0aW1lIHVuZGVyZ3JhZHVhdGUgc3R1ZGVudHMgb2YgY29sb3JhZG8gc3RhdGUgdW5pdmVyc2l0eSoqIHRoZSBwYXRoIGlzICoqdW5pdmVyc2l0eTpzdGF0ZTpjb2xvcmFkby9zdHVkZW50czp1bmRlcmdyYWR1YXRlOmZ1bGx0aW1lKiouICBPdXIgcXVlcnkgdGVybSB1c2VkIHRoZSBwYXRoIHdpbGRjYXJkICoqIyoqIHdoaWNoIHdpbGwgbWF0Y2ggYW55IChvciBubykgcGF0aCBmb2xsb3dpbmcgKip1bml2ZXJzaXR5KiouICBUaGUgX18qX18gY2hhcmFjdGVyIGNhbiBiZSB1c2VkIGluIHRoZSB1c3VhbCB3YXkgYXMgYSBjaGFyYWN0ZXIgd2lsZGNhcmQuICBTbyAqKnBpZ2VvblwqKiogd291bGQgbWF0Y2ggYm90aCAqKnBpZ2VvbmhvbGUqKiBhbmQgKipwaWdlb246Y2FycmllcioqLCBidXQgKipwaWdlb24jKiogd291bGQgbWF0Y2ggb25seSAqKnBpZ2VvbjpjYXJyaWVyKiouDQoNCiMjIyMgVGVybSBwcmVmaXhlcw0KDQpUaGlzIHRhYmxlIGNvdmVycyB0aGUgdHlwZXMgb2YgdGVybXMgYWxsb3dlZCBpbiBhIHF1ZXJ5LiAgTXVsdGlwbGUgdGVybXMgbXVzdCBiZSBzZXBhcmF0ZWQgYnkgKiphbmQqKiBvciAqKm9yKiogYm9vbGVhbiBvcGVyYXRvcnMuICBUaGVzZSBjYW4gYmUgcHJlY2VkZWQgYnkgbmVnYXRpb24gKipub3QqKiwgYW5kIGNhbiBiZSBncm91cGVkIHVzaW5nIHBhcmVucy4gIA0KDQpwcmVmaXggICAgICB8IHRlcm0gc3ludGF4ICAgICAgICAgfCBlZmZlY3QNCi0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLQ0Kc3ViajogICAgICAgfCBwYXRoLCMsKiAgICAgICAgICAgIHwgbWF0Y2hlcyBzdWJqZWN0DQpwcm9wOiAgICAgICB8IHBhdGgsIywqICAgICAgICAgICAgfCBtYXRjaGVzIHByb3BlcnR5DQoobm8gcHJlZml4KSB8IHBhdGgsIywqICAgICAgICAgICAgfCBtYXRjaGVzIHRhZw0KbnVtdmFsOiAgICAgfCA+IDIuNSwgPCAyLjUsIGV0Yy4gfCBtYXRjaGVzIHNpICBudW1lcmljYWwgdmFsdWUNCnN0cmluZ3ZhbDogIHwgcmVndWxhciBleHByZXNzaW9uICAgICAgfCBtYXRjaGVzIHN0cmluZyBvciBwYXRoIHZhbHVlcw0KDQpFeGFtcGxlIHF1ZXJ5IHN0cmluZzogKioiKHByb3A6ZGVuc2l0eSBhbmQgbnVtdmFsOj4zKSBvciBtYXRlcmlhbDpkZW5zaXR5OmhpZ2giKiouDQoNClRoaXMgd2lsbCByZXR1cm4gVE5zIGV4cHJlc3NpbmcgYSBudW1lcmljYWwgZGVuc2l0eSBncmVhdGVyIHRoYW4gMyAodGhlIGRlbnNpdHkgb2Ygc3RvbmUpIG9yIGFueXRoaW5nIHRhZ2dlZCBhcyBhIGhpZ2ggZGVuc2l0eSBtYXRlcmlhbC4gIA0KDQojIyMgRGVsZXRpbmcgdHJ1ZW51bWJlcnMNCg0KVGhlICoqdG51bS5kZWxldGVCeVF1ZXJ5KCkqKiBmdW5jdGlvbiB0YWtlcyBhIHF1ZXJ5IHN0cmluZyBhcyBhcmd1bWVudCwgYnV0IGluc3RlYWQgb2YgcmV0cmVpdmluZyBtYXRjaGluZyBUTnMsIF9faXQgZGVsZXRlcyB0aGVtX18uIEJlIHZlcnkgY2FyZWZ1bCB3aGVuIHVzaW5nIHRoaXMgZnVuY3Rpb24sIG1ha2luZyBzdXJlIHRoYXQgeW91ciBxdWVyeSBpcyBzcGVjaWZpYyBlbm91Z2ggdG8gZGVsZXRlIG9ubHkgd2hhdCB5b3Ugd2lzaCB0by4gICANCg0KDQo=</div>
 
 
 

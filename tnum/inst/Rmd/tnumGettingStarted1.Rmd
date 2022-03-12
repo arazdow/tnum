@@ -20,11 +20,11 @@ After installing package *tnum*, it's necessary to authenticate with the *tnum* 
 library(tnum)
 tnum.authorize(ip="metrics.truenum.com:8080",creds = "demo@truenum.com:pinecone")
 ```
-*authorize* takes two arguments: **ip** representing the URL or IP address of the *tnum* server endpoint.  **creds** is a string containiny your username and password, separated b a colon. The function displays a list of available numberspaces on the server. A *numberspace* is a separate repository for truenumber data.  The authorize() call sets the current numberspace to a numberspace defined by your administrator.    
+*authorize* takes two arguments: **ip** representing the URL or IP address of the *tnum* server endpoint.  **creds** is a string containing your username and password, separated by a colon. The function returns a list of available numberspaces on the server, and reports one of them as the currently active numberspace. A *numberspace* is a separate repository for truenumber data.  
 
 ### Truenumber facts and phrases
 
-A truenumber fact (a *tnum*) is equivalent to a sentence of the form **&lt;subject&gt; has &lt;property&gt; = &lt;value&gt;**, or **&lt;property&gt; of &lt;subject&gt; is &lt;value&gt;** for example:
+A truenumber fact is equivalent to a sentence of the form **&lt;subject&gt; has &lt;property&gt; = &lt;value&gt;**, or **&lt;property&gt; of &lt;subject&gt; is &lt;value&gt;** for example:
 
 <br>
 <center>
@@ -39,7 +39,7 @@ and
 <br>
 The subject  **fulltime undergraduate students of montclair state university ** is equivalent to a path **university:state:montclair/students:undergraduate:fulltime** where the separator **:** denotes an *adjective* relationship, and **/** denotes a possesive.
 
-Let's make truenum JSON objects for the above examples:
+Let's make TN JSON objects for the above examples:
 
 ```{r}
 tn1 <- tnum.postStatement(
@@ -49,19 +49,20 @@ tn1 <- tnum.postStatement(
 
 tn2 <- tnum.postStatement( stmt = "montclair state university has graduation rate = 58%", notes = "Our second truenumber")
 ```
-Posting returns the created truenumber, which is a json structure.  (We use the jsonlite package for representing json in R structures). The TN is quite a rich structure, we see the field names below, and some of them are nested having structure as well.
+Posting returns the created truenumber, as a json structure.  (We use the jsonlite package for representing json in R structures). The TN is quite a rich structure, we see the field names below, and some of them are nested having structure as well.
 ```{r}
 names(tn1)
 ```
-###Looking at the json TN
-We won't detail what all these elements are, but will describe the ones you will use a lot. The $subject and $property are the parts of the truenumber statement encoded as phrase paths. The $wrapper is the original statement given to create the TN. 
+### Looking at the json TN
+
+We won't detail what all these elements are, but will describe some that you will use a lot. The $subject and $property are the parts of the truenumber statement encoded as phrase paths. The $wrapper is the original statement given to create the TN. 
 ```{r}
 tn1$subject
 tn1$property
 tn1$wrapper
 
 ```
-Every TN has a unique identifier (GUID) given in element $id.  This id can be used as an argument to other TNUM functions. The $date, $author and $server fields tell us who created the TN, the server address where it lives, and dat/time it was posted in UTC.  
+Every TN has a unique identifier (GUID) given in element $id.  This id can be used as an argument to other TNUM functions. The $date, $author and $server fields tell us who created the TN, the server address where it lives, and date/time it was posted in UTC.  
 ```{r}
 c(tn1$id,tn1$author,tn1$server,tn1$date)
 ```
@@ -83,11 +84,11 @@ which we can see, lifts the nested elements given them names using dot notation,
 
 ### TN value structures
 
-What are these value structures?  Truenumber values carry the details intrinsic to measures, which are normally implicit (or forgotten) when real-world information is represented as just a numerical value for computation.  The $value structure retains those details as specified in the original TN.  The $si_value structure has that information converted to canonical form.  The prefix "si" refers to the metric unit system [Systeme Internationale](https://www.nist.gov/pml/weights-and-measures/metric-si/si-units) standard in science and engineering, but Truenumbers uses canonical forms not neccessarily part of that system.  For example, a TN value of 58% will have dimensionless si_value 0.58.  
+What are these value structures?  Truenumber values carry the details intrinsic to measures, which are normally implicit (or forgotten) when real-world information is represented as just a numerical value for computation.  The $value structure retains those details as specified in the original TN.  The $si_value structure has the same information converted to canonical form.  The prefix "si" refers to the metric unit system [Systeme Internationale](https://www.nist.gov/pml/weights-and-measures/metric-si/si-units) standard in science and engineering, but Truenumbers uses canonical forms not necessarily part of that system.  For example, a TN value of 58% will have dimensionless si_value 0.58.  
 
-##Value types
+#### Value types and tagging
 
-Not all TN values are numbers. They may also be quoted strings (we call them TsLiteral) or phrase paths like $subject and $property are (we call them TsSRD for "structured resource descriptor").  Numerical values are of type TsNumber.  We can see the type in element $value_type.  TsNumber is the most complex type, let's make one with complex units of measure.
+Not all TN values are numbers. They may also be quoted strings (we call them TsLiteral) or phrase paths like $subject and $property are (we call them TsSRD for "structured resource descriptor").  Numerical values are of type TsNumber.  We can see the type in element $value_type.  TsNumber is the most complex type, let's make one with complex units of measure.  While we're at it, we can add tags to it.  A tag is either a phrase path, or a phrase path and comment.  Below, we add two tags, the second having a comment.  
 ```{r}
 tn3 <- tnum.postStatement("the hudson river has an average flow rate = 21.4 thousand feet^3/second", 
                           tags = list("location:NY:Troy",c("demonstration","just for demonstrating TNUM")))
@@ -100,4 +101,34 @@ tnum.removeTag(tn3$id, "demonstration")
 
 tnum.getTagsOfTn(tn3$id) #see if it's really gone
 ```
+### Querying the numberspace
+
+We can retrieve sets of TNs from the numberspace with the **tnum.query()** function.  For example:
+```{r}
+result <- tnum.query("subj:university#")
+
+kable(result)
+```
+This was simple one-term query, using the term prefix **subj:** to query by subject.  The term itself will match the path form of the TN subjects.  For subject **fulltime undergraduate students of colorado state university** the path is **university:state:colorado/students:undergraduate:fulltime**.  Our query term used the path wildcard **#** which will match any (or no) path following **university**.  The __*__ character can be used in the usual way as a character wildcard.  So **pigeon\*** would match both **pigeonhole** and **pigeon:carrier**, but **pigeon#** would match only **pigeon:carrier**.
+
+#### Term prefixes
+
+This table covers the types of terms allowed in a query.  Multiple terms must be separated by **and** or **or** boolean operators.  These can be preceded by negation **not**, and can be grouped using parens.  
+
+prefix      | term syntax         | effect
+------------|---------------------|----------------
+subj:       | path,#,*            | matches subject
+prop:       | path,#,*            | matches property
+(no prefix) | path,#,*            | matches tag
+numval:     | > 2.5, < 2.5, etc. | matches si  numerical value
+stringval:  | regular expression      | matches string or path values
+
+Example query string: **"(prop:density and numval:>3) or material:density:high"**.
+
+This will return TNs expressing a numerical density greater than 3 (the density of stone) or anything tagged as a high density material.  
+
+### Deleting truenumbers
+
+The **tnum.deleteByQuery()** function takes a query string as argument, but instead of retreiving matching TNs, __it deletes them__. Be very careful when using this function, making sure that your query is specific enough to delete only what you wish to.   
+
 
