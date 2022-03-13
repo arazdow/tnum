@@ -11,7 +11,7 @@ tnum.addTag(guid, tag, text = "")
 
 \item{tag}{path of tag}
 
-\item{text}{comment for tagging action}
+\item{text}{reason for application of tag}
 }
 \description{
 add a tag to a truenumber

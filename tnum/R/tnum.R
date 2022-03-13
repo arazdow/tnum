@@ -76,7 +76,7 @@ tnum.authorize <- function(ip = NULL, creds = "user:password") {
 ########################################################
 #'@title Set a particular numberspace as current
 #'
-#' @param name Name of numberspace
+#' @param name Name of numberspace to set
 #'
 #' @export
 #'
@@ -159,13 +159,14 @@ tnum.getTagsOfTn <- function(id) {
 ########################################################
 #' @title Get all tags
 #'
-#' @return list of all stored tags in the numberspace
+#' @return list of all tags in the numberspace
 #' @export
 
 tnum.getAllTags <- function(){
 
-  tnum.callApi("get-field-set",list(field = "subject",
-                                    context= paste0(tnum.env$tnum.var.nspace,":tag")))
+  tnum.callApi("get-field-set", list(field = "subject",
+                        tagqry="*")
+                        )
 
 }
 
@@ -222,24 +223,48 @@ tnum.deleteByQuery <- function(query = "") {
 # Truenumber creation functions  #
 
 ########################################################
-#'@title add a tag to a truenumber
+#' @title Create a tag for application later
 #'
-#' @param guid  ID of the tn to be tagged
-#' @param tag  path of tag
-#' @param text comment for tagging action
-#' @export
-#'
+#' @param tag the path or phrase of the tag
+#' @param text text of the comment associated with tag
+#' @noRd
 
-# create tag (fails quietly if exists already)
-tnum.addTag <- function(guid, tag, text = "") {
+tnum.createTag <- function(tag, text = "") {
   mkTag <- tnum.callApi("create-tag", list(
     srd = tag,
     comment = text,
     nspace = tnum.env$tnum.var.nspace
   )
   )
+}
 
-# apply tag
+########################################################
+#' @title Delete a tag AND ALL IT'S APPLICATIONS!
+#'
+#' @param tag the path of the tag
+#' @export
+
+tnum.deleteTagFromNumberspace <- function(tag) {
+  delTag <- tnum.callApi("delete-tag", list(
+    tag = tag)
+  )
+}
+
+########################################################
+#'@title add a tag to a truenumber
+#'
+#' @param guid  ID of the tn to be tagged
+#' @param tag  path of tag
+#' @param text reason for application of tag
+#' @export
+#'
+
+tnum.addTag <- function(guid, tag, text = "") {
+
+  # create tag (fails quietly if exists already)
+  tnum.createTag(guid)
+
+  # apply tag
 
   jResult <-
     tnum.callApi("tag-base", list(

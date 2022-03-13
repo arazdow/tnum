@@ -7,7 +7,7 @@
 tnum.setSpace(name = "testspace")
 }
 \arguments{
-\item{name}{Name of numberspace}
+\item{name}{Name of numberspace to set}
 }
 \description{
 Set a particular numberspace as current

@@ -7,7 +7,7 @@
 tnum.getAllTags()
 }
 \value{
-list of all stored tags in the numberspace
+list of all tags in the numberspace
 }
 \description{
 Get all tags
