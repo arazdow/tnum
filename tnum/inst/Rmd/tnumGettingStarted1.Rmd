@@ -145,4 +145,19 @@ and sets of TNs
 ```{r}
 tnum.graphTnumList(nums, tagpattern = ".*")
 ```
+### Other useful functions
 
+#### Make a TN statement from constituent parts.
+
+**tnum.postStatement()** takes a sentence as input.  But if we want to generate and post statements programatically, it's cumbersome to have to build sentences with string manipulation.  So we provide the function **tnum.buildStatement(subject, property, value, error, unit)** which returns a statement suitable for posting, or for display.  
+```{r}
+tnum.buildStatement("this fine subject phrase", "count:word", 4)
+```
+NOTE that statements can have phrases in natural-language-like form, or as phrase paths.  
+
+#### Getting phrase lists from the numberspace
+
+Besides querying for TNs, we often want to see what subject, property or tag phrases exist in the numberspace.  The functions **tnum.getAllSubjects()**, **tnum.getAllProperties()** and **tnum.getAllTags()* return lists of unique phrases found in the numberspace.  For example:
+```{r}
+tnum.getAllTags()
+```
