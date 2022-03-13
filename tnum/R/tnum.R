@@ -157,6 +157,45 @@ tnum.getTagsOfTn <- function(id) {
 }
 
 ########################################################
+#' @title Get all tags
+#'
+#' @return list of all stored tags in the numberspace
+#' @export
+
+tnum.getAllTags <- function(){
+
+  tnum.callApi("get-field-set",list(field = "subject",
+                                    context= paste0(tnum.env$tnum.var.nspace,":tag")))
+
+}
+
+########################################################
+#' @title Get all subjects
+#'
+#' @return list of all subjects in the numberspace
+#' @export
+
+tnum.getAllSubjects <- function(){
+
+  tnum.callApi("get-field-set",list(field = "subject"))
+
+}
+
+########################################################
+#' @title Get all properties
+#'
+#' @return list of all properties in the numberspace
+#' @export
+
+tnum.getAllProperties <- function(){
+
+  tnum.callApi("get-field-set",list(field = "property"))
+
+}
+
+
+
+########################################################
 #'@title  Delete tnums specified by a query
 #'
 #' @param query  string in tnum query language
