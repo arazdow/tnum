@@ -18,7 +18,7 @@ output: html_notebook
 After installing package *tnum*, it's necessary to authenticate with the *tnum* server:
 ```{r}
 library(tnum)
-tnum.authorize(ip="localhost:8080",creds = "demo@truenum.com:pinecone")
+tnum.authorize(ip="metrics.truenum.com:8080",creds = "demo@truenum.com:pinecone")
 ```
 *authorize* takes two arguments: **ip** representing the URL or IP address of the *tnum* server endpoint.  **creds** is a string containing your username and password, separated by a colon. The function returns a list of available numberspaces on the server, and reports one of them as the currently active numberspace. A *numberspace* is a separate repository for truenumber data.  
 
