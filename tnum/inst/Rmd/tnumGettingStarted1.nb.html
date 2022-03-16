@@ -236,12 +236,12 @@ pre code {
 <p>After installing package <em>tnum</em>, it’s necessary to authenticate with the <em>tnum</em> server:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0bnVtKVxudG51bS5hdXRob3JpemUoaXA9XCJtZXRyaWNzLnRydWVudW0uY29tOjgwODBcIixjcmVkcyA9IFwiZGVtb0B0cnVlbnVtLmNvbTpwaW5lY29uZVwiKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0bnVtKVxudG51bS5hdXRob3JpemUoaXA9XCJsb2NhbGhvc3Q6ODA4MFwiLGNyZWRzID0gXCJkZW1vQHRydWVudW0uY29tOnBpbmVjb25lXCIpXG5gYGAifQ== -->
 <pre class="r"><code>library(tnum)
-tnum.authorize(ip=&quot;metrics.truenum.com:8080&quot;,creds = &quot;demo@truenum.com:pinecone&quot;)</code></pre>
+tnum.authorize(ip=&quot;localhost:8080&quot;,creds = &quot;demo@truenum.com:pinecone&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVHJ1ZW51bWJlcnMgKG1ldHJpY3MudHJ1ZW51bS5jb206ODA4MClcbkF2YWlsYWJsZSBzcGFjZXM6IGRlbW9zcGFjZVxuTnVtYmVyc3BhY2Ugc2V0IHRvOiBkZW1vc3BhY2VcbiJ9 -->
-<pre><code>Truenumbers (metrics.truenum.com:8080)
+<!-- rnb-output-begin eyJkYXRhIjoiVHJ1ZW51bWJlcnMgKGxvY2FsaG9zdDo4MDgwKVxuQXZhaWxhYmxlIHNwYWNlczogZGVtb3NwYWNlXG5OdW1iZXJzcGFjZSBzZXQgdG86IGRlbW9zcGFjZVxuIn0= -->
+<pre><code>Truenumbers (localhost:8080)
 Available spaces: demospace
 Numberspace set to: demospace</code></pre>
 <!-- rnb-output-end -->
@@ -280,10 +280,10 @@ tn2 &lt;- tnum.postStatement( stmt = &quot;montclair state university has gradua
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXModG4xKVxuYGBgIn0= -->
 <pre class="r"><code>names(tn1)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcImRhdGVcIiAgICAgICAgIFwiaHRtbF92YXJuYW1lXCIgXCJzZXJ2ZXJcIiAgICAgICBcIm5vdGVzXCIgICAgICAgIFwicXVhbnRpdHlcIiAgICAgXCJhdXRob3JcIiAgICAgIFxuIFs3XSBcInN1YmplY3RcIiAgICAgIFwid3JhcHBlclwiICAgICAgXCJzaV92YWx1ZVwiICAgICBcImh0bl9pZFwiICAgICAgIFwiY29udGV4dFwiICAgICAgXCJwcm9wZXJ0eVwiICAgIFxuWzEzXSBcInBhcnRzXCIgICAgICAgIFwiaWRcIiAgICAgICAgICAgXCJ2YWx1ZS10eXBlXCIgICBcInZhbHVlXCIgICAgICAgXG4ifQ== -->
-<pre><code> [1] &quot;date&quot;         &quot;html_varname&quot; &quot;server&quot;       &quot;notes&quot;        &quot;quantity&quot;     &quot;author&quot;      
- [7] &quot;subject&quot;      &quot;wrapper&quot;      &quot;si_value&quot;     &quot;htn_id&quot;       &quot;context&quot;      &quot;property&quot;    
-[13] &quot;parts&quot;        &quot;id&quot;           &quot;value-type&quot;   &quot;value&quot;       </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcImRhdGVcIiAgICAgICAgIFwiaHRtbF92YXJuYW1lXCIgXCJzZXJ2ZXJcIiAgICAgICBcIm5vdGVzXCIgICAgICAgIFwicXVhbnRpdHlcIiAgICAgXCJhdXRob3JcIiAgICAgICBcInN1YmplY3RcIiAgICAgXG4gWzhdIFwid3JhcHBlclwiICAgICAgXCJzaV92YWx1ZVwiICAgICBcImh0bl9pZFwiICAgICAgIFwiY29udGV4dFwiICAgICAgXCJwcm9wZXJ0eVwiICAgICBcInBhcnRzXCIgICAgICAgIFwiaWRcIiAgICAgICAgICBcblsxNV0gXCJ2YWx1ZS10eXBlXCIgICBcInZhbHVlXCIgICAgICAgXG4ifQ== -->
+<pre><code> [1] &quot;date&quot;         &quot;html_varname&quot; &quot;server&quot;       &quot;notes&quot;        &quot;quantity&quot;     &quot;author&quot;       &quot;subject&quot;     
+ [8] &quot;wrapper&quot;      &quot;si_value&quot;     &quot;htn_id&quot;       &quot;context&quot;      &quot;property&quot;     &quot;parts&quot;        &quot;id&quot;          
+[15] &quot;value-type&quot;   &quot;value&quot;       </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -319,9 +319,9 @@ tn2 &lt;- tnum.postStatement( stmt = &quot;montclair state university has gradua
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYyh0bjEkaWQsdG4xJGF1dGhvcix0bjEkc2VydmVyLHRuMSRkYXRlKVxuYGBgIn0= -->
 <pre class="r"><code>c(tn1$id,tn1$author,tn1$server,tn1$date)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiZDA2NWNkNmUtMTRiYS00MTZmLTlhYWMtZDQ1ZjgyM2Y1NzNjXCIgICAgICAgIFwiZGVtb1wiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bM10gXCJodHRwOi8vbWV0cmljcy50cnVlbnVtLmNvbTo4MDgwL051bWJlcmZsb3cvXCIgXCIyMDIyLTAzLTEzIDE3OjUxOjE5XCIgICAgICAgICAgICAgICAgICAgICAgICBcbiJ9 -->
-<pre><code>[1] &quot;d065cd6e-14ba-416f-9aac-d45f823f573c&quot;        &quot;demo&quot;                                       
-[3] &quot;http://metrics.truenum.com:8080/Numberflow/&quot; &quot;2022-03-13 17:51:19&quot;                        </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiYTcxMzE2YzQtM2UzMS00OTU1LWE1OWMtMDMzNmYwMDY5ZjZiXCIgXCJkZW1vXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzNdIFwiaHR0cDovL2xvY2FsaG9zdDo4MDgwL051bWJlcmZsb3cvXCIgICAgXCIyMDIyLTAzLTE2IDE1OjEyOjUzXCIgICAgICAgICAgICAgICAgIFxuIn0= -->
+<pre><code>[1] &quot;a71316c4-3e31-4955-a59c-0336f0069f6b&quot; &quot;demo&quot;                                
+[3] &quot;http://localhost:8080/Numberflow/&quot;    &quot;2022-03-16 15:12:53&quot;                 </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -338,13 +338,13 @@ kable(df[,1:7])</code></pre>
 
 <table>
 <colgroup>
-<col width="11%" />
-<col width="7%" />
-<col width="25%" />
 <col width="12%" />
-<col width="5%" />
+<col width="7%" />
+<col width="20%" />
+<col width="13%" />
+<col width="6%" />
 <col width="4%" />
-<col width="33%" />
+<col width="35%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -359,18 +359,18 @@ kable(df[,1:7])</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2022-03-13 17:51:19</td>
+<td align="left">2022-03-16 15:12:53</td>
 <td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
+<td align="left">http://localhost:8080/Numberflow/</td>
 <td align="left">Our first truenumber</td>
 <td align="left">magnitude</td>
 <td align="left">demo</td>
 <td align="left">university:state:colorado/students:undergraduate:fulltime</td>
 </tr>
 <tr class="even">
-<td align="left">2022-03-13 17:51:19</td>
+<td align="left">2022-03-16 15:12:53</td>
 <td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
+<td align="left">http://localhost:8080/Numberflow/</td>
 <td align="left">Our second truenumber</td>
 <td align="left">magnitude</td>
 <td align="left">demo</td>
@@ -425,22 +425,22 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <tr class="odd">
 <td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
 <td align="left">15646</td>
-<td align="left">d065cd6e-14ba-416f-9aac-d45f823f573c</td>
+<td align="left">a71316c4-3e31-4955-a59c-0336f0069f6b</td>
 <td align="left">demospace</td>
 <td align="left">number</td>
 <td align="left"></td>
-<td align="left">d065cd6e-14ba-416f-9aac-d45f823f573c</td>
+<td align="left">a71316c4-3e31-4955-a59c-0336f0069f6b</td>
 <td align="left">TsNumber</td>
 <td align="left">15646</td>
 </tr>
 <tr class="even">
 <td align="left">montclair state university has graduation rate = 58 %</td>
 <td align="left">0.58</td>
-<td align="left">dbdb2586-443d-46be-9f19-b695a213d086</td>
+<td align="left">7f3034de-b4a1-409e-9a4a-c44084f28e38</td>
 <td align="left">demospace</td>
 <td align="left">rate:graduation</td>
 <td align="left"></td>
-<td align="left">dbdb2586-443d-46be-9f19-b695a213d086</td>
+<td align="left">7f3034de-b4a1-409e-9a4a-c44084f28e38</td>
 <td align="left">TsNumber</td>
 <td align="left">58</td>
 </tr>
@@ -458,13 +458,12 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoanNvbmxpdGU6OmZsYXR0ZW4oZGYpKVxuYGBgIn0= -->
 <pre class="r"><code>names(jsonlite::flatten(df))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcImRhdGVcIiAgICAgICAgICAgIFwiaHRtbF92YXJuYW1lXCIgICAgXCJzZXJ2ZXJcIiAgICAgICAgICBcIm5vdGVzXCIgICAgICAgICAgIFwicXVhbnRpdHlcIiAgICAgICBcbiBbNl0gXCJhdXRob3JcIiAgICAgICAgICBcInN1YmplY3RcIiAgICAgICAgIFwid3JhcHBlclwiICAgICAgICAgXCJodG5faWRcIiAgICAgICAgICBcImNvbnRleHRcIiAgICAgICAgXG5bMTFdIFwicHJvcGVydHlcIiAgICAgICAgXCJwYXJ0c1wiICAgICAgICAgICBcImlkXCIgICAgICAgICAgICAgIFwidmFsdWUtdHlwZVwiICAgICAgXCJzaV92YWx1ZS5tYWdcIiAgIFxuWzE2XSBcInNpX3ZhbHVlLmVyclwiICAgIFwic2lfdmFsdWUuc3RyaW5nXCIgXCJzaV92YWx1ZS5odG1sXCIgICBcInNpX3ZhbHVlLnF1YW50XCIgIFwidmFsdWUubWFnXCIgICAgICBcblsyMV0gXCJ2YWx1ZS5lcnJcIiAgICAgICBcInZhbHVlLnN0cmluZ1wiICAgIFwidmFsdWUuaHRtbFwiICAgICAgXCJ2YWx1ZS5xdWFudFwiICAgICBcInZhbHVlLnVuaXRzXCIgICAgXG5bMjZdIFwidmFsdWUucG93ZXJzXCIgICBcbiJ9 -->
-<pre><code> [1] &quot;date&quot;            &quot;html_varname&quot;    &quot;server&quot;          &quot;notes&quot;           &quot;quantity&quot;       
- [6] &quot;author&quot;          &quot;subject&quot;         &quot;wrapper&quot;         &quot;htn_id&quot;          &quot;context&quot;        
-[11] &quot;property&quot;        &quot;parts&quot;           &quot;id&quot;              &quot;value-type&quot;      &quot;si_value.mag&quot;   
-[16] &quot;si_value.err&quot;    &quot;si_value.string&quot; &quot;si_value.html&quot;   &quot;si_value.quant&quot;  &quot;value.mag&quot;      
-[21] &quot;value.err&quot;       &quot;value.string&quot;    &quot;value.html&quot;      &quot;value.quant&quot;     &quot;value.units&quot;    
-[26] &quot;value.powers&quot;   </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiIFsxXSBcImRhdGVcIiAgICAgICAgICAgIFwiaHRtbF92YXJuYW1lXCIgICAgXCJzZXJ2ZXJcIiAgICAgICAgICBcIm5vdGVzXCIgICAgICAgICAgIFwicXVhbnRpdHlcIiAgICAgICAgXCJhdXRob3JcIiAgICAgICAgIFxuIFs3XSBcInN1YmplY3RcIiAgICAgICAgIFwid3JhcHBlclwiICAgICAgICAgXCJodG5faWRcIiAgICAgICAgICBcImNvbnRleHRcIiAgICAgICAgIFwicHJvcGVydHlcIiAgICAgICAgXCJwYXJ0c1wiICAgICAgICAgIFxuWzEzXSBcImlkXCIgICAgICAgICAgICAgIFwidmFsdWUtdHlwZVwiICAgICAgXCJzaV92YWx1ZS5tYWdcIiAgICBcInNpX3ZhbHVlLmVyclwiICAgIFwic2lfdmFsdWUuc3RyaW5nXCIgXCJzaV92YWx1ZS5odG1sXCIgIFxuWzE5XSBcInNpX3ZhbHVlLnF1YW50XCIgIFwidmFsdWUubWFnXCIgICAgICAgXCJ2YWx1ZS5lcnJcIiAgICAgICBcInZhbHVlLnN0cmluZ1wiICAgIFwidmFsdWUuaHRtbFwiICAgICAgXCJ2YWx1ZS5xdWFudFwiICAgIFxuWzI1XSBcInZhbHVlLnVuaXRzXCIgICAgIFwidmFsdWUucG93ZXJzXCIgICBcbiJ9 -->
+<pre><code> [1] &quot;date&quot;            &quot;html_varname&quot;    &quot;server&quot;          &quot;notes&quot;           &quot;quantity&quot;        &quot;author&quot;         
+ [7] &quot;subject&quot;         &quot;wrapper&quot;         &quot;htn_id&quot;          &quot;context&quot;         &quot;property&quot;        &quot;parts&quot;          
+[13] &quot;id&quot;              &quot;value-type&quot;      &quot;si_value.mag&quot;    &quot;si_value.err&quot;    &quot;si_value.string&quot; &quot;si_value.html&quot;  
+[19] &quot;si_value.quant&quot;  &quot;value.mag&quot;       &quot;value.err&quot;       &quot;value.string&quot;    &quot;value.html&quot;      &quot;value.quant&quot;    
+[25] &quot;value.units&quot;     &quot;value.powers&quot;   </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -512,27 +511,27 @@ tnum.getTagsOfTn(tn3$id) #see if it&#39;s really gone</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVzdWx0IDwtIHRudW0ucXVlcnkoXCJzdWJqOnVuaXZlcnNpdHkjXCIpXG5gYGAifQ== -->
 <pre class="r"><code>result &lt;- tnum.query(&quot;subj:university#&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmV0dXJuZWQgMTAgcmVzdWx0c1xuIn0= -->
-<pre><code>Returned 10 results</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiUmV0dXJuZWQgMiByZXN1bHRzXG4ifQ== -->
+<pre><code>Returned 2 results</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2FibGUocmVzdWx0KVxuYGBgIn0= -->
 <pre class="r"><code>kable(result)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZyBpbiBgWzwtLmRhdGEuZnJhbWVgKGAqdG1wKmAsICwgaiwgdmFsdWUgPSBsaXN0KG1hZyA9IGMoXCIxNTY0NlwiLCAgOlxuICBwcm92aWRlZCA1IHZhcmlhYmxlcyB0byByZXBsYWNlIDEgdmFyaWFibGVzXG5XYXJuaW5nIGluIGBbPC0uZGF0YS5mcmFtZWAoYCp0bXAqYCwgLCBqLCB2YWx1ZSA9IGxpc3QobWFnID0gYyhcIjE1NjQ2XCIsICA6XG4gIHByb3ZpZGVkIDUgdmFyaWFibGVzIHRvIHJlcGxhY2UgMSB2YXJpYWJsZXNcbiJ9 -->
-<pre><code>Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&quot;,  :
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZyBpbiBgWzwtLmRhdGEuZnJhbWVgKGAqdG1wKmAsICwgaiwgdmFsdWUgPSBsaXN0KG1hZyA9IGMoXCIxNTY0Ni4wMFwiLCAgOlxuICBwcm92aWRlZCA1IHZhcmlhYmxlcyB0byByZXBsYWNlIDEgdmFyaWFibGVzXG5XYXJuaW5nIGluIGBbPC0uZGF0YS5mcmFtZWAoYCp0bXAqYCwgLCBqLCB2YWx1ZSA9IGxpc3QobWFnID0gYyhcIjE1NjQ2XCIsICA6XG4gIHByb3ZpZGVkIDcgdmFyaWFibGVzIHRvIHJlcGxhY2UgMSB2YXJpYWJsZXNcbiJ9 -->
+<pre><code>Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646.00&quot;,  :
   provided 5 variables to replace 1 variables
 Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&quot;,  :
-  provided 5 variables to replace 1 variables</code></pre>
+  provided 7 variables to replace 1 variables</code></pre>
 <!-- rnb-output-end -->
 
 <!-- rnb-html-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImtuaXRfYXNpcyJdLCJzaXppbmdQb2xpY3kiOltdfX0= -->
 
-<table>
+<table style="width:100%;">
 <colgroup>
 <col width="5%" />
 <col width="3%" />
+<col width="8%" />
 <col width="11%" />
-<col width="10%" />
 <col width="2%" />
 <col width="1%" />
 <col width="14%" />
@@ -540,7 +539,7 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <col width="2%" />
 <col width="9%" />
 <col width="2%" />
-<col width="2%" />
+<col width="4%" />
 <col width="1%" />
 <col width="9%" />
 <col width="2%" />
@@ -568,184 +567,40 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2022-03-13 17:51:19</td>
+<td align="left">2022-03-16 15:12:53</td>
 <td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
+<td align="left">http://localhost:8080/Numberflow/</td>
 <td align="left">Our first truenumber, Our first truenumber</td>
 <td align="left">magnitude</td>
 <td align="left">demo</td>
 <td align="left">university:state:colorado/students:undergraduate:fulltime</td>
 <td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
-<td align="left">15646</td>
-<td align="left">d065cd6e-14ba-416f-9aac-d45f823f573c</td>
+<td align="left">15646.00</td>
+<td align="left">a71316c4-3e31-4955-a59c-0336f0069f6b</td>
 <td align="left">demospace</td>
 <td align="left">number</td>
 <td align="left"></td>
-<td align="left">d065cd6e-14ba-416f-9aac-d45f823f573c</td>
+<td align="left">a71316c4-3e31-4955-a59c-0336f0069f6b</td>
 <td align="left">TsNumber</td>
 <td align="left">15646</td>
 </tr>
 <tr class="even">
-<td align="left">2022-03-13 17:07:16</td>
+<td align="left">2022-03-16 15:12:53</td>
 <td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
-<td align="left">Our first truenumber, Our first truenumber</td>
+<td align="left">http://localhost:8080/Numberflow/</td>
+<td align="left">Our second truenumber, Our second truenumber</td>
 <td align="left">magnitude</td>
 <td align="left">demo</td>
-<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
-<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
-<td align="left">15646</td>
-<td align="left">dbd656c5-e501-4300-9268-c535adbb5cc0</td>
+<td align="left">university:state:montclair</td>
+<td align="left">montclair state university has graduation rate = 58 %</td>
+<td align="left">0.58</td>
+<td align="left">7f3034de-b4a1-409e-9a4a-c44084f28e38</td>
 <td align="left">demospace</td>
-<td align="left">number</td>
+<td align="left">rate:graduation</td>
 <td align="left"></td>
-<td align="left">dbd656c5-e501-4300-9268-c535adbb5cc0</td>
+<td align="left">7f3034de-b4a1-409e-9a4a-c44084f28e38</td>
 <td align="left">TsNumber</td>
-<td align="left">15646</td>
-</tr>
-<tr class="odd">
-<td align="left">2022-03-13 17:06:44</td>
-<td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
-<td align="left">Our first truenumber, Our first truenumber</td>
-<td align="left">magnitude</td>
-<td align="left">demo</td>
-<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
-<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
-<td align="left">15646</td>
-<td align="left">d7ca2dff-7de4-4b1c-855e-bf0d4358a797</td>
-<td align="left">demospace</td>
-<td align="left">number</td>
-<td align="left"></td>
-<td align="left">d7ca2dff-7de4-4b1c-855e-bf0d4358a797</td>
-<td align="left">TsNumber</td>
-<td align="left">15646</td>
-</tr>
-<tr class="even">
-<td align="left">2022-03-13 17:06:16</td>
-<td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
-<td align="left">Our first truenumber, Our first truenumber</td>
-<td align="left">magnitude</td>
-<td align="left">demo</td>
-<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
-<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
-<td align="left">15646</td>
-<td align="left">4503b290-3d00-46f9-9f79-0c6a555aab5c</td>
-<td align="left">demospace</td>
-<td align="left">number</td>
-<td align="left"></td>
-<td align="left">4503b290-3d00-46f9-9f79-0c6a555aab5c</td>
-<td align="left">TsNumber</td>
-<td align="left">15646</td>
-</tr>
-<tr class="odd">
-<td align="left">2022-03-13 17:05:45</td>
-<td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
-<td align="left">Our first truenumber, Our first truenumber</td>
-<td align="left">magnitude</td>
-<td align="left">demo</td>
-<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
-<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
-<td align="left">15646</td>
-<td align="left">c342f58c-89dc-47e0-918e-b97395156093</td>
-<td align="left">demospace</td>
-<td align="left">number</td>
-<td align="left"></td>
-<td align="left">c342f58c-89dc-47e0-918e-b97395156093</td>
-<td align="left">TsNumber</td>
-<td align="left">15646</td>
-</tr>
-<tr class="even">
-<td align="left">2022-03-13 17:03:39</td>
-<td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
-<td align="left">Our first truenumber, Our first truenumber</td>
-<td align="left">magnitude</td>
-<td align="left">demo</td>
-<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
-<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
-<td align="left">15646</td>
-<td align="left">05877240-c673-430b-a4eb-36632c6170c2</td>
-<td align="left">demospace</td>
-<td align="left">number</td>
-<td align="left"></td>
-<td align="left">05877240-c673-430b-a4eb-36632c6170c2</td>
-<td align="left">TsNumber</td>
-<td align="left">15646</td>
-</tr>
-<tr class="odd">
-<td align="left">2022-03-13 06:07:19</td>
-<td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
-<td align="left">Our first truenumber, Our first truenumber</td>
-<td align="left">magnitude</td>
-<td align="left">demo</td>
-<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
-<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
-<td align="left">15646</td>
-<td align="left">83d5b1fe-f49d-46a8-8c56-385269997c39</td>
-<td align="left">demospace</td>
-<td align="left">number</td>
-<td align="left"></td>
-<td align="left">83d5b1fe-f49d-46a8-8c56-385269997c39</td>
-<td align="left">TsNumber</td>
-<td align="left">15646</td>
-</tr>
-<tr class="even">
-<td align="left">2022-03-13 05:54:14</td>
-<td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
-<td align="left">Our first truenumber, Our first truenumber</td>
-<td align="left">magnitude</td>
-<td align="left">demo</td>
-<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
-<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
-<td align="left">15646</td>
-<td align="left">7ccead29-0275-4a0f-86db-25fc8dcaf8d4</td>
-<td align="left">demospace</td>
-<td align="left">number</td>
-<td align="left"></td>
-<td align="left">7ccead29-0275-4a0f-86db-25fc8dcaf8d4</td>
-<td align="left">TsNumber</td>
-<td align="left">15646</td>
-</tr>
-<tr class="odd">
-<td align="left">2022-03-13 05:53:04</td>
-<td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
-<td align="left">Our first truenumber, Our first truenumber</td>
-<td align="left">magnitude</td>
-<td align="left">demo</td>
-<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
-<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
-<td align="left">15646</td>
-<td align="left">5e0046e4-cf2d-458a-a51b-7e3fec06c3b5</td>
-<td align="left">demospace</td>
-<td align="left">number</td>
-<td align="left"></td>
-<td align="left">5e0046e4-cf2d-458a-a51b-7e3fec06c3b5</td>
-<td align="left">TsNumber</td>
-<td align="left">15646</td>
-</tr>
-<tr class="even">
-<td align="left">2022-03-13 05:52:47</td>
-<td align="left"></td>
-<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
-<td align="left">Our first truenumber, Our first truenumber</td>
-<td align="left">magnitude</td>
-<td align="left">demo</td>
-<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
-<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
-<td align="left">15646</td>
-<td align="left">a71f8c5a-f12d-470b-8430-7b1fd57f2af8</td>
-<td align="left">demospace</td>
-<td align="left">number</td>
-<td align="left"></td>
-<td align="left">a71f8c5a-f12d-470b-8430-7b1fd57f2af8</td>
-<td align="left">TsNumber</td>
-<td align="left">15646</td>
+<td align="left">58</td>
 </tr>
 </tbody>
 </table>
@@ -812,8 +667,8 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubnVtcyA8LSB0bnVtLnF1ZXJ5KClcbmBgYCJ9 -->
 <pre class="r"><code>nums &lt;- tnum.query()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmV0dXJuZWQgMTAgcmVzdWx0c1xuIn0= -->
-<pre><code>Returned 10 results</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiUmV0dXJuZWQgMyByZXN1bHRzXG4ifQ== -->
+<pre><code>Returned 3 results</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG51bS5ncmFwaFBhdGhMaXN0KG51bXMkc3ViamVjdClcbmBgYCJ9 -->
 <pre class="r"><code>tnum.graphPathList(nums$subject)</code></pre>
@@ -822,10 +677,10 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <!-- rnb-htmlwidget-begin eyJkZXBlbmRlbmNpZXMiOlt7Im5hbWUiOiJodG1sd2lkZ2V0cyIsInZlcnNpb24iOiIxLjUuNCIsInNyYyI6eyJmaWxlIjoid3d3In0sIm1ldGEiOltdLCJzY3JpcHQiOiJodG1sd2lkZ2V0cy5qcyIsInN0eWxlc2hlZXQiOltdLCJoZWFkIjpbXSwiYXR0YWNobWVudCI6W10sInBhY2thZ2UiOiJodG1sd2lkZ2V0cyIsImFsbF9maWxlcyI6dHJ1ZX0seyJuYW1lIjoidml6IiwidmVyc2lvbiI6IjEuOC4yIiwic3JjIjp7ImZpbGUiOiJodG1sd2lkZ2V0cy9saWIvdml6In0sIm1ldGEiOltdLCJzY3JpcHQiOiJ2aXouanMiLCJzdHlsZXNoZWV0IjpbXSwiaGVhZCI6W10sImF0dGFjaG1lbnQiOltdLCJwYWNrYWdlIjoiRGlhZ3JhbW1lUiIsImFsbF9maWxlcyI6dHJ1ZX0seyJuYW1lIjoiRGlhZ3JhbW1lUi1zdHlsZXMiLCJ2ZXJzaW9uIjoiMC4yIiwic3JjIjp7ImZpbGUiOiJodG1sd2lkZ2V0cy9saWIvc3R5bGVzIn0sIm1ldGEiOltdLCJzY3JpcHQiOltdLCJzdHlsZXNoZWV0Ijoic3R5bGVzLmNzcyIsImhlYWQiOltdLCJhdHRhY2htZW50IjpbXSwicGFja2FnZSI6IkRpYWdyYW1tZVIiLCJhbGxfZmlsZXMiOnRydWV9LHsibmFtZSI6ImdyVml6LWJpbmRpbmciLCJ2ZXJzaW9uIjoiMS4wLjkiLCJzcmMiOnsiZmlsZSI6Imh0bWx3aWRnZXRzIn0sIm1ldGEiOltdLCJzY3JpcHQiOiJnclZpei5qcyIsInN0eWxlc2hlZXQiOltdLCJoZWFkIjpbXSwiYXR0YWNobWVudCI6W10sInBhY2thZ2UiOiJEaWFncmFtbWVSIiwiYWxsX2ZpbGVzIjpmYWxzZX1dLCJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImdyVml6IiwiaHRtbHdpZGdldCJdLCJzaXppbmdQb2xpY3kiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJ2aWV3ZXIiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJmaWxsIjpbdHJ1ZV0sInN1cHByZXNzIjpbZmFsc2VdLCJwYW5lSGVpZ2h0IjpbXX0sImJyb3dzZXIiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJmaWxsIjpbZmFsc2VdLCJleHRlcm5hbCI6W2ZhbHNlXX0sImtuaXRyIjp7ImRlZmF1bHRXaWR0aCI6W10sImRlZmF1bHRIZWlnaHQiOltdLCJmaWd1cmUiOlt0cnVlXX0sInZpZXdlci5wYWRkaW5nIjpbMF0sInZpZXdlci5maWxsIjpbdHJ1ZV19fX0= -->
 
 <!-- htmlwidget-container-begin -->
-<div id="htmlwidget-0e66b2d095df49698d3a" style="width:504px;height:504px;" class="grViz html-widget"></div>
+<div id="htmlwidget-ccc4ae468e66db611982" style="width:504px;height:504px;" class="grViz html-widget"></div>
 <!-- htmlwidget-container-end -->
-<script type="application/json" data-for="htmlwidget-0e66b2d095df49698d3a">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"ROOT\", shape = \"plaintext\", color = \"lightgrey\", fontcolor = \"lightgrey\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"2\" [label = \"river\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"3\" [label = \"hudson\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"4\" [label = \"university\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"5\" [label = \"state\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"6\" [label = \"colorado\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"7\" [label = \"students\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"8\" [label = \"undergraduate\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"9\" [label = \"fulltime\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n\"1\"->\"2\" [color = \"lightgrey\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\"] \n\"2\"->\"3\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"1\"->\"4\" [color = \"lightgrey\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\"] \n\"4\"->\"5\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"5\"->\"6\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"6\"->\"7\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", style = \"dashed\"] \n\"7\"->\"8\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"8\"->\"9\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
-<!-- htmlwidget-sizing-policy-base64 PHNjcmlwdCB0eXBlPSJhcHBsaWNhdGlvbi9odG1sd2lkZ2V0LXNpemluZyIgZGF0YS1mb3I9Imh0bWx3aWRnZXQtMGU2NmIyZDA5NWRmNDk2OThkM2EiPnsidmlld2VyIjp7IndpZHRoIjo0NTAsImhlaWdodCI6MzUwLCJwYWRkaW5nIjoxNSwiZmlsbCI6dHJ1ZX0sImJyb3dzZXIiOnsid2lkdGgiOjk2MCwiaGVpZ2h0Ijo1MDAsInBhZGRpbmciOjQwLCJmaWxsIjpmYWxzZX19PC9zY3JpcHQ+ -->
+<script type="application/json" data-for="htmlwidget-ccc4ae468e66db611982">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"ROOT\", shape = \"plaintext\", color = \"lightgrey\", fontcolor = \"lightgrey\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"2\" [label = \"river\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"3\" [label = \"hudson\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"4\" [label = \"university\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"5\" [label = \"state\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"6\" [label = \"colorado\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"7\" [label = \"students\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"8\" [label = \"undergraduate\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"9\" [label = \"fulltime\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"10\" [label = \"montclair\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n\"1\"->\"2\" [color = \"lightgrey\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\"] \n\"2\"->\"3\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"1\"->\"4\" [color = \"lightgrey\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\"] \n\"4\"->\"5\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"5\"->\"6\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"6\"->\"7\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", style = \"dashed\"] \n\"7\"->\"8\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"8\"->\"9\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"5\"->\"10\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<!-- htmlwidget-sizing-policy-base64 PHNjcmlwdCB0eXBlPSJhcHBsaWNhdGlvbi9odG1sd2lkZ2V0LXNpemluZyIgZGF0YS1mb3I9Imh0bWx3aWRnZXQtY2NjNGFlNDY4ZTY2ZGI2MTE5ODIiPnsidmlld2VyIjp7IndpZHRoIjo0NTAsImhlaWdodCI6MzUwLCJwYWRkaW5nIjoxNSwiZmlsbCI6dHJ1ZX0sImJyb3dzZXIiOnsid2lkdGgiOjk2MCwiaGVpZ2h0Ijo1MDAsInBhZGRpbmciOjQwLCJmaWxsIjpmYWxzZX19PC9zY3JpcHQ+ -->
 
 <!-- rnb-htmlwidget-end -->
 
@@ -841,10 +696,10 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <!-- rnb-htmlwidget-begin eyJkZXBlbmRlbmNpZXMiOlt7Im5hbWUiOiJodG1sd2lkZ2V0cyIsInZlcnNpb24iOiIxLjUuNCIsInNyYyI6eyJmaWxlIjoid3d3In0sIm1ldGEiOltdLCJzY3JpcHQiOiJodG1sd2lkZ2V0cy5qcyIsInN0eWxlc2hlZXQiOltdLCJoZWFkIjpbXSwiYXR0YWNobWVudCI6W10sInBhY2thZ2UiOiJodG1sd2lkZ2V0cyIsImFsbF9maWxlcyI6dHJ1ZX0seyJuYW1lIjoidml6IiwidmVyc2lvbiI6IjEuOC4yIiwic3JjIjp7ImZpbGUiOiJodG1sd2lkZ2V0cy9saWIvdml6In0sIm1ldGEiOltdLCJzY3JpcHQiOiJ2aXouanMiLCJzdHlsZXNoZWV0IjpbXSwiaGVhZCI6W10sImF0dGFjaG1lbnQiOltdLCJwYWNrYWdlIjoiRGlhZ3JhbW1lUiIsImFsbF9maWxlcyI6dHJ1ZX0seyJuYW1lIjoiRGlhZ3JhbW1lUi1zdHlsZXMiLCJ2ZXJzaW9uIjoiMC4yIiwic3JjIjp7ImZpbGUiOiJodG1sd2lkZ2V0cy9saWIvc3R5bGVzIn0sIm1ldGEiOltdLCJzY3JpcHQiOltdLCJzdHlsZXNoZWV0Ijoic3R5bGVzLmNzcyIsImhlYWQiOltdLCJhdHRhY2htZW50IjpbXSwicGFja2FnZSI6IkRpYWdyYW1tZVIiLCJhbGxfZmlsZXMiOnRydWV9LHsibmFtZSI6ImdyVml6LWJpbmRpbmciLCJ2ZXJzaW9uIjoiMS4wLjkiLCJzcmMiOnsiZmlsZSI6Imh0bWx3aWRnZXRzIn0sIm1ldGEiOltdLCJzY3JpcHQiOiJnclZpei5qcyIsInN0eWxlc2hlZXQiOltdLCJoZWFkIjpbXSwiYXR0YWNobWVudCI6W10sInBhY2thZ2UiOiJEaWFncmFtbWVSIiwiYWxsX2ZpbGVzIjpmYWxzZX1dLCJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImdyVml6IiwiaHRtbHdpZGdldCJdLCJzaXppbmdQb2xpY3kiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJ2aWV3ZXIiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJmaWxsIjpbdHJ1ZV0sInN1cHByZXNzIjpbZmFsc2VdLCJwYW5lSGVpZ2h0IjpbXX0sImJyb3dzZXIiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJmaWxsIjpbZmFsc2VdLCJleHRlcm5hbCI6W2ZhbHNlXX0sImtuaXRyIjp7ImRlZmF1bHRXaWR0aCI6W10sImRlZmF1bHRIZWlnaHQiOltdLCJmaWd1cmUiOlt0cnVlXX0sInZpZXdlci5wYWRkaW5nIjpbMF0sInZpZXdlci5maWxsIjpbdHJ1ZV19fX0= -->
 
 <!-- htmlwidget-container-begin -->
-<div id="htmlwidget-7539946e258e05e659af" style="width:504px;height:504px;" class="grViz html-widget"></div>
+<div id="htmlwidget-e23df16101f7840f097c" style="width:504px;height:504px;" class="grViz html-widget"></div>
 <!-- htmlwidget-container-end -->
-<script type="application/json" data-for="htmlwidget-7539946e258e05e659af">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"tnums\\n(root)\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"2\" [label = \"river\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"3\" [label = \"hudson\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"4\" [label = \"rate\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"5\" [label = \"flow\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"6\" [label = \"average\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"7\" [label = \"location:NY:Troy\", shape = \"plaintext\", color = \"gray70\", fixedsize = \"FALSE\", fontcolor = \"#338033\", fillcolor = \"#FFFFFF00\"] \n  \"8\" [label = \"university\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"9\" [label = \"state\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"10\" [label = \"colorado\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"11\" [label = \"students\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"12\" [label = \"undergraduate\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"13\" [label = \"fulltime\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"14\" [label = \"number\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"15\" [label = \"\\nsource:R\", shape = \"plaintext\", color = \"gray70\", fixedsize = \"FALSE\", fontcolor = \"#338033\", fillcolor = \"#FFFFFF00\"] \n\"1\"->\"2\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"2\"->\"3\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"3\"->\"4\" [dir = \"back\", color = \"lightgrey\", fontcolor = \"lightgrey\", label = \"HAS\", label = \"HAS\", arrowhead = \"none\"] \n\"4\"->\"5\" [arrowhead = \"none\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"5\"->\"6\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"6\"->\"7\" [dir = \"back\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", arrowhead = \"none\"] \n\"1\"->\"8\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"8\"->\"9\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"9\"->\"10\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"10\"->\"11\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"11\"->\"12\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"12\"->\"13\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"13\"->\"14\" [dir = \"back\", color = \"lightgrey\", fontcolor = \"lightgrey\", label = \"HAS\", label = \"HAS\", arrowhead = \"none\"] \n\"14\"->\"15\" [arrowhead = \"none\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", arrowhead = \"none\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
-<!-- htmlwidget-sizing-policy-base64 PHNjcmlwdCB0eXBlPSJhcHBsaWNhdGlvbi9odG1sd2lkZ2V0LXNpemluZyIgZGF0YS1mb3I9Imh0bWx3aWRnZXQtNzUzOTk0NmUyNThlMDVlNjU5YWYiPnsidmlld2VyIjp7IndpZHRoIjo0NTAsImhlaWdodCI6MzUwLCJwYWRkaW5nIjoxNSwiZmlsbCI6dHJ1ZX0sImJyb3dzZXIiOnsid2lkdGgiOjk2MCwiaGVpZ2h0Ijo1MDAsInBhZGRpbmciOjQwLCJmaWxsIjpmYWxzZX19PC9zY3JpcHQ+ -->
+<script type="application/json" data-for="htmlwidget-e23df16101f7840f097c">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"tnums\\n(root)\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"2\" [label = \"river\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"3\" [label = \"hudson\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"4\" [label = \"rate\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"5\" [label = \"flow\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"6\" [label = \"average\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"7\" [label = \"location:NY:Troy\", shape = \"plaintext\", color = \"gray70\", fixedsize = \"FALSE\", fontcolor = \"#338033\", fillcolor = \"#FFFFFF00\"] \n  \"8\" [label = \"university\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"9\" [label = \"state\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"10\" [label = \"colorado\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"11\" [label = \"students\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"12\" [label = \"undergraduate\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"13\" [label = \"fulltime\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"14\" [label = \"number\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"15\" [label = \"\\nsource:R\", shape = \"plaintext\", color = \"gray70\", fixedsize = \"FALSE\", fontcolor = \"#338033\", fillcolor = \"#FFFFFF00\"] \n  \"16\" [label = \"montclair\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"17\" [label = \"rate\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"18\" [label = \"graduation\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"19\" [label = \"\\n\\nsource:R\", shape = \"plaintext\", color = \"gray70\", fixedsize = \"FALSE\", fontcolor = \"#338033\", fillcolor = \"#FFFFFF00\"] \n\"1\"->\"2\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"2\"->\"3\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"3\"->\"4\" [dir = \"back\", color = \"lightgrey\", fontcolor = \"lightgrey\", label = \"HAS\", label = \"HAS\", arrowhead = \"none\"] \n\"4\"->\"5\" [arrowhead = \"none\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"5\"->\"6\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"6\"->\"7\" [dir = \"back\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", arrowhead = \"none\"] \n\"1\"->\"8\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"8\"->\"9\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"9\"->\"10\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"10\"->\"11\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"11\"->\"12\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"12\"->\"13\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"13\"->\"14\" [dir = \"back\", color = \"lightgrey\", fontcolor = \"lightgrey\", label = \"HAS\", label = \"HAS\", arrowhead = \"none\"] \n\"14\"->\"15\" [arrowhead = \"none\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", arrowhead = \"none\"] \n\"9\"->\"16\" [arrowhead = \"none\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"16\"->\"17\" [dir = \"back\", color = \"lightgrey\", fontcolor = \"lightgrey\", label = \"HAS\", label = \"HAS\", arrowhead = \"none\"] \n\"17\"->\"18\" [arrowhead = \"none\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"18\"->\"19\" [dir = \"back\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", arrowhead = \"none\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<!-- htmlwidget-sizing-policy-base64 PHNjcmlwdCB0eXBlPSJhcHBsaWNhdGlvbi9odG1sd2lkZ2V0LXNpemluZyIgZGF0YS1mb3I9Imh0bWx3aWRnZXQtZTIzZGYxNjEwMWY3ODQwZjA5N2MiPnsidmlld2VyIjp7IndpZHRoIjo0NTAsImhlaWdodCI6MzUwLCJwYWRkaW5nIjoxNSwiZmlsbCI6dHJ1ZX0sImJyb3dzZXIiOnsid2lkdGgiOjk2MCwiaGVpZ2h0Ijo1MDAsInBhZGRpbmciOjQwLCJmaWxsIjpmYWxzZX19PC9zY3JpcHQ+ -->
 
 <!-- rnb-htmlwidget-end -->
 
@@ -876,17 +731,15 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG51bS5nZXRBbGxUYWdzKClcbmBgYCJ9 -->
 <pre class="r"><code>tnum.getAllTags()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiJHZhbHVlc1xuWzFdIFwicml2ZXI6aHVkc29uXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcblsyXSBcInVuaXZlcnNpdHk6c3RhdGU6Y29sb3JhZG8vc3R1ZGVudHM6dW5kZXJncmFkdWF0ZTpmdWxsdGltZVwiXG5bM10gXCJ1bml2ZXJzaXR5OnN0YXRlOm1vbnRjbGFpclwiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuIn0= -->
+<!-- rnb-output-begin eyJkYXRhIjoiJHZhbHVlc1xubGlzdCgpXG4ifQ== -->
 <pre><code>$values
-[1] &quot;river:hudson&quot;                                             
-[2] &quot;university:state:colorado/students:undergraduate:fulltime&quot;
-[3] &quot;university:state:montclair&quot;                               </code></pre>
+list()</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkdldHRpbmcgU3RhcnRlZCB3dGggKip0bnVtKiogZm9yIFIiDQphdXRob3I6ICJbVHJ1ZSBFbmdpbmVlcmluZyBUZWNobm9sb2d5LCBMTENdKGh0dHA6Ly90cnVlbnVtLmNvbSkgTGluY29sbiwgTUEiIA0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KKioqDQoNCiMjIyANCg0KKioqdG51bSogaXMgYSBkYXRhIG1hbmFnZW1lbnQgY29tcGFuaW9uIGZvciBSLioqICBJbiB1c2luZyBSLCB3ZSBkcmF3IGZyb20gYSB2YXJpZXR5IG9mIGRhdGEgc291cmNlcywgcmVhZGluZyB0aGVtIGludG8gZGF0YSBmcmFtZXMsIHZlY3RvcnMgb3IgbGlzdHMgZm9yIGV4cGxvcmF0aW9uIGFuZCBhbmFseXRpYyBwcm9jZXNzaW5nLiAgVGhpcyBpbiB0dXJuIHByb2R1Y2VzIG1vcmUgZGF0YSwgZnJvbSBzdW1tYXJ5IHN0YXRpc3RpY3MgYW5kIG1vZGVscyB0byBncmFwaHMgYW5kIHRhYmxlcyB0aGF0IGVucmljaCB0aGUgb3JpZ2luYWwgZGF0YSwgb3IgZGVyaXZlIG5ldyBpbmZvcm1hdGlvbiBmcm9tIGl0LiBEb2luZyB0aGlzIHJlc3VsdHMgaW4gbWFueSBkaWZmZXJlbnQgZGF0YSBzdHJ1Y3R1cmVzLCBsYWJlbGVkIHdpdGggaW5mb3JtYWwgcm93IGFuZCBjb2x1bW4gbmFtZXMsIGFuZCBtYW55IGZpbGVzIHBlcnNpc3Rpbmcgc291cmNlIGRhdGEgYW5kIHJlc3VsdHMgb24gdGhlIHVzZXIncyBoYXJkLWRyaXZlLiBXb3JraW5nIGFuZCBjb2xsYWJvcmF0aW5nIHdpdGggdGhlc2UgcmVxdWlyZXMga2VlcGluZyB0cmFjayBvZiB0aGVtLCB0aGVpciBtZWFuaW5nLCBzdHJ1Y3R1cmUgYW5kIGZpbGUgdmVyc2lvbnMuIA0KDQoqKlRydWVudW1iZXJzKiosIGlzIGEgY2VudHJhbCBjbG91ZCByZXBvc2l0b3J5IGZvciBjcmVhdGluZywgdGFnZ2luZyBhbmQgcXVlcnlpbmcgcGVyc2lzdGVudCBkYXRhIGFzIGEgY29sbGVjdGlvbiBvZiBmYWN0cyB1c2luZyBhIHN0cnVjdHVyZWQgcHNldWRvLW5hdHVyYWwgbGFuZ3VhZ2UgdG8gZGVzY3JpYmUgdGhlbS4gV2UgY2FsbCB0aGVzZSBmYWN0cyAqdHJ1ZW51bWJlcnMqLCAqdG51bXMqIG9yICpUTnMqLiAgVXNpbmcgKnRudW0qIHByb3ZpZGVzIGEgY29udmVuaWVudCBhbmQgc2NhbGFibGUgd2F5IHRvIG1hbmFnZSBkYXRhIGFuZCByZXN1bHRzIGNlbnRyYWxseSwgYXMgYSBncm93aW5nIGJvZHkgb2YgaW50ZWxsaWdpYmxlIGtub3dsZWRnZSwgd2l0aG91dCByZXNvcnRpbmcgdG8gcmVsYXRpb25hbCBkYXRhYmFzZXMgKHdoaWNoIGFyZSB1c3VhbGx5IGZhciBmcm9tIGludGVsbGlnaWJsZSkuICANCg0KDQojIyMgR2V0dGluZyB1cCBhbmQgcnVubmluZw0KDQpBZnRlciBpbnN0YWxsaW5nIHBhY2thZ2UgKnRudW0qLCBpdCdzIG5lY2Vzc2FyeSB0byBhdXRoZW50aWNhdGUgd2l0aCB0aGUgKnRudW0qIHNlcnZlcjoNCmBgYHtyfQ0KbGlicmFyeSh0bnVtKQ0KdG51bS5hdXRob3JpemUoaXA9Im1ldHJpY3MudHJ1ZW51bS5jb206ODA4MCIsY3JlZHMgPSAiZGVtb0B0cnVlbnVtLmNvbTpwaW5lY29uZSIpDQpgYGANCiphdXRob3JpemUqIHRha2VzIHR3byBhcmd1bWVudHM6ICoqaXAqKiByZXByZXNlbnRpbmcgdGhlIFVSTCBvciBJUCBhZGRyZXNzIG9mIHRoZSAqdG51bSogc2VydmVyIGVuZHBvaW50LiAgKipjcmVkcyoqIGlzIGEgc3RyaW5nIGNvbnRhaW5pbmcgeW91ciB1c2VybmFtZSBhbmQgcGFzc3dvcmQsIHNlcGFyYXRlZCBieSBhIGNvbG9uLiBUaGUgZnVuY3Rpb24gcmV0dXJucyBhIGxpc3Qgb2YgYXZhaWxhYmxlIG51bWJlcnNwYWNlcyBvbiB0aGUgc2VydmVyLCBhbmQgcmVwb3J0cyBvbmUgb2YgdGhlbSBhcyB0aGUgY3VycmVudGx5IGFjdGl2ZSBudW1iZXJzcGFjZS4gQSAqbnVtYmVyc3BhY2UqIGlzIGEgc2VwYXJhdGUgcmVwb3NpdG9yeSBmb3IgdHJ1ZW51bWJlciBkYXRhLiAgDQoNCiMjIyBUcnVlbnVtYmVyIGZhY3RzIGFuZCBwaHJhc2VzDQoNCkEgdHJ1ZW51bWJlciBmYWN0IGlzIGVxdWl2YWxlbnQgdG8gYSBzZW50ZW5jZSBvZiB0aGUgZm9ybSAqKiZsdDtzdWJqZWN0Jmd0OyBoYXMgJmx0O3Byb3BlcnR5Jmd0OyA9ICZsdDt2YWx1ZSZndDsqKiwgb3IgKiombHQ7cHJvcGVydHkmZ3Q7IG9mICZsdDtzdWJqZWN0Jmd0OyBpcyAmbHQ7dmFsdWUmZ3Q7KiogZm9yIGV4YW1wbGU6DQoNCjxicj4NCjxjZW50ZXI+DQoqKm51bWJlciBvZiBmdWxsdGltZSB1bmRlcmdyYWR1YXRlIHN0dWRlbnRzIG9mIGNvbG9yYWRvIHN0YXRlIHVuaXZlcnNpdHkgaXMgMTU2NDYqKg0KPC9jZW50ZXI+DQo8YnI+DQphbmQNCjxicj4NCjxjZW50ZXI+DQoqKm1vbnRjbGFpciBzdGF0ZSB1bml2ZXJzaXR5IGhhcyBncmFkdWF0aW9uIHJhdGUgPSA1OCUqKg0KPC9jZW50ZXI+DQo8YnI+DQpUaGUgc3ViamVjdCAgKipmdWxsdGltZSB1bmRlcmdyYWR1YXRlIHN0dWRlbnRzIG9mIG1vbnRjbGFpciBzdGF0ZSB1bml2ZXJzaXR5ICoqIGlzIGVxdWl2YWxlbnQgdG8gYSBwYXRoICoqdW5pdmVyc2l0eTpzdGF0ZTptb250Y2xhaXIvc3R1ZGVudHM6dW5kZXJncmFkdWF0ZTpmdWxsdGltZSoqIHdoZXJlIHRoZSBzZXBhcmF0b3IgKio6KiogZGVub3RlcyBhbiAqYWRqZWN0aXZlKiByZWxhdGlvbnNoaXAsIGFuZCAqKi8qKiBkZW5vdGVzIGEgcG9zc2VzaXZlLg0KDQpMZXQncyBtYWtlIFROIEpTT04gb2JqZWN0cyBmb3IgdGhlIGFib3ZlIGV4YW1wbGVzOg0KDQpgYGB7cn0NCnRuMSA8LSB0bnVtLnBvc3RTdGF0ZW1lbnQoDQogIHN0bXQgPSAibnVtYmVyIG9mIGZ1bGx0aW1lIHVuZGVyZ3JhZHVhdGUgc3R1ZGVudHMgb2YgY29sb3JhZG8gc3RhdGUgdW5pdmVyc2l0eSBpcyAxNTY0NiIsDQogIG5vdGVzID0gIk91ciBmaXJzdCB0cnVlbnVtYmVyIg0KKQ0KDQp0bjIgPC0gdG51bS5wb3N0U3RhdGVtZW50KCBzdG10ID0gIm1vbnRjbGFpciBzdGF0ZSB1bml2ZXJzaXR5IGhhcyBncmFkdWF0aW9uIHJhdGUgPSA1OCUiLCBub3RlcyA9ICJPdXIgc2Vjb25kIHRydWVudW1iZXIiKQ0KYGBgDQpQb3N0aW5nIHJldHVybnMgdGhlIGNyZWF0ZWQgdHJ1ZW51bWJlciwgYXMgYSBqc29uIHN0cnVjdHVyZS4gIChXZSB1c2UgdGhlIGpzb25saXRlIHBhY2thZ2UgZm9yIHJlcHJlc2VudGluZyBqc29uIGluIFIgc3RydWN0dXJlcykuIFRoZSBUTiBpcyBxdWl0ZSBhIHJpY2ggc3RydWN0dXJlLCB3ZSBzZWUgdGhlIGZpZWxkIG5hbWVzIGJlbG93LCBhbmQgc29tZSBvZiB0aGVtIGFyZSBuZXN0ZWQgaGF2aW5nIHN0cnVjdHVyZSBhcyB3ZWxsLg0KYGBge3J9DQpuYW1lcyh0bjEpDQpgYGANCiMjIyBMb29raW5nIGF0IHRoZSBqc29uIFRODQoNCldlIHdvbid0IGRldGFpbCB3aGF0IGFsbCB0aGVzZSBlbGVtZW50cyBhcmUsIGJ1dCB3aWxsIGRlc2NyaWJlIHNvbWUgdGhhdCB5b3Ugd2lsbCB1c2UgYSBsb3QuIFRoZSAkc3ViamVjdCBhbmQgJHByb3BlcnR5IGFyZSB0aGUgcGFydHMgb2YgdGhlIHRydWVudW1iZXIgc3RhdGVtZW50IGVuY29kZWQgYXMgcGhyYXNlIHBhdGhzLiBUaGUgJHdyYXBwZXIgaXMgdGhlIG9yaWdpbmFsIHN0YXRlbWVudCBnaXZlbiB0byBjcmVhdGUgdGhlIFROLiANCmBgYHtyfQ0KdG4xJHN1YmplY3QNCnRuMSRwcm9wZXJ0eQ0KdG4xJHdyYXBwZXINCg0KYGBgDQpFdmVyeSBUTiBoYXMgYSB1bmlxdWUgaWRlbnRpZmllciAoR1VJRCkgZ2l2ZW4gaW4gZWxlbWVudCAkaWQuICBUaGlzIGlkIGNhbiBiZSB1c2VkIGFzIGFuIGFyZ3VtZW50IHRvIG90aGVyIFROVU0gZnVuY3Rpb25zLiBUaGUgJGRhdGUsICRhdXRob3IgYW5kICRzZXJ2ZXIgZmllbGRzIHRlbGwgdXMgd2hvIGNyZWF0ZWQgdGhlIFROLCB0aGUgc2VydmVyIGFkZHJlc3Mgd2hlcmUgaXQgbGl2ZXMsIGFuZCBkYXRlL3RpbWUgaXQgd2FzIHBvc3RlZCBpbiBVVEMuICANCmBgYHtyfQ0KYyh0bjEkaWQsdG4xJGF1dGhvcix0bjEkc2VydmVyLHRuMSRkYXRlKQ0KYGBgDQpUbyBjYXJyeSBtb3JlIHRoYW4gb25lIFROIGFyb3VuZCwgd2UgY2FuIG9mIGNvdXJzZSBwdXQgdGhlbSBpbiBhIGxpc3QsIGJ1dCB3ZSBhbHNvIHByb3ZpZGUgYSBmdW5jdGlvbiB0byBjb252ZXJ0IHRoYXQgbGlzdCBpbnRvIGEganNvbmxpdGUganNvbiBhcnJheSBzdHJ1Y3R1cmUuICBIZXJlLCB3ZSBkbyB0aGF0IGFuZCB0aGVuIGRpc3BsYXkgaXQgaW4gdHdvIHBhcnRzIGJlaW5nIDE2IGZpZWxkcyB3aWRlLiAgDQpgYGB7cn0NCmRmIDwtIHRudW0uanNvbkFycmF5KGxpc3QodG4xLHRuMikpDQoNCmthYmxlKGRmWywxOjddKQ0KYGBgDQpgYGB7cn0NCmthYmxlKGRmWyw4Omxlbmd0aChkZildKQ0KDQpgYGANCipOT1RFKiB0aGF0IHRoZSBzZWNvbmQgcGFydCBnZW5lcmF0ZXMgd2FybmluZ3MgYmVjYXVzZSB0d28gb2YgdGhlIGVsZW1lbnRzICR2YWx1ZSBhbmQgJHNpX3ZhbHVlIGFyZSBuZXN0ZWQganNvbiBzdHJ1Y3R1cmVzLiBXZSBjYW4gZmxhdHRlbiB0aGUgc3RydWN1cmUgdXNpbmcganNvbmxpdGU6OmZsYXR0ZW4oKQ0KYGBge3J9DQpuYW1lcyhqc29ubGl0ZTo6ZmxhdHRlbihkZikpDQpgYGANCndoaWNoIHdlIGNhbiBzZWUsIGxpZnRzIHRoZSBuZXN0ZWQgZWxlbWVudHMgZ2l2ZW4gdGhlbSBuYW1lcyB1c2luZyBkb3Qgbm90YXRpb24sIGxpa2UgI3ZhbHVlLnF1YW50Iw0KDQojIyMgVE4gdmFsdWUgc3RydWN0dXJlcw0KDQpXaGF0IGFyZSB0aGVzZSB2YWx1ZSBzdHJ1Y3R1cmVzPyAgVHJ1ZW51bWJlciB2YWx1ZXMgY2FycnkgdGhlIGRldGFpbHMgaW50cmluc2ljIHRvIG1lYXN1cmVzLCB3aGljaCBhcmUgbm9ybWFsbHkgaW1wbGljaXQgKG9yIGZvcmdvdHRlbikgd2hlbiByZWFsLXdvcmxkIGluZm9ybWF0aW9uIGlzIHJlcHJlc2VudGVkIGFzIGp1c3QgYSBudW1lcmljYWwgdmFsdWUgZm9yIGNvbXB1dGF0aW9uLiAgVGhlICR2YWx1ZSBzdHJ1Y3R1cmUgcmV0YWlucyB0aG9zZSBkZXRhaWxzIGFzIHNwZWNpZmllZCBpbiB0aGUgb3JpZ2luYWwgVE4uICBUaGUgJHNpX3ZhbHVlIHN0cnVjdHVyZSBoYXMgdGhlIHNhbWUgaW5mb3JtYXRpb24gY29udmVydGVkIHRvIGNhbm9uaWNhbCBmb3JtLiAgVGhlIHByZWZpeCAic2kiIHJlZmVycyB0byB0aGUgbWV0cmljIHVuaXQgc3lzdGVtIFtTeXN0ZW1lIEludGVybmF0aW9uYWxlXShodHRwczovL3d3dy5uaXN0Lmdvdi9wbWwvd2VpZ2h0cy1hbmQtbWVhc3VyZXMvbWV0cmljLXNpL3NpLXVuaXRzKSBzdGFuZGFyZCBpbiBzY2llbmNlIGFuZCBlbmdpbmVlcmluZywgYnV0IFRydWVudW1iZXJzIHVzZXMgY2Fub25pY2FsIGZvcm1zIG5vdCBuZWNlc3NhcmlseSBwYXJ0IG9mIHRoYXQgc3lzdGVtLiAgRm9yIGV4YW1wbGUsIGEgVE4gdmFsdWUgb2YgNTglIHdpbGwgaGF2ZSBkaW1lbnNpb25sZXNzIHNpX3ZhbHVlIDAuNTguICANCg0KIyMjIyBWYWx1ZSB0eXBlcyBhbmQgdGFnZ2luZw0KDQpOb3QgYWxsIFROIHZhbHVlcyBhcmUgbnVtYmVycy4gVGhleSBtYXkgYWxzbyBiZSBxdW90ZWQgc3RyaW5ncyAod2UgY2FsbCB0aGVtIFRzTGl0ZXJhbCkgb3IgcGhyYXNlIHBhdGhzIGxpa2UgJHN1YmplY3QgYW5kICRwcm9wZXJ0eSBhcmUgKHdlIGNhbGwgdGhlbSBUc1NSRCBmb3IgInN0cnVjdHVyZWQgcmVzb3VyY2UgZGVzY3JpcHRvciIpLiAgTnVtZXJpY2FsIHZhbHVlcyBhcmUgb2YgdHlwZSBUc051bWJlci4gIFdlIGNhbiBzZWUgdGhlIHR5cGUgaW4gZWxlbWVudCAkdmFsdWVfdHlwZS4gIFRzTnVtYmVyIGlzIHRoZSBtb3N0IGNvbXBsZXggdHlwZSwgbGV0J3MgbWFrZSBvbmUgd2l0aCBjb21wbGV4IHVuaXRzIG9mIG1lYXN1cmUuICBXaGlsZSB3ZSdyZSBhdCBpdCwgd2UgY2FuIGFkZCB0YWdzIHRvIGl0LiAgQSB0YWcgaXMgZWl0aGVyIGEgcGhyYXNlIHBhdGgsIG9yIGEgcGhyYXNlIHBhdGggYW5kIGNvbW1lbnQuICBCZWxvdywgd2UgYWRkIHR3byB0YWdzLCB0aGUgc2Vjb25kIGhhdmluZyBhIGNvbW1lbnQuICANCmBgYHtyfQ0KdG4zIDwtIHRudW0ucG9zdFN0YXRlbWVudCgidGhlIGh1ZHNvbiByaXZlciBoYXMgYW4gYXZlcmFnZSBmbG93IHJhdGUgPSAyMS40IHRob3VzYW5kIGZlZXReMy9zZWNvbmQiLCANCiAgICAgICAgICAgICAgICAgICAgICAgICAgdGFncyA9IGxpc3QoImxvY2F0aW9uOk5ZOlRyb3kiLGMoImRlbW9uc3RyYXRpb24iLCJqdXN0IGZvciBkZW1vbnN0cmF0aW5nIFROVU0iKSkpDQoNCnRudW0uZ2V0VGFnc09mVG4odG4zJGlkKQ0KYGBgDQpXZSBjYW4gcmVtb3ZlIG9uZSBvZiB0aGUgdGFncyB3ZSBhZGRlZA0KYGBge3J9DQp0bnVtLnJlbW92ZVRhZyh0bjMkaWQsICJkZW1vbnN0cmF0aW9uIikNCg0KdG51bS5nZXRUYWdzT2ZUbih0bjMkaWQpICNzZWUgaWYgaXQncyByZWFsbHkgZ29uZQ0KYGBgDQojIyMgUXVlcnlpbmcgdGhlIG51bWJlcnNwYWNlDQoNCldlIGNhbiByZXRyaWV2ZSBzZXRzIG9mIFROcyBmcm9tIHRoZSBudW1iZXJzcGFjZSB3aXRoIHRoZSAqKnRudW0ucXVlcnkoKSoqIGZ1bmN0aW9uLiAgRm9yIGV4YW1wbGU6DQpgYGB7cn0NCnJlc3VsdCA8LSB0bnVtLnF1ZXJ5KCJzdWJqOnVuaXZlcnNpdHkjIikNCg0Ka2FibGUocmVzdWx0KQ0KYGBgDQpUaGlzIHdhcyBzaW1wbGUgb25lLXRlcm0gcXVlcnksIHVzaW5nIHRoZSB0ZXJtIHByZWZpeCAqKnN1Ymo6KiogdG8gcXVlcnkgYnkgc3ViamVjdC4gIFRoZSB0ZXJtIGl0c2VsZiB3aWxsIG1hdGNoIHRoZSBwYXRoIGZvcm0gb2YgdGhlIFROIHN1YmplY3RzLiAgRm9yIHN1YmplY3QgKipmdWxsdGltZSB1bmRlcmdyYWR1YXRlIHN0dWRlbnRzIG9mIGNvbG9yYWRvIHN0YXRlIHVuaXZlcnNpdHkqKiB0aGUgcGF0aCBpcyAqKnVuaXZlcnNpdHk6c3RhdGU6Y29sb3JhZG8vc3R1ZGVudHM6dW5kZXJncmFkdWF0ZTpmdWxsdGltZSoqLiAgT3VyIHF1ZXJ5IHRlcm0gdXNlZCB0aGUgcGF0aCB3aWxkY2FyZCAqKiMqKiB3aGljaCB3aWxsIG1hdGNoIGFueSAob3Igbm8pIHBhdGggZm9sbG93aW5nICoqdW5pdmVyc2l0eSoqLiAgVGhlIF9fKl9fIGNoYXJhY3RlciBjYW4gYmUgdXNlZCBpbiB0aGUgdXN1YWwgd2F5IGFzIGEgY2hhcmFjdGVyIHdpbGRjYXJkLiAgU28gKipwaWdlb25cKioqIHdvdWxkIG1hdGNoIGJvdGggKipwaWdlb25ob2xlKiogYW5kICoqcGlnZW9uOmNhcnJpZXIqKiwgYnV0ICoqcGlnZW9uIyoqIHdvdWxkIG1hdGNoIG9ubHkgKipwaWdlb246Y2FycmllcioqLg0KDQojIyMjIFRlcm0gcHJlZml4ZXMNCg0KVGhpcyB0YWJsZSBjb3ZlcnMgdGhlIHR5cGVzIG9mIHRlcm1zIGFsbG93ZWQgaW4gYSBxdWVyeS4gIE11bHRpcGxlIHRlcm1zIG11c3QgYmUgc2VwYXJhdGVkIGJ5ICoqYW5kKiogb3IgKipvcioqIGJvb2xlYW4gb3BlcmF0b3JzLiAgVGhlc2UgY2FuIGJlIHByZWNlZGVkIGJ5IG5lZ2F0aW9uICoqbm90KiosIGFuZCBjYW4gYmUgZ3JvdXBlZCB1c2luZyBwYXJlbnMuICANCg0KcHJlZml4ICAgICAgfCB0ZXJtIHN5bnRheCAgICAgICAgIHwgZWZmZWN0DQotLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS0NCnN1Ymo6ICAgICAgIHwgcGF0aCwjLCogICAgICAgICAgICB8IG1hdGNoZXMgc3ViamVjdA0KcHJvcDogICAgICAgfCBwYXRoLCMsKiAgICAgICAgICAgIHwgbWF0Y2hlcyBwcm9wZXJ0eQ0KKG5vIHByZWZpeCkgfCBwYXRoLCMsKiAgICAgICAgICAgIHwgbWF0Y2hlcyB0YWcNCm51bXZhbDogICAgIHwgPiAyLjUsIDwgMi41LCBldGMuIHwgbWF0Y2hlcyBzaSAgbnVtZXJpY2FsIHZhbHVlDQpzdHJpbmd2YWw6ICB8IHJlZ3VsYXIgZXhwcmVzc2lvbiAgICAgIHwgbWF0Y2hlcyBzdHJpbmcgb3IgcGF0aCB2YWx1ZXMNCg0KRXhhbXBsZSBxdWVyeSBzdHJpbmc6ICoqIihwcm9wOmRlbnNpdHkgYW5kIG51bXZhbDo+Mykgb3IgbWF0ZXJpYWw6ZGVuc2l0eTpoaWdoIioqLg0KDQpUaGlzIHdpbGwgcmV0dXJuIFROcyBleHByZXNzaW5nIGEgbnVtZXJpY2FsIGRlbnNpdHkgZ3JlYXRlciB0aGFuIDMgKHRoZSBkZW5zaXR5IG9mIHN0b25lKSBvciBhbnl0aGluZyB0YWdnZWQgYXMgYSBoaWdoIGRlbnNpdHkgbWF0ZXJpYWwuICANCg0KIyMjIERlbGV0aW5nIHRydWVudW1iZXJzDQoNClRoZSAqKnRudW0uZGVsZXRlQnlRdWVyeSgpKiogZnVuY3Rpb24gdGFrZXMgYSBxdWVyeSBzdHJpbmcgYXMgYXJndW1lbnQsIGJ1dCBpbnN0ZWFkIG9mIHJldHJlaXZpbmcgbWF0Y2hpbmcgVE5zLCBfX2l0IGRlbGV0ZXMgdGhlbV9fLiBCZSB2ZXJ5IGNhcmVmdWwgd2hlbiB1c2luZyB0aGlzIGZ1bmN0aW9uLCBtYWtpbmcgc3VyZSB0aGF0IHlvdXIgcXVlcnkgaXMgc3BlY2lmaWMgZW5vdWdoIHRvIGRlbGV0ZSBvbmx5IHdoYXQgeW91IHdpc2ggdG8uICAgDQoNCiMjIyBUTlVNIEdyYXBoaWNzDQoNClRIZSBwYWNrYWdlIGhhcyAyIGdyYXBoaWNzIGZ1bmN0aW9ucywgaGVyZSBhcmUgZXhhbXBsZXMgb2YgdXNlLCB3ZSB3aWxsIHByb3ZpZGUgbW9yZSBkZXRhaWwgb24gdGhlIHBhcmFtZXRlcnMgc29vbi4gIA0KDQpXZSBjYW4gZ3JhcGggcGF0aCBsaXN0cw0KYGBge3J9DQpudW1zIDwtIHRudW0ucXVlcnkoKQ0KDQp0bnVtLmdyYXBoUGF0aExpc3QobnVtcyRzdWJqZWN0KQ0KYGBgDQphbmQgc2V0cyBvZiBUTnMNCmBgYHtyfQ0KdG51bS5ncmFwaFRudW1MaXN0KG51bXMsIHRhZ3BhdHRlcm4gPSAiLioiKQ0KYGBgDQojIyMgT3RoZXIgdXNlZnVsIGZ1bmN0aW9ucw0KDQojIyMjIE1ha2UgYSBUTiBzdGF0ZW1lbnQgZnJvbSBjb25zdGl0dWVudCBwYXJ0cy4NCg0KKip0bnVtLnBvc3RTdGF0ZW1lbnQoKSoqIHRha2VzIGEgc2VudGVuY2UgYXMgaW5wdXQuICBCdXQgaWYgd2Ugd2FudCB0byBnZW5lcmF0ZSBhbmQgcG9zdCBzdGF0ZW1lbnRzIHByb2dyYW1hdGljYWxseSwgaXQncyBjdW1iZXJzb21lIHRvIGhhdmUgdG8gYnVpbGQgc2VudGVuY2VzIHdpdGggc3RyaW5nIG1hbmlwdWxhdGlvbi4gIFNvIHdlIHByb3ZpZGUgdGhlIGZ1bmN0aW9uICoqdG51bS5idWlsZFN0YXRlbWVudChzdWJqZWN0LCBwcm9wZXJ0eSwgdmFsdWUsIGVycm9yLCB1bml0KSoqIHdoaWNoIHJldHVybnMgYSBzdGF0ZW1lbnQgc3VpdGFibGUgZm9yIHBvc3RpbmcsIG9yIGZvciBkaXNwbGF5LiAgDQpgYGB7cn0NCnRudW0uYnVpbGRTdGF0ZW1lbnQoInRoaXMgZmluZSBzdWJqZWN0IHBocmFzZSIsICJjb3VudDp3b3JkIiwgNCkNCmBgYA0KTk9URSB0aGF0IHN0YXRlbWVudHMgY2FuIGhhdmUgcGhyYXNlcyBpbiBuYXR1cmFsLWxhbmd1YWdlLWxpa2UgZm9ybSwgb3IgYXMgcGhyYXNlIHBhdGhzLiAgDQoNCiMjIyMgR2V0dGluZyBwaHJhc2UgbGlzdHMgZnJvbSB0aGUgbnVtYmVyc3BhY2UNCg0KQmVzaWRlcyBxdWVyeWluZyBmb3IgVE5zLCB3ZSBvZnRlbiB3YW50IHRvIHNlZSB3aGF0IHN1YmplY3QsIHByb3BlcnR5IG9yIHRhZyBwaHJhc2VzIGV4aXN0IGluIHRoZSBudW1iZXJzcGFjZS4gIFRoZSBmdW5jdGlvbnMgKip0bnVtLmdldEFsbFN1YmplY3RzKCkqKiwgKip0bnVtLmdldEFsbFByb3BlcnRpZXMoKSoqIGFuZCAqKnRudW0uZ2V0QWxsVGFncygpKiByZXR1cm4gbGlzdHMgb2YgdW5pcXVlIHBocmFzZXMgZm91bmQgaW4gdGhlIG51bWJlcnNwYWNlLiAgRm9yIGV4YW1wbGU6DQpgYGB7cn0NCnRudW0uZ2V0QWxsVGFncygpDQpgYGANCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkdldHRpbmcgU3RhcnRlZCB3dGggKip0bnVtKiogZm9yIFIiDQphdXRob3I6ICJbVHJ1ZSBFbmdpbmVlcmluZyBUZWNobm9sb2d5LCBMTENdKGh0dHA6Ly90cnVlbnVtLmNvbSkgTGluY29sbiwgTUEiIA0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KKioqDQoNCiMjIyANCg0KKioqdG51bSogaXMgYSBkYXRhIG1hbmFnZW1lbnQgY29tcGFuaW9uIGZvciBSLioqICBJbiB1c2luZyBSLCB3ZSBkcmF3IGZyb20gYSB2YXJpZXR5IG9mIGRhdGEgc291cmNlcywgcmVhZGluZyB0aGVtIGludG8gZGF0YSBmcmFtZXMsIHZlY3RvcnMgb3IgbGlzdHMgZm9yIGV4cGxvcmF0aW9uIGFuZCBhbmFseXRpYyBwcm9jZXNzaW5nLiAgVGhpcyBpbiB0dXJuIHByb2R1Y2VzIG1vcmUgZGF0YSwgZnJvbSBzdW1tYXJ5IHN0YXRpc3RpY3MgYW5kIG1vZGVscyB0byBncmFwaHMgYW5kIHRhYmxlcyB0aGF0IGVucmljaCB0aGUgb3JpZ2luYWwgZGF0YSwgb3IgZGVyaXZlIG5ldyBpbmZvcm1hdGlvbiBmcm9tIGl0LiBEb2luZyB0aGlzIHJlc3VsdHMgaW4gbWFueSBkaWZmZXJlbnQgZGF0YSBzdHJ1Y3R1cmVzLCBsYWJlbGVkIHdpdGggaW5mb3JtYWwgcm93IGFuZCBjb2x1bW4gbmFtZXMsIGFuZCBtYW55IGZpbGVzIHBlcnNpc3Rpbmcgc291cmNlIGRhdGEgYW5kIHJlc3VsdHMgb24gdGhlIHVzZXIncyBoYXJkLWRyaXZlLiBXb3JraW5nIGFuZCBjb2xsYWJvcmF0aW5nIHdpdGggdGhlc2UgcmVxdWlyZXMga2VlcGluZyB0cmFjayBvZiB0aGVtLCB0aGVpciBtZWFuaW5nLCBzdHJ1Y3R1cmUgYW5kIGZpbGUgdmVyc2lvbnMuIA0KDQoqKlRydWVudW1iZXJzKiosIGlzIGEgY2VudHJhbCBjbG91ZCByZXBvc2l0b3J5IGZvciBjcmVhdGluZywgdGFnZ2luZyBhbmQgcXVlcnlpbmcgcGVyc2lzdGVudCBkYXRhIGFzIGEgY29sbGVjdGlvbiBvZiBmYWN0cyB1c2luZyBhIHN0cnVjdHVyZWQgcHNldWRvLW5hdHVyYWwgbGFuZ3VhZ2UgdG8gZGVzY3JpYmUgdGhlbS4gV2UgY2FsbCB0aGVzZSBmYWN0cyAqdHJ1ZW51bWJlcnMqLCAqdG51bXMqIG9yICpUTnMqLiAgVXNpbmcgKnRudW0qIHByb3ZpZGVzIGEgY29udmVuaWVudCBhbmQgc2NhbGFibGUgd2F5IHRvIG1hbmFnZSBkYXRhIGFuZCByZXN1bHRzIGNlbnRyYWxseSwgYXMgYSBncm93aW5nIGJvZHkgb2YgaW50ZWxsaWdpYmxlIGtub3dsZWRnZSwgd2l0aG91dCByZXNvcnRpbmcgdG8gcmVsYXRpb25hbCBkYXRhYmFzZXMgKHdoaWNoIGFyZSB1c3VhbGx5IGZhciBmcm9tIGludGVsbGlnaWJsZSkuICANCg0KDQojIyMgR2V0dGluZyB1cCBhbmQgcnVubmluZw0KDQpBZnRlciBpbnN0YWxsaW5nIHBhY2thZ2UgKnRudW0qLCBpdCdzIG5lY2Vzc2FyeSB0byBhdXRoZW50aWNhdGUgd2l0aCB0aGUgKnRudW0qIHNlcnZlcjoNCmBgYHtyfQ0KbGlicmFyeSh0bnVtKQ0KdG51bS5hdXRob3JpemUoaXA9ImxvY2FsaG9zdDo4MDgwIixjcmVkcyA9ICJkZW1vQHRydWVudW0uY29tOnBpbmVjb25lIikNCmBgYA0KKmF1dGhvcml6ZSogdGFrZXMgdHdvIGFyZ3VtZW50czogKippcCoqIHJlcHJlc2VudGluZyB0aGUgVVJMIG9yIElQIGFkZHJlc3Mgb2YgdGhlICp0bnVtKiBzZXJ2ZXIgZW5kcG9pbnQuICAqKmNyZWRzKiogaXMgYSBzdHJpbmcgY29udGFpbmluZyB5b3VyIHVzZXJuYW1lIGFuZCBwYXNzd29yZCwgc2VwYXJhdGVkIGJ5IGEgY29sb24uIFRoZSBmdW5jdGlvbiByZXR1cm5zIGEgbGlzdCBvZiBhdmFpbGFibGUgbnVtYmVyc3BhY2VzIG9uIHRoZSBzZXJ2ZXIsIGFuZCByZXBvcnRzIG9uZSBvZiB0aGVtIGFzIHRoZSBjdXJyZW50bHkgYWN0aXZlIG51bWJlcnNwYWNlLiBBICpudW1iZXJzcGFjZSogaXMgYSBzZXBhcmF0ZSByZXBvc2l0b3J5IGZvciB0cnVlbnVtYmVyIGRhdGEuICANCg0KIyMjIFRydWVudW1iZXIgZmFjdHMgYW5kIHBocmFzZXMNCg0KQSB0cnVlbnVtYmVyIGZhY3QgaXMgZXF1aXZhbGVudCB0byBhIHNlbnRlbmNlIG9mIHRoZSBmb3JtICoqJmx0O3N1YmplY3QmZ3Q7IGhhcyAmbHQ7cHJvcGVydHkmZ3Q7ID0gJmx0O3ZhbHVlJmd0OyoqLCBvciAqKiZsdDtwcm9wZXJ0eSZndDsgb2YgJmx0O3N1YmplY3QmZ3Q7IGlzICZsdDt2YWx1ZSZndDsqKiBmb3IgZXhhbXBsZToNCg0KPGJyPg0KPGNlbnRlcj4NCioqbnVtYmVyIG9mIGZ1bGx0aW1lIHVuZGVyZ3JhZHVhdGUgc3R1ZGVudHMgb2YgY29sb3JhZG8gc3RhdGUgdW5pdmVyc2l0eSBpcyAxNTY0NioqDQo8L2NlbnRlcj4NCjxicj4NCmFuZA0KPGJyPg0KPGNlbnRlcj4NCioqbW9udGNsYWlyIHN0YXRlIHVuaXZlcnNpdHkgaGFzIGdyYWR1YXRpb24gcmF0ZSA9IDU4JSoqDQo8L2NlbnRlcj4NCjxicj4NClRoZSBzdWJqZWN0ICAqKmZ1bGx0aW1lIHVuZGVyZ3JhZHVhdGUgc3R1ZGVudHMgb2YgbW9udGNsYWlyIHN0YXRlIHVuaXZlcnNpdHkgKiogaXMgZXF1aXZhbGVudCB0byBhIHBhdGggKip1bml2ZXJzaXR5OnN0YXRlOm1vbnRjbGFpci9zdHVkZW50czp1bmRlcmdyYWR1YXRlOmZ1bGx0aW1lKiogd2hlcmUgdGhlIHNlcGFyYXRvciAqKjoqKiBkZW5vdGVzIGFuICphZGplY3RpdmUqIHJlbGF0aW9uc2hpcCwgYW5kICoqLyoqIGRlbm90ZXMgYSBwb3NzZXNpdmUuDQoNCkxldCdzIG1ha2UgVE4gSlNPTiBvYmplY3RzIGZvciB0aGUgYWJvdmUgZXhhbXBsZXM6DQoNCmBgYHtyfQ0KdG4xIDwtIHRudW0ucG9zdFN0YXRlbWVudCgNCiAgc3RtdCA9ICJudW1iZXIgb2YgZnVsbHRpbWUgdW5kZXJncmFkdWF0ZSBzdHVkZW50cyBvZiBjb2xvcmFkbyBzdGF0ZSB1bml2ZXJzaXR5IGlzIDE1NjQ2IiwNCiAgbm90ZXMgPSAiT3VyIGZpcnN0IHRydWVudW1iZXIiDQopDQoNCnRuMiA8LSB0bnVtLnBvc3RTdGF0ZW1lbnQoIHN0bXQgPSAibW9udGNsYWlyIHN0YXRlIHVuaXZlcnNpdHkgaGFzIGdyYWR1YXRpb24gcmF0ZSA9IDU4JSIsIG5vdGVzID0gIk91ciBzZWNvbmQgdHJ1ZW51bWJlciIpDQpgYGANClBvc3RpbmcgcmV0dXJucyB0aGUgY3JlYXRlZCB0cnVlbnVtYmVyLCBhcyBhIGpzb24gc3RydWN0dXJlLiAgKFdlIHVzZSB0aGUganNvbmxpdGUgcGFja2FnZSBmb3IgcmVwcmVzZW50aW5nIGpzb24gaW4gUiBzdHJ1Y3R1cmVzKS4gVGhlIFROIGlzIHF1aXRlIGEgcmljaCBzdHJ1Y3R1cmUsIHdlIHNlZSB0aGUgZmllbGQgbmFtZXMgYmVsb3csIGFuZCBzb21lIG9mIHRoZW0gYXJlIG5lc3RlZCBoYXZpbmcgc3RydWN0dXJlIGFzIHdlbGwuDQpgYGB7cn0NCm5hbWVzKHRuMSkNCmBgYA0KIyMjIExvb2tpbmcgYXQgdGhlIGpzb24gVE4NCg0KV2Ugd29uJ3QgZGV0YWlsIHdoYXQgYWxsIHRoZXNlIGVsZW1lbnRzIGFyZSwgYnV0IHdpbGwgZGVzY3JpYmUgc29tZSB0aGF0IHlvdSB3aWxsIHVzZSBhIGxvdC4gVGhlICRzdWJqZWN0IGFuZCAkcHJvcGVydHkgYXJlIHRoZSBwYXJ0cyBvZiB0aGUgdHJ1ZW51bWJlciBzdGF0ZW1lbnQgZW5jb2RlZCBhcyBwaHJhc2UgcGF0aHMuIFRoZSAkd3JhcHBlciBpcyB0aGUgb3JpZ2luYWwgc3RhdGVtZW50IGdpdmVuIHRvIGNyZWF0ZSB0aGUgVE4uIA0KYGBge3J9DQp0bjEkc3ViamVjdA0KdG4xJHByb3BlcnR5DQp0bjEkd3JhcHBlcg0KDQpgYGANCkV2ZXJ5IFROIGhhcyBhIHVuaXF1ZSBpZGVudGlmaWVyIChHVUlEKSBnaXZlbiBpbiBlbGVtZW50ICRpZC4gIFRoaXMgaWQgY2FuIGJlIHVzZWQgYXMgYW4gYXJndW1lbnQgdG8gb3RoZXIgVE5VTSBmdW5jdGlvbnMuIFRoZSAkZGF0ZSwgJGF1dGhvciBhbmQgJHNlcnZlciBmaWVsZHMgdGVsbCB1cyB3aG8gY3JlYXRlZCB0aGUgVE4sIHRoZSBzZXJ2ZXIgYWRkcmVzcyB3aGVyZSBpdCBsaXZlcywgYW5kIGRhdGUvdGltZSBpdCB3YXMgcG9zdGVkIGluIFVUQy4gIA0KYGBge3J9DQpjKHRuMSRpZCx0bjEkYXV0aG9yLHRuMSRzZXJ2ZXIsdG4xJGRhdGUpDQpgYGANClRvIGNhcnJ5IG1vcmUgdGhhbiBvbmUgVE4gYXJvdW5kLCB3ZSBjYW4gb2YgY291cnNlIHB1dCB0aGVtIGluIGEgbGlzdCwgYnV0IHdlIGFsc28gcHJvdmlkZSBhIGZ1bmN0aW9uIHRvIGNvbnZlcnQgdGhhdCBsaXN0IGludG8gYSBqc29ubGl0ZSBqc29uIGFycmF5IHN0cnVjdHVyZS4gIEhlcmUsIHdlIGRvIHRoYXQgYW5kIHRoZW4gZGlzcGxheSBpdCBpbiB0d28gcGFydHMgYmVpbmcgMTYgZmllbGRzIHdpZGUuICANCmBgYHtyfQ0KZGYgPC0gdG51bS5qc29uQXJyYXkobGlzdCh0bjEsdG4yKSkNCg0Ka2FibGUoZGZbLDE6N10pDQpgYGANCmBgYHtyfQ0Ka2FibGUoZGZbLDg6bGVuZ3RoKGRmKV0pDQoNCmBgYA0KKk5PVEUqIHRoYXQgdGhlIHNlY29uZCBwYXJ0IGdlbmVyYXRlcyB3YXJuaW5ncyBiZWNhdXNlIHR3byBvZiB0aGUgZWxlbWVudHMgJHZhbHVlIGFuZCAkc2lfdmFsdWUgYXJlIG5lc3RlZCBqc29uIHN0cnVjdHVyZXMuIFdlIGNhbiBmbGF0dGVuIHRoZSBzdHJ1Y3VyZSB1c2luZyBqc29ubGl0ZTo6ZmxhdHRlbigpDQpgYGB7cn0NCm5hbWVzKGpzb25saXRlOjpmbGF0dGVuKGRmKSkNCmBgYA0Kd2hpY2ggd2UgY2FuIHNlZSwgbGlmdHMgdGhlIG5lc3RlZCBlbGVtZW50cyBnaXZlbiB0aGVtIG5hbWVzIHVzaW5nIGRvdCBub3RhdGlvbiwgbGlrZSAjdmFsdWUucXVhbnQjDQoNCiMjIyBUTiB2YWx1ZSBzdHJ1Y3R1cmVzDQoNCldoYXQgYXJlIHRoZXNlIHZhbHVlIHN0cnVjdHVyZXM/ICBUcnVlbnVtYmVyIHZhbHVlcyBjYXJyeSB0aGUgZGV0YWlscyBpbnRyaW5zaWMgdG8gbWVhc3VyZXMsIHdoaWNoIGFyZSBub3JtYWxseSBpbXBsaWNpdCAob3IgZm9yZ290dGVuKSB3aGVuIHJlYWwtd29ybGQgaW5mb3JtYXRpb24gaXMgcmVwcmVzZW50ZWQgYXMganVzdCBhIG51bWVyaWNhbCB2YWx1ZSBmb3IgY29tcHV0YXRpb24uICBUaGUgJHZhbHVlIHN0cnVjdHVyZSByZXRhaW5zIHRob3NlIGRldGFpbHMgYXMgc3BlY2lmaWVkIGluIHRoZSBvcmlnaW5hbCBUTi4gIFRoZSAkc2lfdmFsdWUgc3RydWN0dXJlIGhhcyB0aGUgc2FtZSBpbmZvcm1hdGlvbiBjb252ZXJ0ZWQgdG8gY2Fub25pY2FsIGZvcm0uICBUaGUgcHJlZml4ICJzaSIgcmVmZXJzIHRvIHRoZSBtZXRyaWMgdW5pdCBzeXN0ZW0gW1N5c3RlbWUgSW50ZXJuYXRpb25hbGVdKGh0dHBzOi8vd3d3Lm5pc3QuZ292L3BtbC93ZWlnaHRzLWFuZC1tZWFzdXJlcy9tZXRyaWMtc2kvc2ktdW5pdHMpIHN0YW5kYXJkIGluIHNjaWVuY2UgYW5kIGVuZ2luZWVyaW5nLCBidXQgVHJ1ZW51bWJlcnMgdXNlcyBjYW5vbmljYWwgZm9ybXMgbm90IG5lY2Vzc2FyaWx5IHBhcnQgb2YgdGhhdCBzeXN0ZW0uICBGb3IgZXhhbXBsZSwgYSBUTiB2YWx1ZSBvZiA1OCUgd2lsbCBoYXZlIGRpbWVuc2lvbmxlc3Mgc2lfdmFsdWUgMC41OC4gIA0KDQojIyMjIFZhbHVlIHR5cGVzIGFuZCB0YWdnaW5nDQoNCk5vdCBhbGwgVE4gdmFsdWVzIGFyZSBudW1iZXJzLiBUaGV5IG1heSBhbHNvIGJlIHF1b3RlZCBzdHJpbmdzICh3ZSBjYWxsIHRoZW0gVHNMaXRlcmFsKSBvciBwaHJhc2UgcGF0aHMgbGlrZSAkc3ViamVjdCBhbmQgJHByb3BlcnR5IGFyZSAod2UgY2FsbCB0aGVtIFRzU1JEIGZvciAic3RydWN0dXJlZCByZXNvdXJjZSBkZXNjcmlwdG9yIikuICBOdW1lcmljYWwgdmFsdWVzIGFyZSBvZiB0eXBlIFRzTnVtYmVyLiAgV2UgY2FuIHNlZSB0aGUgdHlwZSBpbiBlbGVtZW50ICR2YWx1ZV90eXBlLiAgVHNOdW1iZXIgaXMgdGhlIG1vc3QgY29tcGxleCB0eXBlLCBsZXQncyBtYWtlIG9uZSB3aXRoIGNvbXBsZXggdW5pdHMgb2YgbWVhc3VyZS4gIFdoaWxlIHdlJ3JlIGF0IGl0LCB3ZSBjYW4gYWRkIHRhZ3MgdG8gaXQuICBBIHRhZyBpcyBlaXRoZXIgYSBwaHJhc2UgcGF0aCwgb3IgYSBwaHJhc2UgcGF0aCBhbmQgY29tbWVudC4gIEJlbG93LCB3ZSBhZGQgdHdvIHRhZ3MsIHRoZSBzZWNvbmQgaGF2aW5nIGEgY29tbWVudC4gIA0KYGBge3J9DQp0bjMgPC0gdG51bS5wb3N0U3RhdGVtZW50KCJ0aGUgaHVkc29uIHJpdmVyIGhhcyBhbiBhdmVyYWdlIGZsb3cgcmF0ZSA9IDIxLjQgdGhvdXNhbmQgZmVldF4zL3NlY29uZCIsIA0KICAgICAgICAgICAgICAgICAgICAgICAgICB0YWdzID0gbGlzdCgibG9jYXRpb246Tlk6VHJveSIsYygiZGVtb25zdHJhdGlvbiIsImp1c3QgZm9yIGRlbW9uc3RyYXRpbmcgVE5VTSIpKSkNCg0KdG51bS5nZXRUYWdzT2ZUbih0bjMkaWQpDQpgYGANCldlIGNhbiByZW1vdmUgb25lIG9mIHRoZSB0YWdzIHdlIGFkZGVkDQpgYGB7cn0NCnRudW0ucmVtb3ZlVGFnKHRuMyRpZCwgImRlbW9uc3RyYXRpb24iKQ0KDQp0bnVtLmdldFRhZ3NPZlRuKHRuMyRpZCkgI3NlZSBpZiBpdCdzIHJlYWxseSBnb25lDQpgYGANCiMjIyBRdWVyeWluZyB0aGUgbnVtYmVyc3BhY2UNCg0KV2UgY2FuIHJldHJpZXZlIHNldHMgb2YgVE5zIGZyb20gdGhlIG51bWJlcnNwYWNlIHdpdGggdGhlICoqdG51bS5xdWVyeSgpKiogZnVuY3Rpb24uICBGb3IgZXhhbXBsZToNCmBgYHtyfQ0KcmVzdWx0IDwtIHRudW0ucXVlcnkoInN1Ymo6dW5pdmVyc2l0eSMiKQ0KDQprYWJsZShyZXN1bHQpDQpgYGANClRoaXMgd2FzIHNpbXBsZSBvbmUtdGVybSBxdWVyeSwgdXNpbmcgdGhlIHRlcm0gcHJlZml4ICoqc3ViajoqKiB0byBxdWVyeSBieSBzdWJqZWN0LiAgVGhlIHRlcm0gaXRzZWxmIHdpbGwgbWF0Y2ggdGhlIHBhdGggZm9ybSBvZiB0aGUgVE4gc3ViamVjdHMuICBGb3Igc3ViamVjdCAqKmZ1bGx0aW1lIHVuZGVyZ3JhZHVhdGUgc3R1ZGVudHMgb2YgY29sb3JhZG8gc3RhdGUgdW5pdmVyc2l0eSoqIHRoZSBwYXRoIGlzICoqdW5pdmVyc2l0eTpzdGF0ZTpjb2xvcmFkby9zdHVkZW50czp1bmRlcmdyYWR1YXRlOmZ1bGx0aW1lKiouICBPdXIgcXVlcnkgdGVybSB1c2VkIHRoZSBwYXRoIHdpbGRjYXJkICoqIyoqIHdoaWNoIHdpbGwgbWF0Y2ggYW55IChvciBubykgcGF0aCBmb2xsb3dpbmcgKip1bml2ZXJzaXR5KiouICBUaGUgX18qX18gY2hhcmFjdGVyIGNhbiBiZSB1c2VkIGluIHRoZSB1c3VhbCB3YXkgYXMgYSBjaGFyYWN0ZXIgd2lsZGNhcmQuICBTbyAqKnBpZ2VvblwqKiogd291bGQgbWF0Y2ggYm90aCAqKnBpZ2VvbmhvbGUqKiBhbmQgKipwaWdlb246Y2FycmllcioqLCBidXQgKipwaWdlb24jKiogd291bGQgbWF0Y2ggb25seSAqKnBpZ2VvbjpjYXJyaWVyKiouDQoNCiMjIyMgVGVybSBwcmVmaXhlcw0KDQpUaGlzIHRhYmxlIGNvdmVycyB0aGUgdHlwZXMgb2YgdGVybXMgYWxsb3dlZCBpbiBhIHF1ZXJ5LiAgTXVsdGlwbGUgdGVybXMgbXVzdCBiZSBzZXBhcmF0ZWQgYnkgKiphbmQqKiBvciAqKm9yKiogYm9vbGVhbiBvcGVyYXRvcnMuICBUaGVzZSBjYW4gYmUgcHJlY2VkZWQgYnkgbmVnYXRpb24gKipub3QqKiwgYW5kIGNhbiBiZSBncm91cGVkIHVzaW5nIHBhcmVucy4gIA0KDQpwcmVmaXggICAgICB8IHRlcm0gc3ludGF4ICAgICAgICAgfCBlZmZlY3QNCi0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLQ0Kc3ViajogICAgICAgfCBwYXRoLCMsKiAgICAgICAgICAgIHwgbWF0Y2hlcyBzdWJqZWN0DQpwcm9wOiAgICAgICB8IHBhdGgsIywqICAgICAgICAgICAgfCBtYXRjaGVzIHByb3BlcnR5DQoobm8gcHJlZml4KSB8IHBhdGgsIywqICAgICAgICAgICAgfCBtYXRjaGVzIHRhZw0KbnVtdmFsOiAgICAgfCA+IDIuNSwgPCAyLjUsIGV0Yy4gfCBtYXRjaGVzIHNpICBudW1lcmljYWwgdmFsdWUNCnN0cmluZ3ZhbDogIHwgcmVndWxhciBleHByZXNzaW9uICAgICAgfCBtYXRjaGVzIHN0cmluZyBvciBwYXRoIHZhbHVlcw0KDQpFeGFtcGxlIHF1ZXJ5IHN0cmluZzogKioiKHByb3A6ZGVuc2l0eSBhbmQgbnVtdmFsOj4zKSBvciBtYXRlcmlhbDpkZW5zaXR5OmhpZ2giKiouDQoNClRoaXMgd2lsbCByZXR1cm4gVE5zIGV4cHJlc3NpbmcgYSBudW1lcmljYWwgZGVuc2l0eSBncmVhdGVyIHRoYW4gMyAodGhlIGRlbnNpdHkgb2Ygc3RvbmUpIG9yIGFueXRoaW5nIHRhZ2dlZCBhcyBhIGhpZ2ggZGVuc2l0eSBtYXRlcmlhbC4gIA0KDQojIyMgRGVsZXRpbmcgdHJ1ZW51bWJlcnMNCg0KVGhlICoqdG51bS5kZWxldGVCeVF1ZXJ5KCkqKiBmdW5jdGlvbiB0YWtlcyBhIHF1ZXJ5IHN0cmluZyBhcyBhcmd1bWVudCwgYnV0IGluc3RlYWQgb2YgcmV0cmVpdmluZyBtYXRjaGluZyBUTnMsIF9faXQgZGVsZXRlcyB0aGVtX18uIEJlIHZlcnkgY2FyZWZ1bCB3aGVuIHVzaW5nIHRoaXMgZnVuY3Rpb24sIG1ha2luZyBzdXJlIHRoYXQgeW91ciBxdWVyeSBpcyBzcGVjaWZpYyBlbm91Z2ggdG8gZGVsZXRlIG9ubHkgd2hhdCB5b3Ugd2lzaCB0by4gICANCg0KIyMjIFROVU0gR3JhcGhpY3MNCg0KVEhlIHBhY2thZ2UgaGFzIDIgZ3JhcGhpY3MgZnVuY3Rpb25zLCBoZXJlIGFyZSBleGFtcGxlcyBvZiB1c2UsIHdlIHdpbGwgcHJvdmlkZSBtb3JlIGRldGFpbCBvbiB0aGUgcGFyYW1ldGVycyBzb29uLiAgDQoNCldlIGNhbiBncmFwaCBwYXRoIGxpc3RzDQpgYGB7cn0NCm51bXMgPC0gdG51bS5xdWVyeSgpDQoNCnRudW0uZ3JhcGhQYXRoTGlzdChudW1zJHN1YmplY3QpDQpgYGANCmFuZCBzZXRzIG9mIFROcw0KYGBge3J9DQp0bnVtLmdyYXBoVG51bUxpc3QobnVtcywgdGFncGF0dGVybiA9ICIuKiIpDQpgYGANCiMjIyBPdGhlciB1c2VmdWwgZnVuY3Rpb25zDQoNCiMjIyMgTWFrZSBhIFROIHN0YXRlbWVudCBmcm9tIGNvbnN0aXR1ZW50IHBhcnRzLg0KDQoqKnRudW0ucG9zdFN0YXRlbWVudCgpKiogdGFrZXMgYSBzZW50ZW5jZSBhcyBpbnB1dC4gIEJ1dCBpZiB3ZSB3YW50IHRvIGdlbmVyYXRlIGFuZCBwb3N0IHN0YXRlbWVudHMgcHJvZ3JhbWF0aWNhbGx5LCBpdCdzIGN1bWJlcnNvbWUgdG8gaGF2ZSB0byBidWlsZCBzZW50ZW5jZXMgd2l0aCBzdHJpbmcgbWFuaXB1bGF0aW9uLiAgU28gd2UgcHJvdmlkZSB0aGUgZnVuY3Rpb24gKip0bnVtLmJ1aWxkU3RhdGVtZW50KHN1YmplY3QsIHByb3BlcnR5LCB2YWx1ZSwgZXJyb3IsIHVuaXQpKiogd2hpY2ggcmV0dXJucyBhIHN0YXRlbWVudCBzdWl0YWJsZSBmb3IgcG9zdGluZywgb3IgZm9yIGRpc3BsYXkuICANCmBgYHtyfQ0KdG51bS5idWlsZFN0YXRlbWVudCgidGhpcyBmaW5lIHN1YmplY3QgcGhyYXNlIiwgImNvdW50OndvcmQiLCA0KQ0KYGBgDQpOT1RFIHRoYXQgc3RhdGVtZW50cyBjYW4gaGF2ZSBwaHJhc2VzIGluIG5hdHVyYWwtbGFuZ3VhZ2UtbGlrZSBmb3JtLCBvciBhcyBwaHJhc2UgcGF0aHMuICANCg0KIyMjIyBHZXR0aW5nIHBocmFzZSBsaXN0cyBmcm9tIHRoZSBudW1iZXJzcGFjZQ0KDQpCZXNpZGVzIHF1ZXJ5aW5nIGZvciBUTnMsIHdlIG9mdGVuIHdhbnQgdG8gc2VlIHdoYXQgc3ViamVjdCwgcHJvcGVydHkgb3IgdGFnIHBocmFzZXMgZXhpc3QgaW4gdGhlIG51bWJlcnNwYWNlLiAgVGhlIGZ1bmN0aW9ucyAqKnRudW0uZ2V0QWxsU3ViamVjdHMoKSoqLCAqKnRudW0uZ2V0QWxsUHJvcGVydGllcygpKiogYW5kICoqdG51bS5nZXRBbGxUYWdzKCkqIHJldHVybiBsaXN0cyBvZiB1bmlxdWUgcGhyYXNlcyBmb3VuZCBpbiB0aGUgbnVtYmVyc3BhY2UuICBGb3IgZXhhbXBsZToNCmBgYHtyfQ0KdG51bS5nZXRBbGxUYWdzKCkNCmBgYA0K</div>
 
 
 

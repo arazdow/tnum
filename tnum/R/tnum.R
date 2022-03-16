@@ -1,12 +1,12 @@
 
-
+library(jsonlite)
+library(lubridate)
+library(httr)
 # Vars local to this file
 
 #' @export
 tnum.env <- new.env()
-library(jsonlite)
-library(lubridate)
-library(httr)
+
 
 ########################################################
 #'@title Call Gen1 Truenumber API
@@ -164,9 +164,11 @@ tnum.getTagsOfTn <- function(id) {
 
 tnum.getAllTags <- function(){
 
-  tnum.callApi("get-field-set", list(field = "subject",
-                        tagqry="*")
-                        )
+  tnum.callApi("get-field-set",
+               list(field="subject",
+                    context=paste0(tnum.getSpace(),":tags")
+                    )
+               )
 
 }
 
@@ -227,7 +229,7 @@ tnum.deleteByQuery <- function(query = "") {
 #'
 #' @param tag the path or phrase of the tag
 #' @param text text of the comment associated with tag
-#' @noRd
+#' @export
 
 tnum.createTag <- function(tag, text = "") {
   mkTag <- tnum.callApi("create-tag", list(
@@ -262,7 +264,7 @@ tnum.deleteTagFromNumberspace <- function(tag) {
 tnum.addTag <- function(guid, tag, text = "") {
 
   # create tag (fails quietly if exists already)
-  tnum.createTag(guid)
+  tnum.createTag(tag)
 
   # apply tag
 

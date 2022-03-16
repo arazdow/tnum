@@ -3,6 +3,7 @@
 export(tnum.addTag)
 export(tnum.authorize)
 export(tnum.buildStatement)
+export(tnum.createTag)
 export(tnum.deleteByQuery)
 export(tnum.deleteTagFromNumberspace)
 export(tnum.env)
