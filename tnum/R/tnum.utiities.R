@@ -34,7 +34,7 @@ tnum.ingestDataFrame <- function(df, subjectRoot, idColumn, tag = "origin:R/tnum
 
   for(i in 1:3){
     for(j in 1:dfCols){
-      subj <- paste0(subjectRoot,df[i,]$idColumn)
+      subj <- paste0(subjectRoot,df[i,][[idColumn]])
       prop <- tokenize(names(df[i,][j]))
       val <- df[i,][[j]]
 
