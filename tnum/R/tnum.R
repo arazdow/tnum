@@ -1,7 +1,4 @@
 
-library(jsonlite)
-library(lubridate)
-library(httr)
 # Vars local to this file
 
 #' @export
@@ -365,7 +362,7 @@ tnum.buildStatement <- function(subject = "something",
            numval)
 
 
-  return(thenumber)
+  return(str_trim(thenumber, side = "both"))
 }
 
 ########################################################
@@ -384,7 +381,8 @@ tnum.postStatement <- function(stmt,
 {
   args <- list(
     ubox = stmt,
-    ns = tnum.env$tnum.var.nspace
+    ns = tnum.env$tnum.var.nspace,
+    tag = "origin:R/tnum"
      )
 
   if(nchar(notes) > 1){

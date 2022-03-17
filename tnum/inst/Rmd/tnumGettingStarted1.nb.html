@@ -236,12 +236,12 @@ pre code {
 <p>After installing package <em>tnum</em>, it’s necessary to authenticate with the <em>tnum</em> server:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0bnVtKVxudG51bS5hdXRob3JpemUoaXA9XCJsb2NhbGhvc3Q6ODA4MFwiLGNyZWRzID0gXCJkZW1vQHRydWVudW0uY29tOnBpbmVjb25lXCIpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0bnVtKVxudG51bS5hdXRob3JpemUoaXA9XCJtZXRyaWNzLnRydWVudW0uY29tOjgwODBcIixjcmVkcyA9IFwiZGVtb0B0cnVlbnVtLmNvbTpwaW5lY29uZVwiKVxuYGBgIn0= -->
 <pre class="r"><code>library(tnum)
-tnum.authorize(ip=&quot;localhost:8080&quot;,creds = &quot;demo@truenum.com:pinecone&quot;)</code></pre>
+tnum.authorize(ip=&quot;metrics.truenum.com:8080&quot;,creds = &quot;demo@truenum.com:pinecone&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiVHJ1ZW51bWJlcnMgKGxvY2FsaG9zdDo4MDgwKVxuQXZhaWxhYmxlIHNwYWNlczogZGVtb3NwYWNlXG5OdW1iZXJzcGFjZSBzZXQgdG86IGRlbW9zcGFjZVxuIn0= -->
-<pre><code>Truenumbers (localhost:8080)
+<!-- rnb-output-begin eyJkYXRhIjoiVHJ1ZW51bWJlcnMgKG1ldHJpY3MudHJ1ZW51bS5jb206ODA4MClcbkF2YWlsYWJsZSBzcGFjZXM6IGRlbW9zcGFjZVxuTnVtYmVyc3BhY2Ugc2V0IHRvOiBkZW1vc3BhY2VcbiJ9 -->
+<pre><code>Truenumbers (metrics.truenum.com:8080)
 Available spaces: demospace
 Numberspace set to: demospace</code></pre>
 <!-- rnb-output-end -->
@@ -319,9 +319,9 @@ tn2 &lt;- tnum.postStatement( stmt = &quot;montclair state university has gradua
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYyh0bjEkaWQsdG4xJGF1dGhvcix0bjEkc2VydmVyLHRuMSRkYXRlKVxuYGBgIn0= -->
 <pre class="r"><code>c(tn1$id,tn1$author,tn1$server,tn1$date)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiNmNhMTNiODgtMWFkZS00NmI5LTg5YWYtZGJjMmE0NzdjYTM2XCIgXCJkZW1vXCIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFxuWzNdIFwiaHR0cDovL2xvY2FsaG9zdDo4MDgwL051bWJlcmZsb3cvXCIgICAgXCIyMDIyLTAzLTE2IDE1OjQxOjEyXCIgICAgICAgICAgICAgICAgIFxuIn0= -->
-<pre><code>[1] &quot;6ca13b88-1ade-46b9-89af-dbc2a477ca36&quot; &quot;demo&quot;                                
-[3] &quot;http://localhost:8080/Numberflow/&quot;    &quot;2022-03-16 15:41:12&quot;                 </code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiMzVhM2NlNGQtZTUxNy00MzE1LTk4ZGItOTNkMDcwODQyYTJjXCIgICAgICAgIFwiZGVtb1wiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgXG5bM10gXCJodHRwOi8vbWV0cmljcy50cnVlbnVtLmNvbTo4MDgwL051bWJlcmZsb3cvXCIgXCIyMDIyLTAzLTE2IDE1OjQ3OjM5XCIgICAgICAgICAgICAgICAgICAgICAgICBcbiJ9 -->
+<pre><code>[1] &quot;35a3ce4d-e517-4315-98db-93d070842a2c&quot;        &quot;demo&quot;                                       
+[3] &quot;http://metrics.truenum.com:8080/Numberflow/&quot; &quot;2022-03-16 15:47:39&quot;                        </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -338,13 +338,13 @@ kable(df[,1:7])</code></pre>
 
 <table>
 <colgroup>
-<col width="12%" />
+<col width="11%" />
 <col width="7%" />
-<col width="20%" />
-<col width="13%" />
-<col width="6%" />
+<col width="25%" />
+<col width="12%" />
+<col width="5%" />
 <col width="4%" />
-<col width="35%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -359,18 +359,18 @@ kable(df[,1:7])</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2022-03-16 15:41:12</td>
+<td align="left">2022-03-16 15:47:39</td>
 <td align="left"></td>
-<td align="left">http://localhost:8080/Numberflow/</td>
+<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
 <td align="left">Our first truenumber</td>
 <td align="left">magnitude</td>
 <td align="left">demo</td>
 <td align="left">university:state:colorado/students:undergraduate:fulltime</td>
 </tr>
 <tr class="even">
-<td align="left">2022-03-16 15:41:12</td>
+<td align="left">2022-03-16 15:47:39</td>
 <td align="left"></td>
-<td align="left">http://localhost:8080/Numberflow/</td>
+<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
 <td align="left">Our second truenumber</td>
 <td align="left">magnitude</td>
 <td align="left">demo</td>
@@ -425,22 +425,22 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <tr class="odd">
 <td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
 <td align="left">15646</td>
-<td align="left">6ca13b88-1ade-46b9-89af-dbc2a477ca36</td>
+<td align="left">35a3ce4d-e517-4315-98db-93d070842a2c</td>
 <td align="left">demospace</td>
 <td align="left">number</td>
 <td align="left"></td>
-<td align="left">6ca13b88-1ade-46b9-89af-dbc2a477ca36</td>
+<td align="left">35a3ce4d-e517-4315-98db-93d070842a2c</td>
 <td align="left">TsNumber</td>
 <td align="left">15646</td>
 </tr>
 <tr class="even">
 <td align="left">montclair state university has graduation rate = 58 %</td>
 <td align="left">0.58</td>
-<td align="left">35f9c9d1-1b8d-47a4-b326-c0034b65a343</td>
+<td align="left">c490b0b6-602c-43a3-9379-4b24c4c6426e</td>
 <td align="left">demospace</td>
 <td align="left">rate:graduation</td>
 <td align="left"></td>
-<td align="left">35f9c9d1-1b8d-47a4-b326-c0034b65a343</td>
+<td align="left">c490b0b6-602c-43a3-9379-4b24c4c6426e</td>
 <td align="left">TsNumber</td>
 <td align="left">58</td>
 </tr>
@@ -511,8 +511,8 @@ tnum.getTagsOfTn(tn3$id) #see if it&#39;s really gone</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVzdWx0IDwtIHRudW0ucXVlcnkoXCJzdWJqOnVuaXZlcnNpdHkjXCIpXG5gYGAifQ== -->
 <pre class="r"><code>result &lt;- tnum.query(&quot;subj:university#&quot;)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmV0dXJuZWQgMiByZXN1bHRzXG4ifQ== -->
-<pre><code>Returned 2 results</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiUmV0dXJuZWQgNiByZXN1bHRzXG4ifQ== -->
+<pre><code>Returned 6 results</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxua2FibGUocmVzdWx0KVxuYGBgIn0= -->
 <pre class="r"><code>kable(result)</code></pre>
@@ -526,20 +526,20 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 
 <!-- rnb-html-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImtuaXRfYXNpcyJdLCJzaXppbmdQb2xpY3kiOltdfX0= -->
 
-<table style="width:100%;">
+<table>
 <colgroup>
-<col width="5%" />
+<col width="4%" />
 <col width="3%" />
-<col width="8%" />
+<col width="10%" />
 <col width="11%" />
 <col width="2%" />
 <col width="1%" />
 <col width="14%" />
-<col width="20%" />
+<col width="19%" />
 <col width="2%" />
 <col width="9%" />
 <col width="2%" />
-<col width="4%" />
+<col width="3%" />
 <col width="1%" />
 <col width="9%" />
 <col width="2%" />
@@ -567,38 +567,110 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2022-03-16 15:41:12</td>
+<td align="left">2022-03-16 15:47:39</td>
 <td align="left"></td>
-<td align="left">http://localhost:8080/Numberflow/</td>
+<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
 <td align="left">Our first truenumber, Our first truenumber</td>
 <td align="left">magnitude</td>
 <td align="left">demo</td>
 <td align="left">university:state:colorado/students:undergraduate:fulltime</td>
 <td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
 <td align="left">15646.00</td>
-<td align="left">6ca13b88-1ade-46b9-89af-dbc2a477ca36</td>
+<td align="left">35a3ce4d-e517-4315-98db-93d070842a2c</td>
 <td align="left">demospace</td>
 <td align="left">number</td>
 <td align="left"></td>
-<td align="left">6ca13b88-1ade-46b9-89af-dbc2a477ca36</td>
+<td align="left">35a3ce4d-e517-4315-98db-93d070842a2c</td>
 <td align="left">TsNumber</td>
 <td align="left">15646</td>
 </tr>
 <tr class="even">
-<td align="left">2022-03-16 15:41:12</td>
+<td align="left">2022-03-16 14:28:51</td>
 <td align="left"></td>
-<td align="left">http://localhost:8080/Numberflow/</td>
+<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
+<td align="left">Our first truenumber, Our first truenumber</td>
+<td align="left">magnitude</td>
+<td align="left">demo</td>
+<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
+<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
+<td align="left">15646.00</td>
+<td align="left">73620651-cc27-4833-ad7c-ca9374ee7c77</td>
+<td align="left">demospace</td>
+<td align="left">number</td>
+<td align="left"></td>
+<td align="left">73620651-cc27-4833-ad7c-ca9374ee7c77</td>
+<td align="left">TsNumber</td>
+<td align="left">15646</td>
+</tr>
+<tr class="odd">
+<td align="left">2022-03-16 13:54:14</td>
+<td align="left"></td>
+<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
+<td align="left">Our first truenumber, Our first truenumber</td>
+<td align="left">magnitude</td>
+<td align="left">demo</td>
+<td align="left">university:state:colorado/students:undergraduate:fulltime</td>
+<td align="left">number of fulltime undergraduate students of colorado state university = 15646</td>
+<td align="left">15646.00</td>
+<td align="left">7875ee2c-4b5b-411f-a854-8858d14b9601</td>
+<td align="left">demospace</td>
+<td align="left">number</td>
+<td align="left"></td>
+<td align="left">7875ee2c-4b5b-411f-a854-8858d14b9601</td>
+<td align="left">TsNumber</td>
+<td align="left">15646</td>
+</tr>
+<tr class="even">
+<td align="left">2022-03-16 15:47:39</td>
+<td align="left"></td>
+<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
 <td align="left">Our second truenumber, Our second truenumber</td>
 <td align="left">magnitude</td>
 <td align="left">demo</td>
 <td align="left">university:state:montclair</td>
 <td align="left">montclair state university has graduation rate = 58 %</td>
 <td align="left">0.58</td>
-<td align="left">35f9c9d1-1b8d-47a4-b326-c0034b65a343</td>
+<td align="left">c490b0b6-602c-43a3-9379-4b24c4c6426e</td>
 <td align="left">demospace</td>
 <td align="left">rate:graduation</td>
 <td align="left"></td>
-<td align="left">35f9c9d1-1b8d-47a4-b326-c0034b65a343</td>
+<td align="left">c490b0b6-602c-43a3-9379-4b24c4c6426e</td>
+<td align="left">TsNumber</td>
+<td align="left">58</td>
+</tr>
+<tr class="odd">
+<td align="left">2022-03-16 14:28:51</td>
+<td align="left"></td>
+<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
+<td align="left">Our second truenumber, Our second truenumber</td>
+<td align="left">magnitude</td>
+<td align="left">demo</td>
+<td align="left">university:state:montclair</td>
+<td align="left">montclair state university has graduation rate = 58 %</td>
+<td align="left">0.58</td>
+<td align="left">dbf1fca2-ddbd-4a34-9b88-b4ddfc0123c3</td>
+<td align="left">demospace</td>
+<td align="left">rate:graduation</td>
+<td align="left"></td>
+<td align="left">dbf1fca2-ddbd-4a34-9b88-b4ddfc0123c3</td>
+<td align="left">TsNumber</td>
+<td align="left">58</td>
+</tr>
+<tr class="even">
+<td align="left">2022-03-16 13:54:15</td>
+<td align="left"></td>
+<td align="left">http://metrics.truenum.com:8080/Numberflow/</td>
+<td align="left">Our second truenumber, Our second truenumber</td>
+<td align="left">magnitude</td>
+<td align="left">demo</td>
+<td align="left">university:state:montclair</td>
+<td align="left">montclair state university has graduation rate = 58 %</td>
+<td align="left">0.58</td>
+<td align="left">51f881f8-5762-4ace-8ad6-9533d19b621f</td>
+<td align="left">demospace</td>
+<td align="left">rate:graduation</td>
+<td align="left"></td>
+<td align="left">51f881f8-5762-4ace-8ad6-9533d19b621f</td>
 <td align="left">TsNumber</td>
 <td align="left">58</td>
 </tr>
@@ -667,8 +739,8 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubnVtcyA8LSB0bnVtLnF1ZXJ5KClcbmBgYCJ9 -->
 <pre class="r"><code>nums &lt;- tnum.query()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiUmV0dXJuZWQgMyByZXN1bHRzXG4ifQ== -->
-<pre><code>Returned 3 results</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiUmV0dXJuZWQgOSByZXN1bHRzXG4ifQ== -->
+<pre><code>Returned 9 results</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG51bS5ncmFwaFBhdGhMaXN0KG51bXMkc3ViamVjdClcbmBgYCJ9 -->
 <pre class="r"><code>tnum.graphPathList(nums$subject)</code></pre>
@@ -677,10 +749,10 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <!-- rnb-htmlwidget-begin eyJkZXBlbmRlbmNpZXMiOlt7Im5hbWUiOiJodG1sd2lkZ2V0cyIsInZlcnNpb24iOiIxLjUuNCIsInNyYyI6eyJmaWxlIjoid3d3In0sIm1ldGEiOltdLCJzY3JpcHQiOiJodG1sd2lkZ2V0cy5qcyIsInN0eWxlc2hlZXQiOltdLCJoZWFkIjpbXSwiYXR0YWNobWVudCI6W10sInBhY2thZ2UiOiJodG1sd2lkZ2V0cyIsImFsbF9maWxlcyI6dHJ1ZX0seyJuYW1lIjoidml6IiwidmVyc2lvbiI6IjEuOC4yIiwic3JjIjp7ImZpbGUiOiJodG1sd2lkZ2V0cy9saWIvdml6In0sIm1ldGEiOltdLCJzY3JpcHQiOiJ2aXouanMiLCJzdHlsZXNoZWV0IjpbXSwiaGVhZCI6W10sImF0dGFjaG1lbnQiOltdLCJwYWNrYWdlIjoiRGlhZ3JhbW1lUiIsImFsbF9maWxlcyI6dHJ1ZX0seyJuYW1lIjoiRGlhZ3JhbW1lUi1zdHlsZXMiLCJ2ZXJzaW9uIjoiMC4yIiwic3JjIjp7ImZpbGUiOiJodG1sd2lkZ2V0cy9saWIvc3R5bGVzIn0sIm1ldGEiOltdLCJzY3JpcHQiOltdLCJzdHlsZXNoZWV0Ijoic3R5bGVzLmNzcyIsImhlYWQiOltdLCJhdHRhY2htZW50IjpbXSwicGFja2FnZSI6IkRpYWdyYW1tZVIiLCJhbGxfZmlsZXMiOnRydWV9LHsibmFtZSI6ImdyVml6LWJpbmRpbmciLCJ2ZXJzaW9uIjoiMS4wLjkiLCJzcmMiOnsiZmlsZSI6Imh0bWx3aWRnZXRzIn0sIm1ldGEiOltdLCJzY3JpcHQiOiJnclZpei5qcyIsInN0eWxlc2hlZXQiOltdLCJoZWFkIjpbXSwiYXR0YWNobWVudCI6W10sInBhY2thZ2UiOiJEaWFncmFtbWVSIiwiYWxsX2ZpbGVzIjpmYWxzZX1dLCJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImdyVml6IiwiaHRtbHdpZGdldCJdLCJzaXppbmdQb2xpY3kiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJ2aWV3ZXIiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJmaWxsIjpbdHJ1ZV0sInN1cHByZXNzIjpbZmFsc2VdLCJwYW5lSGVpZ2h0IjpbXX0sImJyb3dzZXIiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJmaWxsIjpbZmFsc2VdLCJleHRlcm5hbCI6W2ZhbHNlXX0sImtuaXRyIjp7ImRlZmF1bHRXaWR0aCI6W10sImRlZmF1bHRIZWlnaHQiOltdLCJmaWd1cmUiOlt0cnVlXX0sInZpZXdlci5wYWRkaW5nIjpbMF0sInZpZXdlci5maWxsIjpbdHJ1ZV19fX0= -->
 
 <!-- htmlwidget-container-begin -->
-<div id="htmlwidget-f2e80e3e406c37007d7a" style="width:504px;height:504px;" class="grViz html-widget"></div>
+<div id="htmlwidget-66db611982f2e80e3e40" style="width:500px;height:500px;" class="grViz html-widget"></div>
 <!-- htmlwidget-container-end -->
-<script type="application/json" data-for="htmlwidget-f2e80e3e406c37007d7a">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"ROOT\", shape = \"plaintext\", color = \"lightgrey\", fontcolor = \"lightgrey\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"2\" [label = \"river\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"3\" [label = \"hudson\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"4\" [label = \"university\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"5\" [label = \"state\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"6\" [label = \"colorado\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"7\" [label = \"students\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"8\" [label = \"undergraduate\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"9\" [label = \"fulltime\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"10\" [label = \"montclair\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n\"1\"->\"2\" [color = \"lightgrey\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\"] \n\"2\"->\"3\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"1\"->\"4\" [color = \"lightgrey\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\"] \n\"4\"->\"5\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"5\"->\"6\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"6\"->\"7\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", style = \"dashed\"] \n\"7\"->\"8\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"8\"->\"9\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"5\"->\"10\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
-<!-- htmlwidget-sizing-policy-base64 PHNjcmlwdCB0eXBlPSJhcHBsaWNhdGlvbi9odG1sd2lkZ2V0LXNpemluZyIgZGF0YS1mb3I9Imh0bWx3aWRnZXQtZjJlODBlM2U0MDZjMzcwMDdkN2EiPnsidmlld2VyIjp7IndpZHRoIjo0NTAsImhlaWdodCI6MzUwLCJwYWRkaW5nIjoxNSwiZmlsbCI6dHJ1ZX0sImJyb3dzZXIiOnsid2lkdGgiOjk2MCwiaGVpZ2h0Ijo1MDAsInBhZGRpbmciOjQwLCJmaWxsIjpmYWxzZX19PC9zY3JpcHQ+ -->
+<script type="application/json" data-for="htmlwidget-66db611982f2e80e3e40">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"ROOT\", shape = \"plaintext\", color = \"lightgrey\", fontcolor = \"lightgrey\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"2\" [label = \"river\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"3\" [label = \"hudson\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"4\" [label = \"university\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"5\" [label = \"state\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"6\" [label = \"colorado\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"7\" [label = \"students\", shape = \"ellipse\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"8\" [label = \"undergraduate\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"9\" [label = \"fulltime\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n  \"10\" [label = \"montclair\", shape = \"rectangle\", color = \"black\", fontcolor = \"gray50\", fixedsize = \"FALSE\", fillcolor = \"#FFFFFF\"] \n\"1\"->\"2\" [color = \"lightgrey\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\"] \n\"2\"->\"3\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"1\"->\"4\" [color = \"lightgrey\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\", arrowhead = \"none\"] \n\"4\"->\"5\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"5\"->\"6\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"6\"->\"7\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", style = \"dashed\"] \n\"7\"->\"8\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"8\"->\"9\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"5\"->\"10\" [color = \"black\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<!-- htmlwidget-sizing-policy-base64 PHNjcmlwdCB0eXBlPSJhcHBsaWNhdGlvbi9odG1sd2lkZ2V0LXNpemluZyIgZGF0YS1mb3I9Imh0bWx3aWRnZXQtNjZkYjYxMTk4MmYyZTgwZTNlNDAiPnsidmlld2VyIjp7IndpZHRoIjo0NTAsImhlaWdodCI6MzUwLCJwYWRkaW5nIjoxNSwiZmlsbCI6dHJ1ZX0sImJyb3dzZXIiOnsid2lkdGgiOjk2MCwiaGVpZ2h0Ijo1MDAsInBhZGRpbmciOjQwLCJmaWxsIjpmYWxzZX19PC9zY3JpcHQ+ -->
 
 <!-- rnb-htmlwidget-end -->
 
@@ -696,10 +768,10 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <!-- rnb-htmlwidget-begin eyJkZXBlbmRlbmNpZXMiOlt7Im5hbWUiOiJodG1sd2lkZ2V0cyIsInZlcnNpb24iOiIxLjUuNCIsInNyYyI6eyJmaWxlIjoid3d3In0sIm1ldGEiOltdLCJzY3JpcHQiOiJodG1sd2lkZ2V0cy5qcyIsInN0eWxlc2hlZXQiOltdLCJoZWFkIjpbXSwiYXR0YWNobWVudCI6W10sInBhY2thZ2UiOiJodG1sd2lkZ2V0cyIsImFsbF9maWxlcyI6dHJ1ZX0seyJuYW1lIjoidml6IiwidmVyc2lvbiI6IjEuOC4yIiwic3JjIjp7ImZpbGUiOiJodG1sd2lkZ2V0cy9saWIvdml6In0sIm1ldGEiOltdLCJzY3JpcHQiOiJ2aXouanMiLCJzdHlsZXNoZWV0IjpbXSwiaGVhZCI6W10sImF0dGFjaG1lbnQiOltdLCJwYWNrYWdlIjoiRGlhZ3JhbW1lUiIsImFsbF9maWxlcyI6dHJ1ZX0seyJuYW1lIjoiRGlhZ3JhbW1lUi1zdHlsZXMiLCJ2ZXJzaW9uIjoiMC4yIiwic3JjIjp7ImZpbGUiOiJodG1sd2lkZ2V0cy9saWIvc3R5bGVzIn0sIm1ldGEiOltdLCJzY3JpcHQiOltdLCJzdHlsZXNoZWV0Ijoic3R5bGVzLmNzcyIsImhlYWQiOltdLCJhdHRhY2htZW50IjpbXSwicGFja2FnZSI6IkRpYWdyYW1tZVIiLCJhbGxfZmlsZXMiOnRydWV9LHsibmFtZSI6ImdyVml6LWJpbmRpbmciLCJ2ZXJzaW9uIjoiMS4wLjkiLCJzcmMiOnsiZmlsZSI6Imh0bWx3aWRnZXRzIn0sIm1ldGEiOltdLCJzY3JpcHQiOiJnclZpei5qcyIsInN0eWxlc2hlZXQiOltdLCJoZWFkIjpbXSwiYXR0YWNobWVudCI6W10sInBhY2thZ2UiOiJEaWFncmFtbWVSIiwiYWxsX2ZpbGVzIjpmYWxzZX1dLCJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImdyVml6IiwiaHRtbHdpZGdldCJdLCJzaXppbmdQb2xpY3kiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJ2aWV3ZXIiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJmaWxsIjpbdHJ1ZV0sInN1cHByZXNzIjpbZmFsc2VdLCJwYW5lSGVpZ2h0IjpbXX0sImJyb3dzZXIiOnsiZGVmYXVsdFdpZHRoIjpbXSwiZGVmYXVsdEhlaWdodCI6W10sInBhZGRpbmciOltdLCJmaWxsIjpbZmFsc2VdLCJleHRlcm5hbCI6W2ZhbHNlXX0sImtuaXRyIjp7ImRlZmF1bHRXaWR0aCI6W10sImRlZmF1bHRIZWlnaHQiOltdLCJmaWd1cmUiOlt0cnVlXX0sInZpZXdlci5wYWRkaW5nIjpbMF0sInZpZXdlci5maWxsIjpbdHJ1ZV19fX0= -->
 
 <!-- htmlwidget-container-begin -->
-<div id="htmlwidget-d3d8ca1d2e0d910e7203" style="width:504px;height:504px;" class="grViz html-widget"></div>
+<div id="htmlwidget-f7840f097cd3d8ca1d2e" style="width:500px;height:500px;" class="grViz html-widget"></div>
 <!-- htmlwidget-container-end -->
-<script type="application/json" data-for="htmlwidget-d3d8ca1d2e0d910e7203">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"tnums\\n(root)\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"2\" [label = \"river\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"3\" [label = \"hudson\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"4\" [label = \"rate\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"5\" [label = \"flow\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"6\" [label = \"average\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"7\" [label = \"location:NY:Troy\", shape = \"plaintext\", color = \"gray70\", fixedsize = \"FALSE\", fontcolor = \"#338033\", fillcolor = \"#FFFFFF00\"] \n  \"8\" [label = \"university\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"9\" [label = \"state\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"10\" [label = \"colorado\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"11\" [label = \"students\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"12\" [label = \"undergraduate\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"13\" [label = \"fulltime\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"14\" [label = \"number\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"15\" [label = \"\\nsource:R\", shape = \"plaintext\", color = \"gray70\", fixedsize = \"FALSE\", fontcolor = \"#338033\", fillcolor = \"#FFFFFF00\"] \n  \"16\" [label = \"montclair\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"17\" [label = \"rate\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"18\" [label = \"graduation\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"19\" [label = \"\\n\\nsource:R\", shape = \"plaintext\", color = \"gray70\", fixedsize = \"FALSE\", fontcolor = \"#338033\", fillcolor = \"#FFFFFF00\"] \n\"1\"->\"2\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"2\"->\"3\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"3\"->\"4\" [dir = \"back\", color = \"lightgrey\", fontcolor = \"lightgrey\", label = \"HAS\", label = \"HAS\", arrowhead = \"none\"] \n\"4\"->\"5\" [arrowhead = \"none\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"5\"->\"6\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"6\"->\"7\" [dir = \"back\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", arrowhead = \"none\"] \n\"1\"->\"8\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"8\"->\"9\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"9\"->\"10\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"10\"->\"11\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"11\"->\"12\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"12\"->\"13\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"13\"->\"14\" [dir = \"back\", color = \"lightgrey\", fontcolor = \"lightgrey\", label = \"HAS\", label = \"HAS\", arrowhead = \"none\"] \n\"14\"->\"15\" [arrowhead = \"none\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", arrowhead = \"none\"] \n\"9\"->\"16\" [arrowhead = \"none\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"16\"->\"17\" [dir = \"back\", color = \"lightgrey\", fontcolor = \"lightgrey\", label = \"HAS\", label = \"HAS\", arrowhead = \"none\"] \n\"17\"->\"18\" [arrowhead = \"none\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"18\"->\"19\" [dir = \"back\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", arrowhead = \"none\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
-<!-- htmlwidget-sizing-policy-base64 PHNjcmlwdCB0eXBlPSJhcHBsaWNhdGlvbi9odG1sd2lkZ2V0LXNpemluZyIgZGF0YS1mb3I9Imh0bWx3aWRnZXQtZDNkOGNhMWQyZTBkOTEwZTcyMDMiPnsidmlld2VyIjp7IndpZHRoIjo0NTAsImhlaWdodCI6MzUwLCJwYWRkaW5nIjoxNSwiZmlsbCI6dHJ1ZX0sImJyb3dzZXIiOnsid2lkdGgiOjk2MCwiaGVpZ2h0Ijo1MDAsInBhZGRpbmciOjQwLCJmaWxsIjpmYWxzZX19PC9zY3JpcHQ+ -->
+<script type="application/json" data-for="htmlwidget-f7840f097cd3d8ca1d2e">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\",\n       bgcolor = \"white\"]\n\nnode [fontname = \"Helvetica\",\n      fontsize = \"10\",\n      shape = \"circle\",\n      fixedsize = \"true\",\n      width = \"0.5\",\n      style = \"filled\",\n      fillcolor = \"aliceblue\",\n      color = \"gray70\",\n      fontcolor = \"gray50\"]\n\nedge [fontname = \"Helvetica\",\n     fontsize = \"8\",\n     len = \"1.5\",\n     color = \"gray80\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"tnums\\n(root)\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"2\" [label = \"river\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"3\" [label = \"hudson\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"4\" [label = \"rate\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"5\" [label = \"flow\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"6\" [label = \"average\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"7\" [label = \"location:NY:Troy\", shape = \"plaintext\", color = \"gray70\", fixedsize = \"FALSE\", fontcolor = \"#338033\", fillcolor = \"#FFFFFF00\"] \n  \"8\" [label = \"university\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"9\" [label = \"state\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"10\" [label = \"colorado\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"11\" [label = \"students\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"12\" [label = \"undergraduate\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"13\" [label = \"fulltime\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"14\" [label = \"number\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"15\" [label = \"\\nsource:R\", shape = \"plaintext\", color = \"gray70\", fixedsize = \"FALSE\", fontcolor = \"#338033\", fillcolor = \"#FFFFFF00\"] \n  \"16\" [label = \"montclair\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"17\" [label = \"rate\", shape = \"ellipse\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"18\" [label = \"graduation\", shape = \"rectangle\", color = \"black\", fixedsize = \"FALSE\", fontcolor = \"gray50\", fillcolor = \"#FFFFFF\"] \n  \"19\" [label = \"\\n\\nsource:R\", shape = \"plaintext\", color = \"gray70\", fixedsize = \"FALSE\", fontcolor = \"#338033\", fillcolor = \"#FFFFFF00\"] \n\"1\"->\"2\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"2\"->\"3\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"3\"->\"4\" [dir = \"back\", color = \"lightgrey\", fontcolor = \"lightgrey\", label = \"HAS\", label = \"HAS\", arrowhead = \"none\"] \n\"4\"->\"5\" [arrowhead = \"none\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"5\"->\"6\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"6\"->\"7\" [dir = \"back\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", arrowhead = \"none\"] \n\"1\"->\"8\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"8\"->\"9\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"9\"->\"10\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"10\"->\"11\" [style = \"dashed\", color = \"black\", fontcolor = \"grey\", label = \"pos.\", label = \"pos.\", label = \"pos.\"] \n\"11\"->\"12\" [label = \"pos.\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"12\"->\"13\" [dir = \"back\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"13\"->\"14\" [dir = \"back\", color = \"lightgrey\", fontcolor = \"lightgrey\", label = \"HAS\", label = \"HAS\", arrowhead = \"none\"] \n\"14\"->\"15\" [arrowhead = \"none\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", arrowhead = \"none\"] \n\"9\"->\"16\" [arrowhead = \"none\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"16\"->\"17\" [dir = \"back\", color = \"lightgrey\", fontcolor = \"lightgrey\", label = \"HAS\", label = \"HAS\", arrowhead = \"none\"] \n\"17\"->\"18\" [arrowhead = \"none\", color = \"black\", fontcolor = \"grey\", label = \"adj.\", dir = \"back\", dir = \"back\"] \n\"18\"->\"19\" [dir = \"back\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", color = \"lightgrey\", arrowhead = \"none\"] \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<!-- htmlwidget-sizing-policy-base64 PHNjcmlwdCB0eXBlPSJhcHBsaWNhdGlvbi9odG1sd2lkZ2V0LXNpemluZyIgZGF0YS1mb3I9Imh0bWx3aWRnZXQtZjc4NDBmMDk3Y2QzZDhjYTFkMmUiPnsidmlld2VyIjp7IndpZHRoIjo0NTAsImhlaWdodCI6MzUwLCJwYWRkaW5nIjoxNSwiZmlsbCI6dHJ1ZX0sImJyb3dzZXIiOnsid2lkdGgiOjk2MCwiaGVpZ2h0Ijo1MDAsInBhZGRpbmciOjQwLCJmaWxsIjpmYWxzZX19PC9zY3JpcHQ+ -->
 
 <!-- rnb-htmlwidget-end -->
 
@@ -731,9 +803,9 @@ Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = list(mag = c(&quot;15646&qu
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudG51bS5nZXRBbGxUYWdzKClcbmBgYCJ9 -->
 <pre class="r"><code>tnum.getAllTags()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiJHZhbHVlc1xuWzFdIFwiZGVtb25zdHJhdGlvblwiICAgIFwibG9jYXRpb246TllcIiAgICAgIFwibG9jYXRpb246Tlk6VHJveVwiIFwic291cmNlOlJcIiAgICAgICAgXG4ifQ== -->
+<!-- rnb-output-begin eyJkYXRhIjoiJHZhbHVlc1xuWzFdIFwiZGVtb25zdHJhdGlvblwiICAgIFwiZGVtb3RhZzJcIiAgICAgICAgIFwibG9jYXRpb246TllcIiAgICAgIFwibG9jYXRpb246Tlk6VHJveVwiIFwic291cmNlOlJcIiAgICAgICAgXG4ifQ== -->
 <pre><code>$values
-[1] &quot;demonstration&quot;    &quot;location:NY&quot;      &quot;location:NY:Troy&quot; &quot;source:R&quot;        </code></pre>
+[1] &quot;demonstration&quot;    &quot;demotag2&quot;         &quot;location:NY&quot;      &quot;location:NY:Troy&quot; &quot;source:R&quot;        </code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 </div>
