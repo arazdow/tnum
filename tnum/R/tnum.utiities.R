@@ -1,7 +1,7 @@
 ## TNUM Utilities
 
 tokenize <- function(aString){
-  tok <- str_replace_all(aString,"\\s+","_")
+  tok <- str_replace_all(str_trim(aString, side= "both"),"\\s+","_")
 }
 
 ########################################################
@@ -34,18 +34,20 @@ tnum.ingestDataFrame <- function(df, subjectRoot, idColumn, tag = "origin:R/tnum
 
   for(i in 1:3){
     for(j in 1:dfCols){
-      subj <- paste0(subjectRoot,df[i,][[idColumn]])
+      subj <- paste0(subjectRoot,tokenize(df[i,][[tokenize(idColumn)]]))
       prop <- tokenize(names(df[i,][j]))
       val <- df[i,][[j]]
 
       #if value is mode character, quote it as a string
-      if(is.character(val)){
+      if(!is.na(val) && is.character(val)){
         val <- str_trim(val, side = "both")
         val <- paste0("\"",val,"\"")
       }
-      stmt <- tnum.buildStatement(subj,prop,val)
-      print(stmt)
-      tnResult <- tnum.postStatement(stmt,"",list(tag))
+      if(!is.null(val) && (nchar(val) != 0) && !is.na(val)){
+        stmt <- tnum.buildStatement(subj,prop,val)
+        print(stmt)
+        tnResult <- tnum.postStatement(stmt,"",list(tag))
+      }
     }
   }
 
