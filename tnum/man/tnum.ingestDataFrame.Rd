@@ -15,9 +15,11 @@ tnum.ingestDataFrame(
 \arguments{
 \item{df}{the data frame, as returned by read.csv() for example}
 
-\item{subjectRoot}{string used as root of subject path}
+\item{subjectRoot}{string used as root of subject path. It should not end with : or /}
 
-\item{idColumn}{name of a column to be used at the end of the subject path}
+\item{idType}{string appended to subjectRoot to prefix the idColumn token. Must start and end with : or /}
+
+\item{idColumn}{name of a column to be used at the end of the subject path to identify the row}
 
 \item{tag}{path used to tag all the created truenumbers}
 }

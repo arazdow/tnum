@@ -23,8 +23,9 @@ tnum.loadLibs <- function(){
 #' @title ingest a data frame as verbatim truenumbers
 #'
 #' @param df  the data frame, as returned by read.csv() for example
-#' @param subjectRoot string used as root of subject path
-#' @param idColumn name of a column to be used at the end of the subject path
+#' @param subjectRoot string used as root of subject path. It should not end with : or /
+#' @param idType string appended to subjectRoot to prefix the idColumn token. Must start and end with : or /
+#' @param idColumn name of a column to be used at the end of the subject path to identify the row
 #' @param tag path used to tag all the created truenumbers
 #' @export
 
@@ -35,7 +36,7 @@ tnum.ingestDataFrame <- function(df, subjectRoot, idType = "/row:", idColumn, ta
   tnCount <- 0
   longProps <- list()
 
-  for(i in 1:3){
+  for(i in 1:dfRows){
     for(j in 1:dfCols){
       subj <- paste0(subjectRoot,idType, tokenize(df[i,][[tokenize(idColumn)]]))
       colName <- names(df[i,][j])
