@@ -4,7 +4,13 @@
 \alias{tnum.ingestDataFrame}
 \title{ingest a data frame as verbatim truenumbers}
 \usage{
-tnum.ingestDataFrame(df, subjectRoot, idColumn, tag = "origin:R/tnum")
+tnum.ingestDataFrame(
+  df,
+  subjectRoot,
+  idType = "/row:",
+  idColumn,
+  tag = "origin:R/tnum"
+)
 }
 \arguments{
 \item{df}{the data frame, as returned by read.csv() for example}
