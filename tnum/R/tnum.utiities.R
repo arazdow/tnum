@@ -45,7 +45,7 @@ tnum.ingestDataFrame <- function(df, subjectRoot, idType = "/row:", idColumn, ta
 
       #if value is mode character, quote it as a string
       if(!is.na(val) && is.character(val)){
-        val <- str_trim(val, side = "both")
+        val <- str_replace_all(str_trim(val, side = "both"),"[']","-")
         val <- paste0("\"",val,"\"")
       }
       if(!is.na(val) && !is.null(val) && (nchar(val) > 2)){
@@ -76,9 +76,8 @@ tnum.ingestDataFrame <- function(df, subjectRoot, idType = "/row:", idColumn, ta
 
       }
     }
+  }
     print(paste0(tnCount, " TNs posted"))
     return (tnCount)
-  }
-
 
 }
