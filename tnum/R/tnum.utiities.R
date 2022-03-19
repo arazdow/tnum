@@ -41,7 +41,7 @@ tnum.ingestDataFrame <- function(df, subjectRoot, idType = "/row:", idColumn, ta
       subj <- paste0(subjectRoot,idType, tokenize(df[i,][[tokenize(idColumn)]]))
       colName <- names(df[i,][j])
       prop <- tokenize(colName)
-      val <- enc2utf8(df[i,][[j]])
+      val <- df[i,][[j]]
 
       #if value is mode character, quote it as a string
       if(!is.na(val) && is.character(val)){
