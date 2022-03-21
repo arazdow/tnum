@@ -379,6 +379,7 @@ tnum.postStatement <- function(stmt,
                                tags = list(c("source:R",tnum.dateToken()))
                                )
 {
+  stmt <- str_remove_all(stmt,"â€“")
   args <- list(
     ubox = stmt,
     ns = tnum.env$tnum.var.nspace,
