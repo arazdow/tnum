@@ -45,8 +45,8 @@ tnum.ingestDataFrame <- function(df, subjectRoot, idType = "/row:", idColumn, ta
 
       #if value is mode character, quote it as a string
       if(!is.na(val) && is.character(val)){
-        val <- str_replace_all(val,"[']","-")
-        val <- str_replace_all(val,"â€“", "xxx" )
+        val <- str_replace_all(val,"â€“", "" )
+        val <- str_replace_all(val,"â€¦", "" )
         val <- paste0("\"",val,"\"")
       }
       if(!is.na(val) && !is.null(val) && (nchar(val) > 2)){
@@ -82,3 +82,31 @@ tnum.ingestDataFrame <- function(df, subjectRoot, idType = "/row:", idColumn, ta
     return (tnCount)
 
 }
+
+########################################################
+#'@title Get length of path
+#'
+#' @param path  phrase path
+#' @returns number of segments
+#' @export
+#'
+
+tnum.pathLength <- function(path){
+  return(str_count(path,":|/") + 1)
+}
+
+########################################################
+#'@title Get subpath of length N
+#'
+#' @param path the path
+#' @param n length of desired sub-path
+#' @return first n segments of path.
+#' @export
+#'
+
+tnum.subPath <- function(path, n=1){
+  p <- str_locate_all("foo:bar/blatz:biff/nod",":|/")
+  return(substr(path,0,p[[1]][,1][[n]]-1))
+}
+
+

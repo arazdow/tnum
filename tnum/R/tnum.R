@@ -379,9 +379,9 @@ tnum.postStatement <- function(stmt,
                                tags = list(c("source:R",tnum.dateToken()))
                                )
 {
-  stmt <- str_remove_all(stmt,"â€“")
+  stmt1 <- str_remove_all(stmt,"â€”")
   args <- list(
-    ubox = stmt,
+    ubox = stmt1,
     ns = tnum.env$tnum.var.nspace,
     tag = "origin:R/tnum"
      )
