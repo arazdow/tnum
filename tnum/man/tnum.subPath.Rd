@@ -12,7 +12,7 @@ tnum.subPath(path, n = 1)
 \item{n}{length of desired sub-path}
 }
 \value{
-first n segments of path.
+first n terms of path.
 }
 \description{
 Get subpath of length N

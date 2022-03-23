@@ -7,8 +7,8 @@
 tnum.ingestDataFrame(
   df,
   subjectRoot,
-  idType = "/row:",
-  idColumn,
+  subjectTerms = list(),
+  propTerms = list(),
   tag = "origin:R/tnum"
 )
 }
@@ -17,12 +17,26 @@ tnum.ingestDataFrame(
 
 \item{subjectRoot}{string used as root of subject path. It should not end with : or /}
 
-\item{idType}{string appended to subjectRoot to prefix the idColumn token. Must start and end with : or /}
+\item{subjectTerms}{a list of string pairs appended to subjectRoot build the subject. The
+second string in each pair must be the name of a column in the df, and the first is a prefix
+placed in the path before the value of that column.}
 
-\item{idColumn}{name of a column to be used at the end of the subject path to identify the row}
+\item{propTerms}{similar to subjectTerms, but has pairs named by a df column name:
+list(colname = c("path:property", "unit of measure")).  The property path if not empty will be
+used as the TN property, and if empty, the column name will be used. The units are appended to the value.}
 
 \item{tag}{path used to tag all the created truenumbers}
 }
 \description{
 ingest a data frame as verbatim truenumbers
 }
+\concept{ingestDataFrame(df, subjectRoot = "fauna",
+                         subjectTerms = list(c(":american/","type"), c(":", "status")),
+                         propTerms = list(c("density:population","pop-dens","items/acre")),
+                         tag = "demo:ingest")
+
+  This will produce a TN for each cell in the row of the form:
+
+  fauna:american/bison:endangered has density:population = 2.45 items/acre which expands to:
+
+  population density of endangered bison, american fauna is 2.45 items/acre}
