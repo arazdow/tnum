@@ -380,6 +380,25 @@ tnum.postStatement <- function(stmt,
                                )
 {
   stmt1 <- str_remove_all(stmt,"â€”")
+
+  # do file write if file open
+  theFile <- tnum.env$tnum.var.outfile
+  if(!is.null(theFile)){
+    writeLines(stmt, theFile)
+    if(notes != ""){
+      writeLines(paste0("$ has description = \"", trimws(notes)), theFile)
+    }
+    for(tg in tags){
+      tp <- ""
+      if(length(tg)>1){
+        tp <- tg[[2]]
+      }
+      ts <- paste0("@ has ", tg[[1]], " = \"", tp, "\"")
+      writeLines(ts, theFile)
+    }
+
+  } else {
+  #get here if not writing file
   args <- list(
     ubox = stmt1,
     ns = tnum.env$tnum.var.nspace,
@@ -410,6 +429,7 @@ tnum.postStatement <- function(stmt,
   theTn <- tnum.callApi("htn-from-guid", list(guid = theGuid, core = "yes"))
 
   return(theTn)
+  }
 
 }
 

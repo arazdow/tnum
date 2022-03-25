@@ -9,7 +9,8 @@ tnum.ingestDataFrame(
   subjectRoot,
   subjectTerms = list(),
   propTerms = list(),
-  tag = "origin:R/tnum"
+  tag = "origin:R/tnum",
+  outfile = ""
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ list(colname = c("path:property", "unit of measure")).  The property path if not
 used as the TN property, and if empty, the column name will be used. The units are appended to the value.}
 
 \item{tag}{path used to tag all the created truenumbers}
+
+\item{outfile}{if non-empty, causes TNs and tags to be written to a file, not the server.}
 }
 \description{
 ingest a data frame as verbatim truenumbers

@@ -31,6 +31,7 @@ tnum.loadLibs <- function(){
 #'   list(colname = c("path:property", "unit of measure")).  The property path if not empty will be
 #'   used as the TN property, and if empty, the column name will be used. The units are appended to the value.
 #' @param tag path used to tag all the created truenumbers
+#' @param outfile if non-empty, causes TNs and tags to be written to a file, not the server.
 #' @concept  ingestDataFrame(df, subjectRoot = "fauna",
 #'                          subjectTerms = list(c(":american/","type"), c(":", "status")),
 #'                          propTerms = list(c("density:population","pop-dens","items/acre")),
@@ -43,13 +44,29 @@ tnum.loadLibs <- function(){
 #'   population density of endangered bison, american fauna is 2.45 items/acre
 #'
 #' @export
+#'
 
-tnum.ingestDataFrame <- function(df, subjectRoot, subjectTerms = list(), propTerms = list(),tag = "origin:R/tnum"){
+tnum.ingestDataFrame <- function(df,
+                                 subjectRoot,
+                                 subjectTerms = list(),
+                                 propTerms = list(),
+                                 tag = "origin:R/tnum",
+                                 outfile = ""
+                                 ){
 
   dfRows <- dim(df)[[1]]
   dfCols <- dim(df)[[2]]
   tnCount <- 0
   longProps <- list()
+  theFile <- tnum.env$tnum.var.outfile
+
+  if(!is.null(outfile) && outfile != ""){
+    if(is.null(theFile)){
+      theFile <- file(outfile, "w")
+      assign("tnum.var.outfile", theFile, envir = tnum.env)
+    }
+  }
+
 
   for(i in 1:dfRows){
     subj <- subjectRoot
@@ -94,7 +111,6 @@ tnum.ingestDataFrame <- function(df, subjectRoot, subjectTerms = list(), propTer
         }
 
         stmt <- tnum.buildStatement(subj,prop,val)
-        print(stmt)
         tnResult <- tnum.postStatement(stmt,"",list(tag))
         tnCount <- tnCount + 1
 
@@ -102,6 +118,8 @@ tnum.ingestDataFrame <- function(df, subjectRoot, subjectTerms = list(), propTer
     }
   }
     print(paste0(tnCount, " TNs posted"))
+    close(theFile)
+    assign("tnum.var.outfile", NULL, envir = tnum.env)
     return (tnCount)
 
 }
