@@ -386,14 +386,17 @@ tnum.postStatement <- function(stmt,
   if(!is.null(theFile)){
     writeLines(stmt, theFile)
     if(notes != ""){
-      writeLines(paste0("$ has description = \"", trimws(notes)), theFile)
+      writeLines(paste0("$ has description | ", trimws(notes)), theFile)
     }
     for(tg in tags){
       tp <- ""
       if(length(tg)>1){
         tp <- tg[[2]]
       }
-      ts <- paste0("@ has ", tg[[1]], " = \"", tp, "\"")
+      ts <- paste0("@ has ", tg[[1]])
+      if(nchar(tp)>0){
+        ts <- paste0(ts, " | ", tp)
+      }
       writeLines(ts, theFile)
     }
 

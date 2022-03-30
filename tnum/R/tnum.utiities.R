@@ -20,7 +20,7 @@ tnum.loadLibs <- function(){
 }
 
 #######################################################
-#' @title ingest a data frame as verbatim truenumbers
+#' @title ingest a data frame as  truenumbers
 #'
 #' @param df  the data frame, as returned by read.csv() for example
 #' @param subjectRoot string used as root of subject path. It should not end with : or /
@@ -28,7 +28,7 @@ tnum.loadLibs <- function(){
 #' second string in each pair must be the name of a column in the df, and the first is a prefix
 #' placed in the path before the value of that column.
 #' @param propTerms similar to subjectTerms, but has pairs named by a df column name:
-#'   list(colname = c("path:property", "unit of measure")).  The property path if not empty will be
+#'   list(colname = c("path:property", "unif measure")).  The property path if not empty will be
 #'   used as the TN property, and if empty, the column name will be used. The units are appended to the value.
 #' @param tag path used to tag all the created truenumbers
 #' @param outfile if non-empty, causes TNs and tags to be written to a file, not the server.
@@ -91,13 +91,13 @@ tnum.ingestDataFrame <- function(df,
       }
       if(!is.na(val) && !is.null(val) && (nchar(val) > 2)){
         ## deal with overlong column names
-        if(nchar(prop) > 25){
+        if(nchar(prop) > 30){
 
           if(!(prop %in% longProps)){
 
             longProps <- c(longProps,list(prop))
 
-            props <- tokenize(substring(colName,1,25))
+            props <- tokenize(substring(colName,1,30))
             prop <- paste0(props,":t",which(longProps == colName))
 
             colStmt <- tnum.buildStatement(paste0(subjectRoot,"/column:",prop),
@@ -105,7 +105,7 @@ tnum.ingestDataFrame <- function(df,
             print(paste0("  ---> ",colStmt))
             res <- tnum.postStatement(colStmt,"had to truncate this heading",list(tag))
           } else {
-            prop <- tokenize(substring(colName,1,25))
+            prop <- tokenize(substring(colName,1,30))
             prop <- paste0(prop,":t",which(longProps == colName))
           }
         }

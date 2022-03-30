@@ -2,7 +2,7 @@
 % Please edit documentation in R/tnum.utiities.R
 \name{tnum.ingestDataFrame}
 \alias{tnum.ingestDataFrame}
-\title{ingest a data frame as verbatim truenumbers}
+\title{ingest a data frame as  truenumbers}
 \usage{
 tnum.ingestDataFrame(
   df,
@@ -23,7 +23,7 @@ second string in each pair must be the name of a column in the df, and the first
 placed in the path before the value of that column.}
 
 \item{propTerms}{similar to subjectTerms, but has pairs named by a df column name:
-list(colname = c("path:property", "unit of measure")).  The property path if not empty will be
+list(colname = c("path:property", "unif measure")).  The property path if not empty will be
 used as the TN property, and if empty, the column name will be used. The units are appended to the value.}
 
 \item{tag}{path used to tag all the created truenumbers}
@@ -31,7 +31,7 @@ used as the TN property, and if empty, the column name will be used. The units a
 \item{outfile}{if non-empty, causes TNs and tags to be written to a file, not the server.}
 }
 \description{
-ingest a data frame as verbatim truenumbers
+ingest a data frame as  truenumbers
 }
 \concept{ingestDataFrame(df, subjectRoot = "fauna",
                          subjectTerms = list(c(":american/","type"), c(":", "status")),
