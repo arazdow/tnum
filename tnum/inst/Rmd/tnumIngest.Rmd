@@ -1,0 +1,59 @@
+---
+title: "Writing Data Frames as Truenumbers"
+author: "Allen Razdow"
+date: "5/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Comparing paradigms
+
+Data frames in R are record-oriented data.  A sequence of rows, each a set of name-value pairs.  The names are the same for each row, comprising its columns.  Data frames are the basic data structures for analysis in R, and their form never varies regardless of the kind of the data they contain.  Only the column names and values hint at the reality the data represents, because data frames are for computation, not description.  
+
+Truenumbers is in that sense the opposite of tabular data, because it catalogs information by description, having no other explicit structure.   
+
+This data frame has four columns, and two rows, or *observations*:
+```{r }
+ df1 <- data.frame(state=c("arizona","arizona"),city=c("flagstaff","tucson"),population=c(76831,542629), meanTempF = c(71, 88))
+knitr::kable(df1)
+```
+We can get the gist of what the frame is all about from reading the names, and figure out that the *state* and *city* columns specify the subject for which the population and average temperature are given in the other columns.  In TN, subject and property are explicit: 
+
+ **flagstaff arizona has population = 76831**
+ 
+ **flagstaff arizona has mean temperature = 71 F**
+ 
+ **tucson arizona has population = 542629**
+ 
+ **tucson arizona has mean temperature = 88 F**
+
+There are several things to notice about this representation:
+
+ * Instead of associating fields by putting them in the same row (*tuple* concept) TNs are associated by having the same subject phrase
+ * Where the row is identified by *state* and *city* columns, the phrase is self-explanatory with no metadata: **tucson arizona**
+ * Column head *meanTempF* becomes a searchable property **mean temperature** and the value has intrinsic units of measure
+ * Phrases are part of the data, and not restricted to a schema, so more information is captured than in a table
+
+## Considering subject identity
+
+Had we built our dataframe without the *state* column, we could find ourselves with N rows in which the *city* was **Springfield.**  That is, the *city* column alone would fail to be a unique key.  However, we would still know which population and temperature numbers are together because they'll be in the same row.  In the TN case, if we had N **Springfield** population numbers, we would have N *temperature* numbers, and no way to know which ones go together.
+
+In general, the problem is the same: insufficient identification of the subject.  Consideration of subjects and properties is intrinsic to writing TNs, and sufficient identification, whether in the subject phrase or using tags, is an important consideration.   
+
+## Describing the dataframe vs. describing the data
+
+The TNs shown above describe the information represented by the data frame, based on making descriptive information implied in the frame, into explicit phrase data in the TNs.  Writing those TNs required our understanding the data, then capturing this knowledge in TN sentences.  A different approach, which can be automated, is to write TNs that describe the data frame itself:
+
+**row 1 of my data frame has population = 76831**
+
+**row 1 of my data frame has meanTempF = 71 F**
+
+. . . and so forth.  These TNs have a particular row as subject, and then give the value of each field with the column head as the give property.  Both approaches are legitimate, it just depends on the goal.  In general, it is better to make TNs as domain-descriptive as possible.  
+
+## Using TNUM package to write TNs from a data frame
+
+The goal is, for each row, to construct truenumbers that convey the meaning of the row. 
+

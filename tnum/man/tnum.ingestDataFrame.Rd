@@ -4,42 +4,23 @@
 \alias{tnum.ingestDataFrame}
 \title{ingest a data frame as  truenumbers}
 \usage{
-tnum.ingestDataFrame(
-  df,
-  subjectRoot,
-  subjectTerms = list(),
-  propTerms = list(),
-  tag = "origin:R/tnum",
-  outfile = ""
-)
+tnum.ingestDataFrame(df, templates = list(), outfile = "")
 }
 \arguments{
 \item{df}{the data frame, as returned by read.csv() for example}
 
-\item{subjectRoot}{string used as root of subject path. It should not end with : or /}
-
-\item{subjectTerms}{a list of string pairs appended to subjectRoot build the subject. The
-second string in each pair must be the name of a column in the df, and the first is a prefix
-placed in the path before the value of that column.}
-
-\item{propTerms}{similar to subjectTerms, but has pairs named by a df column name:
-list(colname = c("path:property", "unif measure")).  The property path if not empty will be
-used as the TN property, and if empty, the column name will be used. The units are appended to the value.}
-
-\item{tag}{path used to tag all the created truenumbers}
+\item{templates}{a list of string pairs, the first is a TN template, the second is a tag list template
+TN template is a truenumber sentence including "macros" to be replace by row data values
+Tag list template is a comma-separated list of tag paths, inscluding macros as well
+Macros are of the form $funcName(column name), or $(column name).  The column value is substituted
+for the macro.  If a function name is present, that function processes the column value before substitution.}
 
 \item{outfile}{if non-empty, causes TNs and tags to be written to a file, not the server.}
 }
 \description{
 ingest a data frame as  truenumbers
 }
-\concept{ingestDataFrame(df, subjectRoot = "fauna",
-                         subjectTerms = list(c(":american/","type"), c(":", "status")),
-                         propTerms = list(c("density:population","pop-dens","items/acre")),
-                         tag = "demo:ingest")
-
-  This will produce a TN for each cell in the row of the form:
-
-  fauna:american/bison:endangered has density:population = 2.45 items/acre which expands to:
-
-  population density of endangered bison, american fauna is 2.45 items/acre}
+\concept{For each row in the dataframe, a set of tagged truenumbers can be generated and posted based ona list of templates.
+         Templates are TNs and tags specified as strings, containing special macros that refer to column values of the row.
+         Thus, for example, ingesting a data frame of 10 columns and 100 rows, using a list of 3 templates, would produce
+         3 TNs per row, or 300 TNs.}

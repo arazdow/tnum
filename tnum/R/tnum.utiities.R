@@ -6,8 +6,23 @@ tokenize <- function(aString){
 }
 
 ########################################################
-#'@title load libraries required by TNUM
+#'@title parse a phrase as path
 #'
+#' @param phr   phrase string
+#' @return path string
+#' @export
+
+tnum.parsePhrase <- function(phr){
+  splt <- strsplit(phr,"\\s", fixed = FALSE)[[1]]
+  #splt <- lapply(splt,tokenize)
+  splt <- rev(splt)
+  splt <- paste(splt,collapse = ":")
+  splt <- str_replace_all(splt,":of:","/")
+  return(splt)
+}
+
+########################################################
+#' @title load libraries required by TNUM
 #' @export
 
 tnum.loadLibs <- function(){
@@ -19,41 +34,66 @@ tnum.loadLibs <- function(){
   library(knitr)
 }
 
+
 #######################################################
 #' @title ingest a data frame as  truenumbers
 #'
+#' @concept For each row in the dataframe, a set of tagged truenumbers can be generated and posted based ona list of templates.
+#'          Templates are TNs and tags specified as strings, containing special macros that refer to column values of the row.
+#'          Thus, for example, ingesting a data frame of 10 columns and 100 rows, using a list of 3 templates, would produce
+#'          3 TNs per row, or 300 TNs.
+#'
 #' @param df  the data frame, as returned by read.csv() for example
-#' @param subjectRoot string used as root of subject path. It should not end with : or /
-#' @param subjectTerms a list of string pairs appended to subjectRoot build the subject. The
-#' second string in each pair must be the name of a column in the df, and the first is a prefix
-#' placed in the path before the value of that column.
-#' @param propTerms similar to subjectTerms, but has pairs named by a df column name:
-#'   list(colname = c("path:property", "unif measure")).  The property path if not empty will be
-#'   used as the TN property, and if empty, the column name will be used. The units are appended to the value.
-#' @param tag path used to tag all the created truenumbers
+#'
+#' @param templates a list of string pairs, the first is a TN template, the second is a tag list template
+#'        TN template is a truenumber sentence including "macros" to be replace by row data values
+#'        Tag list template is a comma-separated list of tag paths, inscluding macros as well
+#'        Macros are of the form $funcName(column name), or $(column name).  The column value is substituted
+#'        for the macro.  If a function name is present, that function processes the column value before substitution.
+#'
 #' @param outfile if non-empty, causes TNs and tags to be written to a file, not the server.
-#' @concept  ingestDataFrame(df, subjectRoot = "fauna",
-#'                          subjectTerms = list(c(":american/","type"), c(":", "status")),
-#'                          propTerms = list(c("density:population","pop-dens","items/acre")),
-#'                          tag = "demo:ingest")
-#'
-#'   This will produce a TN for each cell in the row of the form:
-#'
-#'   fauna:american/bison:endangered has density:population = 2.45 items/acre which expands to:
-#'
-#'   population density of endangered bison, american fauna is 2.45 items/acre
 #'
 #' @export
 #'
 
 tnum.ingestDataFrame <- function(df,
-                                 subjectRoot,
-                                 subjectTerms = list(),
-                                 propTerms = list(),
-                                 tag = "origin:R/tnum",
+                                 templates = list(),
                                  outfile = ""
-                                 ){
+){
 
+  ######### local fns
+  cleanVal <- function(val){
+    #if value is mode character, quote it as a string
+    if(!is.na(val) && is.character(val)){
+      val <- str_replace_all(val,"â€“", "" )
+      val <- str_replace_all(val,"â€¦", "" )
+      val <- paste0("\"",val,"\"")
+    }
+    return(val)
+  }
+
+  doTemplate <- function(macros, tmplt){
+    for(macro in macros[[1]]){
+      fn <- str_extract(macro,"\\$.*\\(")
+      if(nchar(fn) > 2) {
+        fn <- substring(fn,2,nchar(fn)-1)
+      } else {
+        fn <- ""
+      }
+      mac <- str_extract(macro,"\\(.+\\)")
+      mac <- substring(mac,2,nchar(mac)-1)
+      vl <- df[1,][[mac]]
+      if(nchar(fn) > 0){
+        # there is a function call to process the value
+        theExp <- paste0(fn,"(vl)")
+        vl <- eval(parse(text = theExp))
+      }
+      return(gsub(macro,vl,tmplt,fixed = TRUE))
+    }
+  }
+  ############## end local fns
+
+  theFile <- NULL
   dfRows <- dim(df)[[1]]
   dfCols <- dim(df)[[2]]
   tnCount <- 0
@@ -67,63 +107,30 @@ tnum.ingestDataFrame <- function(df,
     }
   }
 
-
   for(i in 1:dfRows){
-    subj <- subjectRoot
-    for(pair in subjectTerms){
-      subj = paste0(subj,pair[[1]], tokenize(df[i,][[pair[[2]]]]))
-    }
-    if(subj == subjectRoot){subj = paste0(subj,"/row:",i)}
-    for(j in 1:dfCols){
-      colName <- names(df[i,][j])
-      prop <- tokenize(colName)
-      if(!is.null(propTerms[[colName]])){
-        prop <- propTerms[[colName]]
-      }
 
-      val <- df[i,][[j]]
+    for(pair in templates){
+        tnT <- pair[[1]]
+        tagT <- pair[[2]]
 
-      #if value is mode character, quote it as a string
-      if(!is.na(val) && is.character(val)){
-        val <- str_replace_all(val,"â€“", "" )
-        val <- str_replace_all(val,"â€¦", "" )
-        val <- paste0("\"",val,"\"")
-      }
-      if(!is.na(val) && !is.null(val) && (nchar(val) > 2)){
-        ## deal with overlong column names
-        if(nchar(prop) > 30){
+        macros <- str_extract_all(tnT,"\\$[a-zA-Z0-9_]*(\\([a-zA-Z0-9_]+\\))")
+        tnT <- doTemplate(macros,tnT)
 
-          if(!(prop %in% longProps)){
+        macros <- str_extract_all(tagT,"\\$[a-zA-Z0-9_]*(\\([a-zA-Z0-9_]+\\))")
+        tagT <- doTemplate(macros,tagT)
 
-            longProps <- c(longProps,list(prop))
-
-            props <- tokenize(substring(colName,1,30))
-            prop <- paste0(props,":t",which(longProps == colName))
-
-            colStmt <- tnum.buildStatement(paste0(subjectRoot,"/column:",prop),
-                                           "text:heading:full",paste0("\"",colName,"\""))
-            print(paste0("  ---> ",colStmt))
-            res <- tnum.postStatement(colStmt,"had to truncate this heading",list(tag))
-          } else {
-            prop <- tokenize(substring(colName,1,30))
-            prop <- paste0(prop,":t",which(longProps == colName))
-          }
-        }
-
-        stmt <- tnum.buildStatement(subj,prop,val)
-        tnResult <- tnum.postStatement(stmt,"",list(tag))
+        tnResult <- tnum.postStatement(tnT, tags = str_split(str_replace_all(tagT,"\\s+",""), ","))
         tnCount <- tnCount + 1
 
       }
     }
-  }
-    print(paste0(tnCount, " TNs posted"))
-    close(theFile)
-    assign("tnum.var.outfile", NULL, envir = tnum.env)
-    return (tnCount)
+
+  print(paste0(tnCount, " TNs posted"))
+  close(theFile)
+  assign("tnum.var.outfile", NULL, envir = tnum.env)
+  return (tnCount)
 
 }
-
 ########################################################
 #'@title Get length of path
 #'

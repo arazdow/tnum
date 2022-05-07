@@ -376,7 +376,7 @@ tnum.buildStatement <- function(subject = "something",
 #'
 tnum.postStatement <- function(stmt,
                                notes = "",
-                               tags = list(c("source:R",tnum.dateToken()))
+                               tags = list(paste0("source:R:",tnum.dateToken()))
                                )
 {
   stmt1 <- str_remove_all(stmt,"â€”")
@@ -460,11 +460,12 @@ tnum.jsonArray <- function(objectList){
 ########################################################
 #' Utility functions
 #' @noRd
-#'
+#' @export
 
 tnum.dateToken <- function(){
-  tokenized = stringr::str_replace_all(now(), " ","_")
+  tokenized = stringr::str_replace_all(now(), " ","/")
   tokenized = stringr::str_replace_all(tokenized, ":",".")
+  return(tokenized)
 }
 
 

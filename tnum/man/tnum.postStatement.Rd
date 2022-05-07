@@ -7,7 +7,7 @@
 tnum.postStatement(
   stmt,
   notes = "",
-  tags = list(c("source:R", tnum.dateToken()))
+  tags = list(paste0("source:R:", tnum.dateToken()))
 )
 }
 \arguments{
