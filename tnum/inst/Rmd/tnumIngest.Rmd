@@ -45,7 +45,7 @@ In general, the problem is the same: insufficient identification of the subject.
 
 ## Using TNUM package to write TNs from a data frame
 
-The **tnum.ingestDataFrame** function is used to generate a set of tagged truenumbers to represent each row in the data frame.  We'll use it to generate the descriptive TNs shown earlier.  We define the list of templates, in this case, one for the population and one for the temperature. We add a tag to both indicating the state.
+The **tnum.ingestDataFrame** function is used to generate a set of tagged truenumbers to represent each row in the data frame.  We'll use it to generate the descriptive TNs shown earlier.  We define the list of templates, in this case, one for the population and one for the temperature. We add tags to both.
 
 ```{r}
 templates <- list(
@@ -53,7 +53,9 @@ templates <- list(
   c("$(city) $(state) has mean temperature = $(meanTempF) F", "state:$(state)")
 )
 ```
+Macrfos like **$(col name)** are replaced by the value in the current row of the name column.  Macros like **$func(col name)** or **$func()** will apply that function to the value before replacement. We use these forms in the tags.
 
+There are two special functions provided: **tkn(val)** which makes a toKen suitable for use in TN phrases from any string argument, and **dateTkn()** which returns current date and time as a token.  Any function present in the R environment with zero or one arg can be called.  
 ```{r , include=FALSE}
 # Load TNUM and authenticate to access the server
 library(tnum)

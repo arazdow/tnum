@@ -226,11 +226,13 @@ knitr::kable(df1)</code></pre>
 </div>
 <div id="using-tnum-package-to-write-tns-from-a-data-frame" class="section level2">
 <h2>Using TNUM package to write TNs from a data frame</h2>
-<p>The <strong>tnum.ingestDataFrame</strong> function is used to generate a set of tagged truenumbers to represent each row in the data frame. We’ll use it to generate the descriptive TNs shown earlier. We define the list of templates, in this case, one for the population and one for the temperature. We add a tag to both indicating the state.</p>
+<p>The <strong>tnum.ingestDataFrame</strong> function is used to generate a set of tagged truenumbers to represent each row in the data frame. We’ll use it to generate the descriptive TNs shown earlier. We define the list of templates, in this case, one for the population and one for the temperature. We add tags to both.</p>
 <pre class="r"><code>templates &lt;- list(
   c(&quot;$(city) $(state) has population = $(population)&quot;, &quot;state:$str_to_upper(state),ingest:$dateTkn()&quot;),
   c(&quot;$(city) $(state) has mean temperature = $(meanTempF) F&quot;, &quot;state:$(state)&quot;)
 )</code></pre>
+<p>Macrfos like <strong><span class="math inline">\((col name)** are replaced by the value in the current row of the name column. Macros like **\)</span>func(col name)</strong> or <strong>$func()</strong> will apply that function to the value before replacement. We use these forms in the tags.</p>
+<p>There are two special functions provided: <strong>tkn(val)</strong> which makes a toKen suitable for use in TN phrases from any string argument, and <strong>dateTkn()</strong> which returns current date and time as a token. Any function present in the R environment with zero or one arg can be called.</p>
 <p>Now we call the ingest function, using the <em>outfile</em> parameter to write the generated TNs to a file suitable for uploading using the TN web dashboard, and display the file. That way, we’re not actually posting anything.</p>
 <pre class="r"><code>tnum.ingestDataFrame(df1, templates, &quot;testIngest1.txt&quot;)</code></pre>
 <pre><code>## [1] &quot;4 TNs posted&quot;</code></pre>
@@ -238,12 +240,12 @@ knitr::kable(df1)</code></pre>
 <pre><code>##                                               V1
 ## 1       flagstaff arizona has population = 76831
 ## 2                            @ has state:ARIZONA
-## 3          @ has ingest:Sun_May_08_14.57.18_2022
+## 3          @ has ingest:Sun_May_08_15.08.49_2022
 ## 4  flagstaff arizona has mean temperature = 71 F
 ## 5                            @ has state:arizona
 ## 6         tucson arizona has population = 542629
 ## 7                            @ has state:ARIZONA
-## 8          @ has ingest:Sun_May_08_14.57.18_2022
+## 8          @ has ingest:Sun_May_08_15.08.49_2022
 ## 9     tucson arizona has mean temperature = 88 F
 ## 10                           @ has state:arizona</code></pre>
 <p>Now we ingest them again, posting to the numberspace:</p>
@@ -297,7 +299,7 @@ knitr::kable(df1)</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2022-05-08T18:57:18.017Z</td>
+<td align="left">2022-05-08T19:08:49.224Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">magnitude</td>
@@ -305,16 +307,16 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:flagstaff</td>
 <td align="left">flagstaff arizona has population = 76831</td>
 <td align="left">76831.0000</td>
-<td align="left">0f09a430-0a06-479a-97b9-d0856582fb6d</td>
+<td align="left">76ea46a7-4e8a-4af8-a210-c5c5537c7243</td>
 <td align="left">demospace</td>
 <td align="left">population</td>
 <td align="left"></td>
-<td align="left">0f09a430-0a06-479a-97b9-d0856582fb6d</td>
+<td align="left">76ea46a7-4e8a-4af8-a210-c5c5537c7243</td>
 <td align="left">TsNumber</td>
 <td align="left">76831</td>
 </tr>
 <tr class="even">
-<td align="left">2022-05-08T18:57:18.403Z</td>
+<td align="left">2022-05-08T19:08:49.568Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">temperature</td>
@@ -322,16 +324,16 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:flagstaff</td>
 <td align="left">flagstaff arizona has mean temperature = 71 F</td>
 <td align="left">294.8167</td>
-<td align="left">009c8afb-287d-4529-a406-2cc6e486036b</td>
+<td align="left">f1853f3d-2275-47be-bdb9-f048ef1483ef</td>
 <td align="left">demospace</td>
 <td align="left">temperature:mean</td>
 <td align="left"></td>
-<td align="left">009c8afb-287d-4529-a406-2cc6e486036b</td>
+<td align="left">f1853f3d-2275-47be-bdb9-f048ef1483ef</td>
 <td align="left">TsNumber</td>
 <td align="left">71</td>
 </tr>
 <tr class="odd">
-<td align="left">2022-05-08T18:57:18.634Z</td>
+<td align="left">2022-05-08T19:08:49.755Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">magnitude</td>
@@ -339,16 +341,16 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:tucson</td>
 <td align="left">tucson arizona has population = 542629</td>
 <td align="left">542629.0000</td>
-<td align="left">5be51569-af52-4d65-890c-d0b3f8311852</td>
+<td align="left">1fea6d05-22f6-4dc6-813d-dce4c42cebf5</td>
 <td align="left">demospace</td>
 <td align="left">population</td>
 <td align="left"></td>
-<td align="left">5be51569-af52-4d65-890c-d0b3f8311852</td>
+<td align="left">1fea6d05-22f6-4dc6-813d-dce4c42cebf5</td>
 <td align="left">TsNumber</td>
 <td align="left">542629</td>
 </tr>
 <tr class="even">
-<td align="left">2022-05-08T18:57:18.975Z</td>
+<td align="left">2022-05-08T19:08:50.046Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">temperature</td>
@@ -356,11 +358,11 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:tucson</td>
 <td align="left">tucson arizona has mean temperature = 88 F</td>
 <td align="left">304.2611</td>
-<td align="left">e9515ac5-877e-468a-b57c-ca86fce1c666</td>
+<td align="left">be50441e-dd87-4360-a5b0-0358940d4f0f</td>
 <td align="left">demospace</td>
 <td align="left">temperature:mean</td>
 <td align="left"></td>
-<td align="left">e9515ac5-877e-468a-b57c-ca86fce1c666</td>
+<td align="left">be50441e-dd87-4360-a5b0-0358940d4f0f</td>
 <td align="left">TsNumber</td>
 <td align="left">88</td>
 </tr>
