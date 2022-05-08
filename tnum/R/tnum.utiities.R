@@ -62,14 +62,21 @@ tnum.ingestDataFrame <- function(df,
 ){
 
   ######### local fns
-  cleanVal <- function(val){
+  tkn <- function(val){
     #if value is mode character, quote it as a string
     if(!is.na(val) && is.character(val)){
-      val <- str_replace_all(val,"â€“", "" )
-      val <- str_replace_all(val,"â€¦", "" )
-      val <- paste0("\"",val,"\"")
+      #val <- str_replace_all(val,"â€“", "" )
+      #val <- str_replace_all(val,"â€¦", "" )
+      val <- str_replace_all(val,"\\s+", "_" )
+      val <- str_replace_all(val,"[:/]", "." )
+      val <- str_replace_all(val,"[^a-zA-Z0-9_.]", "" )
     }
     return(val)
+  }
+
+  dateTkn <- function(){
+    dt <- date()
+    return(tkn(dt))
   }
 
   doTemplates <- function(macros, tmplt, theRow){
@@ -82,10 +89,19 @@ tnum.ingestDataFrame <- function(df,
       }
       mac <- str_extract(macro,"\\(.+\\)")
       mac <- substring(mac,2,nchar(mac)-1)
-      vl <- theRow[[mac]]
+      if(is.na(mac) || nchar(mac) > 0){
+        vl <- theRow[[mac]]
+      } else {
+        vl <- ""
+      }
+
       if(nchar(fn) > 0){
         # there is a function call to process the value
-        theExp <- paste0(fn,"(vl)")
+        if(!is.na(mac) && nchar(mac) > 0){
+          theExp <- paste0(fn,"(vl)")
+        } else {
+          theExp <- paste0(fn,"()")
+        }
         vl <- eval(parse(text = theExp))
       }
       tmplt <- gsub(macro,vl,tmplt,fixed = TRUE)
@@ -114,13 +130,15 @@ tnum.ingestDataFrame <- function(df,
         tnT <- pair[[1]]
         tagT <- pair[[2]]
 
-        macros <- str_extract_all(tnT,"\\$[a-zA-Z0-9_]*(\\([a-zA-Z0-9_]+\\))")
+        macros <- str_extract_all(tnT,"\\$[a-zA-Z0-9_]*(\\([a-zA-Z0-9_]*\\))")
         tnT <- doTemplates(macros,tnT, df[i,])
 
-        macros <- str_extract_all(tagT,"\\$[a-zA-Z0-9_]*(\\([a-zA-Z0-9_]+\\))")
+        macros <- str_extract_all(tagT,"\\$[a-zA-Z0-9_]*(\\([a-zA-Z0-9_]*\\))")
         tagT <- doTemplates(macros,tagT, df[i,])
 
-        tnResult <- tnum.postStatement(tnT, tags = str_split(str_replace_all(tagT,"\\s+",""), ","))
+        tagList <- str_split(str_replace_all(tagT,"\\s+",""), ",")
+        tagList <- as.list(tagList[[1]])
+        tnResult <- tnum.postStatement(tnT, tags = tagList)
         tnCount <- tnCount + 1
 
       }

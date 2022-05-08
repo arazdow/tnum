@@ -49,7 +49,7 @@ The **tnum.ingestDataFrame** function is used to generate a set of tagged truenu
 
 ```{r}
 templates <- list(
-  c("$(city) $(state) has population = $(population)", "state:$(state)"),
+  c("$(city) $(state) has population = $(population)", "state:$str_to_upper(state),ingest:$dateTkn()"),
   c("$(city) $(state) has mean temperature = $(meanTempF) F", "state:$(state)")
 )
 ```

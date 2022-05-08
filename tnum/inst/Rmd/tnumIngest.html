@@ -228,22 +228,24 @@ knitr::kable(df1)</code></pre>
 <h2>Using TNUM package to write TNs from a data frame</h2>
 <p>The <strong>tnum.ingestDataFrame</strong> function is used to generate a set of tagged truenumbers to represent each row in the data frame. We’ll use it to generate the descriptive TNs shown earlier. We define the list of templates, in this case, one for the population and one for the temperature. We add a tag to both indicating the state.</p>
 <pre class="r"><code>templates &lt;- list(
-  c(&quot;$(city) $(state) has population = $(population)&quot;, &quot;state:$(state)&quot;),
+  c(&quot;$(city) $(state) has population = $(population)&quot;, &quot;state:$str_to_upper(state),ingest:$dateTkn()&quot;),
   c(&quot;$(city) $(state) has mean temperature = $(meanTempF) F&quot;, &quot;state:$(state)&quot;)
 )</code></pre>
 <p>Now we call the ingest function, using the <em>outfile</em> parameter to write the generated TNs to a file suitable for uploading using the TN web dashboard, and display the file. That way, we’re not actually posting anything.</p>
 <pre class="r"><code>tnum.ingestDataFrame(df1, templates, &quot;testIngest1.txt&quot;)</code></pre>
 <pre><code>## [1] &quot;4 TNs posted&quot;</code></pre>
 <pre class="r"><code>read.delim(&quot;testIngest1.txt&quot;, header = FALSE)</code></pre>
-<pre><code>##                                              V1
-## 1      flagstaff arizona has population = 76831
-## 2                           @ has state:arizona
-## 3 flagstaff arizona has mean temperature = 71 F
-## 4                           @ has state:arizona
-## 5        tucson arizona has population = 542629
-## 6                           @ has state:arizona
-## 7    tucson arizona has mean temperature = 88 F
-## 8                           @ has state:arizona</code></pre>
+<pre><code>##                                               V1
+## 1       flagstaff arizona has population = 76831
+## 2                            @ has state:ARIZONA
+## 3          @ has ingest:Sun_May_08_14.57.18_2022
+## 4  flagstaff arizona has mean temperature = 71 F
+## 5                            @ has state:arizona
+## 6         tucson arizona has population = 542629
+## 7                            @ has state:ARIZONA
+## 8          @ has ingest:Sun_May_08_14.57.18_2022
+## 9     tucson arizona has mean temperature = 88 F
+## 10                           @ has state:arizona</code></pre>
 <p>Now we ingest them again, posting to the numberspace:</p>
 <pre class="r"><code>tnum.ingestDataFrame(df1, templates)</code></pre>
 <pre><code>## [1] &quot;4 TNs posted&quot;</code></pre>
@@ -295,7 +297,7 @@ knitr::kable(df1)</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2022-05-08T04:44:36.352Z</td>
+<td align="left">2022-05-08T18:57:18.017Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">magnitude</td>
@@ -303,16 +305,16 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:flagstaff</td>
 <td align="left">flagstaff arizona has population = 76831</td>
 <td align="left">76831.0000</td>
-<td align="left">f9a6e8ce-c026-48df-a731-4f009408180d</td>
+<td align="left">0f09a430-0a06-479a-97b9-d0856582fb6d</td>
 <td align="left">demospace</td>
 <td align="left">population</td>
 <td align="left"></td>
-<td align="left">f9a6e8ce-c026-48df-a731-4f009408180d</td>
+<td align="left">0f09a430-0a06-479a-97b9-d0856582fb6d</td>
 <td align="left">TsNumber</td>
 <td align="left">76831</td>
 </tr>
 <tr class="even">
-<td align="left">2022-05-08T04:44:36.664Z</td>
+<td align="left">2022-05-08T18:57:18.403Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">temperature</td>
@@ -320,16 +322,16 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:flagstaff</td>
 <td align="left">flagstaff arizona has mean temperature = 71 F</td>
 <td align="left">294.8167</td>
-<td align="left">64df2f72-6b12-4794-84c2-c6973ee9a7e4</td>
+<td align="left">009c8afb-287d-4529-a406-2cc6e486036b</td>
 <td align="left">demospace</td>
 <td align="left">temperature:mean</td>
 <td align="left"></td>
-<td align="left">64df2f72-6b12-4794-84c2-c6973ee9a7e4</td>
+<td align="left">009c8afb-287d-4529-a406-2cc6e486036b</td>
 <td align="left">TsNumber</td>
 <td align="left">71</td>
 </tr>
 <tr class="odd">
-<td align="left">2022-05-08T04:44:36.859Z</td>
+<td align="left">2022-05-08T18:57:18.634Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">magnitude</td>
@@ -337,16 +339,16 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:tucson</td>
 <td align="left">tucson arizona has population = 542629</td>
 <td align="left">542629.0000</td>
-<td align="left">ccdee83d-157b-494c-b3c8-cd9829741f3d</td>
+<td align="left">5be51569-af52-4d65-890c-d0b3f8311852</td>
 <td align="left">demospace</td>
 <td align="left">population</td>
 <td align="left"></td>
-<td align="left">ccdee83d-157b-494c-b3c8-cd9829741f3d</td>
+<td align="left">5be51569-af52-4d65-890c-d0b3f8311852</td>
 <td align="left">TsNumber</td>
 <td align="left">542629</td>
 </tr>
 <tr class="even">
-<td align="left">2022-05-08T04:44:37.057Z</td>
+<td align="left">2022-05-08T18:57:18.975Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">temperature</td>
@@ -354,11 +356,11 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:tucson</td>
 <td align="left">tucson arizona has mean temperature = 88 F</td>
 <td align="left">304.2611</td>
-<td align="left">decb3f68-f8a7-4a63-a762-bfea59a5c268</td>
+<td align="left">e9515ac5-877e-468a-b57c-ca86fce1c666</td>
 <td align="left">demospace</td>
 <td align="left">temperature:mean</td>
 <td align="left"></td>
-<td align="left">decb3f68-f8a7-4a63-a762-bfea59a5c268</td>
+<td align="left">e9515ac5-877e-468a-b57c-ca86fce1c666</td>
 <td align="left">TsNumber</td>
 <td align="left">88</td>
 </tr>
