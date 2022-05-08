@@ -72,7 +72,7 @@ tnum.ingestDataFrame <- function(df,
     return(val)
   }
 
-  doTemplate <- function(macros, tmplt){
+  doTemplates <- function(macros, tmplt, theRow){
     for(macro in macros[[1]]){
       fn <- str_extract(macro,"\\$.*\\(")
       if(nchar(fn) > 2) {
@@ -82,14 +82,15 @@ tnum.ingestDataFrame <- function(df,
       }
       mac <- str_extract(macro,"\\(.+\\)")
       mac <- substring(mac,2,nchar(mac)-1)
-      vl <- df[1,][[mac]]
+      vl <- theRow[[mac]]
       if(nchar(fn) > 0){
         # there is a function call to process the value
         theExp <- paste0(fn,"(vl)")
         vl <- eval(parse(text = theExp))
       }
-      return(gsub(macro,vl,tmplt,fixed = TRUE))
+      tmplt <- gsub(macro,vl,tmplt,fixed = TRUE)
     }
+    return(tmplt)
   }
   ############## end local fns
 
@@ -114,10 +115,10 @@ tnum.ingestDataFrame <- function(df,
         tagT <- pair[[2]]
 
         macros <- str_extract_all(tnT,"\\$[a-zA-Z0-9_]*(\\([a-zA-Z0-9_]+\\))")
-        tnT <- doTemplate(macros,tnT)
+        tnT <- doTemplates(macros,tnT, df[i,])
 
         macros <- str_extract_all(tagT,"\\$[a-zA-Z0-9_]*(\\([a-zA-Z0-9_]+\\))")
-        tagT <- doTemplate(macros,tagT)
+        tagT <- doTemplates(macros,tagT, df[i,])
 
         tnResult <- tnum.postStatement(tnT, tags = str_split(str_replace_all(tagT,"\\s+",""), ","))
         tnCount <- tnCount + 1
@@ -126,9 +127,8 @@ tnum.ingestDataFrame <- function(df,
     }
 
   print(paste0(tnCount, " TNs posted"))
-  close(theFile)
+  if(!is.null(theFile))close(theFile)
   assign("tnum.var.outfile", NULL, envir = tnum.env)
-  return (tnCount)
 
 }
 ########################################################

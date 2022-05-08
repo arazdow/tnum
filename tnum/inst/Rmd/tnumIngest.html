@@ -216,6 +216,7 @@ knitr::kable(df1)</code></pre>
 <li>Instead of associating fields by putting them in the same row (<em>tuple</em> concept) TNs are associated by having the same subject phrase</li>
 <li>Where the row is identified by <em>state</em> and <em>city</em> columns, the phrase is self-explanatory with no metadata: <strong>tucson arizona</strong></li>
 <li>Column head <em>meanTempF</em> becomes a searchable property <strong>mean temperature</strong> and the value has intrinsic units of measure</li>
+<li>Phrases are part of the data, and not restricted to a schema, so more information is captured than in a table</li>
 </ul>
 </div>
 <div id="considering-subject-identity" class="section level2">
@@ -223,12 +224,146 @@ knitr::kable(df1)</code></pre>
 <p>Had we built our dataframe without the <em>state</em> column, we could find ourselves with N rows in which the <em>city</em> was <strong>Springfield.</strong> That is, the <em>city</em> column alone would fail to be a unique key. However, we would still know which population and temperature numbers are together because they’ll be in the same row. In the TN case, if we had N <strong>Springfield</strong> population numbers, we would have N <em>temperature</em> numbers, and no way to know which ones go together.</p>
 <p>In general, the problem is the same: insufficient identification of the subject. Consideration of subjects and properties is intrinsic to writing TNs, and sufficient identification, whether in the subject phrase or using tags, is an important consideration.</p>
 </div>
-<div id="describing-the-dataframe-vs.-describing-the-data" class="section level2">
-<h2>Describing the dataframe vs. describing the data</h2>
-<p>The TNs shown above describe the information represented by the data frame, based on making descriptive information implied in the frame, into explicit phrase data in the TNs. Writing those TNs required our understanding the data, then capturing this knowledge in TN sentences. A different approach, which can be automated, is to write TNs that describe the data frame itself:</p>
-<p><strong>row 1 of my data frame has population = 76831</strong></p>
-<p><strong>row 1 of my data frame has meanTempF = 71 F</strong></p>
-<p>. . . and so forth. These TNs have a particular row as subject, and then give the value of each field with the column head as the give property. Both approaches are legitimate, it just depends on the goal. In general, it is better to make TNs as domain-descriptive as possible.</p>
+<div id="using-tnum-package-to-write-tns-from-a-data-frame" class="section level2">
+<h2>Using TNUM package to write TNs from a data frame</h2>
+<p>The <strong>tnum.ingestDataFrame</strong> function is used to generate a set of tagged truenumbers to represent each row in the data frame. We’ll use it to generate the descriptive TNs shown earlier. We define the list of templates, in this case, one for the population and one for the temperature. We add a tag to both indicating the state.</p>
+<pre class="r"><code>templates &lt;- list(
+  c(&quot;$(city) $(state) has population = $(population)&quot;, &quot;state:$(state)&quot;),
+  c(&quot;$(city) $(state) has mean temperature = $(meanTempF) F&quot;, &quot;state:$(state)&quot;)
+)</code></pre>
+<p>Now we call the ingest function, using the <em>outfile</em> parameter to write the generated TNs to a file suitable for uploading using the TN web dashboard, and display the file. That way, we’re not actually posting anything.</p>
+<pre class="r"><code>tnum.ingestDataFrame(df1, templates, &quot;testIngest1.txt&quot;)</code></pre>
+<pre><code>## [1] &quot;4 TNs posted&quot;</code></pre>
+<pre class="r"><code>read.delim(&quot;testIngest1.txt&quot;, header = FALSE)</code></pre>
+<pre><code>##                                              V1
+## 1      flagstaff arizona has population = 76831
+## 2                           @ has state:arizona
+## 3 flagstaff arizona has mean temperature = 71 F
+## 4                           @ has state:arizona
+## 5        tucson arizona has population = 542629
+## 6                           @ has state:arizona
+## 7    tucson arizona has mean temperature = 88 F
+## 8                           @ has state:arizona</code></pre>
+<p>Now we ingest them again, posting to the numberspace:</p>
+<pre class="r"><code>tnum.ingestDataFrame(df1, templates)</code></pre>
+<pre><code>## [1] &quot;4 TNs posted&quot;</code></pre>
+<p>We query for them by tag, and display the resulting JSON as a dataframe</p>
+<pre class="r"><code>results &lt;- tnum.query(&quot;state:arizona&quot;)</code></pre>
+<pre><code>## Returned 4 results</code></pre>
+<pre class="r"><code>knitr::kable(results)</code></pre>
+<pre><code>## Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = structure(list(mag =
+## structure(c(&quot;76831.0000&quot;, : provided 7 variables to replace 1 variables
+
+## Warning in `[&lt;-.data.frame`(`*tmp*`, , j, value = structure(list(mag =
+## structure(c(&quot;76831.0000&quot;, : provided 7 variables to replace 1 variables</code></pre>
+<table>
+<colgroup>
+<col width="8%" />
+<col width="4%" />
+<col width="14%" />
+<col width="3%" />
+<col width="2%" />
+<col width="5%" />
+<col width="16%" />
+<col width="3%" />
+<col width="12%" />
+<col width="3%" />
+<col width="5%" />
+<col width="1%" />
+<col width="12%" />
+<col width="3%" />
+<col width="2%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">date</th>
+<th align="left">html_varname</th>
+<th align="left">server</th>
+<th align="left">quantity</th>
+<th align="left">author</th>
+<th align="left">subject</th>
+<th align="left">wrapper</th>
+<th align="left">si_value</th>
+<th align="left">htn_id</th>
+<th align="left">context</th>
+<th align="left">property</th>
+<th align="left">parts</th>
+<th align="left">id</th>
+<th align="left">value-type</th>
+<th align="left">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">2022-05-08T04:44:36.352Z</td>
+<td align="left"></td>
+<td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
+<td align="left">magnitude</td>
+<td align="left">demo</td>
+<td align="left">arizona:flagstaff</td>
+<td align="left">flagstaff arizona has population = 76831</td>
+<td align="left">76831.0000</td>
+<td align="left">f9a6e8ce-c026-48df-a731-4f009408180d</td>
+<td align="left">demospace</td>
+<td align="left">population</td>
+<td align="left"></td>
+<td align="left">f9a6e8ce-c026-48df-a731-4f009408180d</td>
+<td align="left">TsNumber</td>
+<td align="left">76831</td>
+</tr>
+<tr class="even">
+<td align="left">2022-05-08T04:44:36.664Z</td>
+<td align="left"></td>
+<td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
+<td align="left">temperature</td>
+<td align="left">demo</td>
+<td align="left">arizona:flagstaff</td>
+<td align="left">flagstaff arizona has mean temperature = 71 F</td>
+<td align="left">294.8167</td>
+<td align="left">64df2f72-6b12-4794-84c2-c6973ee9a7e4</td>
+<td align="left">demospace</td>
+<td align="left">temperature:mean</td>
+<td align="left"></td>
+<td align="left">64df2f72-6b12-4794-84c2-c6973ee9a7e4</td>
+<td align="left">TsNumber</td>
+<td align="left">71</td>
+</tr>
+<tr class="odd">
+<td align="left">2022-05-08T04:44:36.859Z</td>
+<td align="left"></td>
+<td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
+<td align="left">magnitude</td>
+<td align="left">demo</td>
+<td align="left">arizona:tucson</td>
+<td align="left">tucson arizona has population = 542629</td>
+<td align="left">542629.0000</td>
+<td align="left">ccdee83d-157b-494c-b3c8-cd9829741f3d</td>
+<td align="left">demospace</td>
+<td align="left">population</td>
+<td align="left"></td>
+<td align="left">ccdee83d-157b-494c-b3c8-cd9829741f3d</td>
+<td align="left">TsNumber</td>
+<td align="left">542629</td>
+</tr>
+<tr class="even">
+<td align="left">2022-05-08T04:44:37.057Z</td>
+<td align="left"></td>
+<td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
+<td align="left">temperature</td>
+<td align="left">demo</td>
+<td align="left">arizona:tucson</td>
+<td align="left">tucson arizona has mean temperature = 88 F</td>
+<td align="left">304.2611</td>
+<td align="left">decb3f68-f8a7-4a63-a762-bfea59a5c268</td>
+<td align="left">demospace</td>
+<td align="left">temperature:mean</td>
+<td align="left"></td>
+<td align="left">decb3f68-f8a7-4a63-a762-bfea59a5c268</td>
+<td align="left">TsNumber</td>
+<td align="left">88</td>
+</tr>
+</tbody>
+</table>
 </div>
 
 

@@ -1,0 +1,8 @@
+flagstaff arizona has population = 76831
+@ has state:arizona
+flagstaff arizona has mean temperature = 71 F
+@ has state:arizona
+tucson arizona has population = 542629
+@ has state:arizona
+tucson arizona has mean temperature = 88 F
+@ has state:arizona
