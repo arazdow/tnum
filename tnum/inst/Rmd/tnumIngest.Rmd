@@ -81,3 +81,14 @@ We query for them by tag, and display the resulting JSON as a dataframe
 results <- tnum.query("state:arizona")
 knitr::kable(results)
 ```
+## Direct ingestion of a dataframe
+
+The above example shows how to write TNs that paraphrase what the rows of a data frame are telling us in terms of the data domain.  This requires that we think descriptively about the meaning of the data.  But we can also describe the data frame structurally, for example, by saying **row 2 of dataframe has city = "Tucson"**.  This literal description is the data frame in TN form, but has the advantage that it works on any data frame, without having to give any thought to meaning in terms of the subjects and properties implied by the data.
+
+We now apply this ingest function to the same **df1** dataframe used above.  Besides, the frame, there are two optional parameters: *root* which is a string to be used as the root of all the subjects.  So, a root of **cities/** would result in the subjects being of the form **row 2 of dataframe of cities**.  This allows us to identify the different data frames we might be posting. The other parameter is *tag* which allows us to specify a single, fixed tag to be applied to every TN.  
+
+```{r}
+tnum.ingestDataFrameDefault(df1, root = "cities/", tag = "ingest:direct/demo", outfile = "directIngest1.txt")
+
+read.delim("directIngest1.txt", header = FALSE)
+```

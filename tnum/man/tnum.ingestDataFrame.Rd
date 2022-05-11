@@ -2,7 +2,7 @@
 % Please edit documentation in R/tnum.utiities.R
 \name{tnum.ingestDataFrame}
 \alias{tnum.ingestDataFrame}
-\title{ingest a data frame as  truenumbers}
+\title{ingest a data frame as  truenumbers from templates}
 \usage{
 tnum.ingestDataFrame(df, templates = list(), outfile = "")
 }
@@ -18,7 +18,7 @@ for the macro.  If a function name is present, that function processes the colum
 \item{outfile}{if non-empty, causes TNs and tags to be written to a file, not the server.}
 }
 \description{
-ingest a data frame as  truenumbers
+ingest a data frame as  truenumbers from templates
 }
 \concept{For each row in the dataframe, a set of tagged truenumbers can be generated and posted based ona list of templates.
          Templates are TNs and tags specified as strings, containing special macros that refer to column values of the row.

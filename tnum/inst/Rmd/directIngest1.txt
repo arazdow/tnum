@@ -1,0 +1,16 @@
+cities/dataframe/1:row has state = "arizona"
+@ has ingest:direct/demo
+cities/dataframe/1:row has city = "flagstaff"
+@ has ingest:direct/demo
+cities/dataframe/1:row has population = 76831
+@ has ingest:direct/demo
+cities/dataframe/1:row has meanTempF = 71
+@ has ingest:direct/demo
+cities/dataframe/2:row has state = "arizona"
+@ has ingest:direct/demo
+cities/dataframe/2:row has city = "tucson"
+@ has ingest:direct/demo
+cities/dataframe/2:row has population = 542629
+@ has ingest:direct/demo
+cities/dataframe/2:row has meanTempF = 88
+@ has ingest:direct/demo
