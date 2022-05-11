@@ -231,8 +231,8 @@ knitr::kable(df1)</code></pre>
   c(&quot;$(city) $(state) has population = $(population)&quot;, &quot;state:$str_to_upper(state),ingest:$dateTkn()&quot;),
   c(&quot;$(city) $(state) has mean temperature = $(meanTempF) F&quot;, &quot;state:$(state)&quot;)
 )</code></pre>
-<p>Macrfos like <strong><span class="math inline">\((col name)** are replaced by the value in the current row of the name column. Macros like **\)</span>func(col name)</strong> or <strong>$func()</strong> will apply that function to the value before replacement. We use these forms in the tags.</p>
-<p>There are two special functions provided: <strong>tkn(val)</strong> which makes a toKen suitable for use in TN phrases from any string argument, and <strong>dateTkn()</strong> which returns current date and time as a token. Any function present in the R environment with zero or one arg can be called.</p>
+<p>Macros like <strong>$(column-name)</strong> are replaced by the value in the current row of the name column. Macros like <strong>$func(col name)</strong> or <strong>$func()</strong> will apply that function to the value before replacement. We use these forms in the tags as well.</p>
+<p>There are two special functions provided: <strong>tkn(val)</strong> which makes a toKen suitable for use in TN phrases from any string argument, and <strong>dateTkn()</strong> which returns current date and time as a token. Any function present in the R environment with zero or one arg that returns a string can be called.</p>
 <p>Now we call the ingest function, using the <em>outfile</em> parameter to write the generated TNs to a file suitable for uploading using the TN web dashboard, and display the file. That way, we’re not actually posting anything.</p>
 <pre class="r"><code>tnum.ingestDataFrame(df1, templates, &quot;testIngest1.txt&quot;)</code></pre>
 <pre><code>## [1] &quot;4 TNs written&quot;</code></pre>
@@ -240,12 +240,12 @@ knitr::kable(df1)</code></pre>
 <pre><code>##                                               V1
 ## 1       flagstaff arizona has population = 76831
 ## 2                            @ has state:ARIZONA
-## 3          @ has ingest:Tue_May_10_21.49.13_2022
+## 3          @ has ingest:Wed_May_11_19.25.50_2022
 ## 4  flagstaff arizona has mean temperature = 71 F
 ## 5                            @ has state:arizona
 ## 6         tucson arizona has population = 542629
 ## 7                            @ has state:ARIZONA
-## 8          @ has ingest:Tue_May_10_21.49.13_2022
+## 8          @ has ingest:Wed_May_11_19.25.50_2022
 ## 9     tucson arizona has mean temperature = 88 F
 ## 10                           @ has state:arizona</code></pre>
 <p>Now we ingest them again, posting to the numberspace:</p>
@@ -299,7 +299,7 @@ knitr::kable(df1)</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">2022-05-11T01:49:13.148Z</td>
+<td align="left">2022-05-11T23:25:50.738Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">magnitude</td>
@@ -307,16 +307,16 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:flagstaff</td>
 <td align="left">flagstaff arizona has population = 76831</td>
 <td align="left">76831.0000</td>
-<td align="left">1a27b95e-397a-48d6-aab0-644108f7625f</td>
+<td align="left">114cf4bb-5a8c-4077-ba9a-6169095b16f7</td>
 <td align="left">demospace</td>
 <td align="left">population</td>
 <td align="left"></td>
-<td align="left">1a27b95e-397a-48d6-aab0-644108f7625f</td>
+<td align="left">114cf4bb-5a8c-4077-ba9a-6169095b16f7</td>
 <td align="left">TsNumber</td>
 <td align="left">76831</td>
 </tr>
 <tr class="even">
-<td align="left">2022-05-11T01:49:13.544Z</td>
+<td align="left">2022-05-11T23:25:51.098Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">temperature</td>
@@ -324,16 +324,16 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:flagstaff</td>
 <td align="left">flagstaff arizona has mean temperature = 71 F</td>
 <td align="left">294.8167</td>
-<td align="left">2f0d1902-3bb3-4488-9b79-552ec6359c82</td>
+<td align="left">129aaea7-a3cd-4031-bd8d-a80e525fd7a4</td>
 <td align="left">demospace</td>
 <td align="left">temperature:mean</td>
 <td align="left"></td>
-<td align="left">2f0d1902-3bb3-4488-9b79-552ec6359c82</td>
+<td align="left">129aaea7-a3cd-4031-bd8d-a80e525fd7a4</td>
 <td align="left">TsNumber</td>
 <td align="left">71</td>
 </tr>
 <tr class="odd">
-<td align="left">2022-05-11T01:49:13.742Z</td>
+<td align="left">2022-05-11T23:25:51.300Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">magnitude</td>
@@ -341,16 +341,16 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:tucson</td>
 <td align="left">tucson arizona has population = 542629</td>
 <td align="left">542629.0000</td>
-<td align="left">90e535fe-be55-4758-a994-6ed3df07977b</td>
+<td align="left">22f03926-51ed-42e5-9193-740802375b45</td>
 <td align="left">demospace</td>
 <td align="left">population</td>
 <td align="left"></td>
-<td align="left">90e535fe-be55-4758-a994-6ed3df07977b</td>
+<td align="left">22f03926-51ed-42e5-9193-740802375b45</td>
 <td align="left">TsNumber</td>
 <td align="left">542629</td>
 </tr>
 <tr class="even">
-<td align="left">2022-05-11T01:49:14.064Z</td>
+<td align="left">2022-05-11T23:25:51.580Z</td>
 <td align="left"></td>
 <td align="left"><a href="http://metrics.truenum.com:8080/Numberflow/" class="uri">http://metrics.truenum.com:8080/Numberflow/</a></td>
 <td align="left">temperature</td>
@@ -358,11 +358,11 @@ knitr::kable(df1)</code></pre>
 <td align="left">arizona:tucson</td>
 <td align="left">tucson arizona has mean temperature = 88 F</td>
 <td align="left">304.2611</td>
-<td align="left">6885435f-346a-420e-9734-20c8db5b08da</td>
+<td align="left">a8d067d3-6c7f-4217-82c3-f424c1e38e77</td>
 <td align="left">demospace</td>
 <td align="left">temperature:mean</td>
 <td align="left"></td>
-<td align="left">6885435f-346a-420e-9734-20c8db5b08da</td>
+<td align="left">a8d067d3-6c7f-4217-82c3-f424c1e38e77</td>
 <td align="left">TsNumber</td>
 <td align="left">88</td>
 </tr>

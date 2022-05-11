@@ -53,9 +53,10 @@ templates <- list(
   c("$(city) $(state) has mean temperature = $(meanTempF) F", "state:$(state)")
 )
 ```
-Macrfos like **$(col name)** are replaced by the value in the current row of the name column.  Macros like **$func(col name)** or **$func()** will apply that function to the value before replacement. We use these forms in the tags.
 
-There are two special functions provided: **tkn(val)** which makes a toKen suitable for use in TN phrases from any string argument, and **dateTkn()** which returns current date and time as a token.  Any function present in the R environment with zero or one arg can be called.  
+Macros like **\$(column-name)** are replaced by the value in the current row of the name column.  Macros like **\$func(col name)** or **\$func()** will apply that function to the value before replacement. We use these forms in the tags as well.
+
+There are two special functions provided: **tkn(val)** which makes a toKen suitable for use in TN phrases from any string argument, and **dateTkn()** which returns current date and time as a token.  Any function present in the R environment with zero or one arg that returns a string can be called.  
 ```{r , include=FALSE}
 # Load TNUM and authenticate to access the server
 library(tnum)

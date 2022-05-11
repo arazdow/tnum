@@ -1,10 +1,10 @@
 flagstaff arizona has population = 76831
 @ has state:ARIZONA
-@ has ingest:Tue_May_10_21.49.13_2022
+@ has ingest:Wed_May_11_19.25.50_2022
 flagstaff arizona has mean temperature = 71 F
 @ has state:arizona
 tucson arizona has population = 542629
 @ has state:ARIZONA
-@ has ingest:Tue_May_10_21.49.13_2022
+@ has ingest:Wed_May_11_19.25.50_2022
 tucson arizona has mean temperature = 88 F
 @ has state:arizona
