@@ -131,14 +131,16 @@ tnum.ingestDataFrame <- function(df,
         tnT <- pair[[1]]
         tagT <- pair[[2]]
 
-        macros <- str_extract_all(tnT,"\\$[a-zA-Z0-9_]*(\\([a-zA-Z0-9_]*\\))")
+        macros <- str_extract_all(tnT,"\\$[a-zA-Z0-9_]*(\\([a-zA-Z0-9_\\s]*\\))")
         tnT <- doTemplates(macros,tnT, df[i,])
 
         macros <- str_extract_all(tagT,"\\$[a-zA-Z0-9_]*(\\([a-zA-Z0-9_]*\\))")
         tagT <- doTemplates(macros,tagT, df[i,])
-
-        tagList <- str_split(str_replace_all(tagT,"\\s+",""), ",")
-        tagList <- as.list(tagList[[1]])
+        tagList <- list()
+        if(nchar(tagT)>0){
+          tagList <- str_split(str_replace_all(tagT,"\\s+",""), ",")
+          tagList <- as.list(tagList[[1]])
+        }
         tnResult <- tnum.postStatement(tnT, tags = tagList)
         tnCount <- tnCount + 1
 
