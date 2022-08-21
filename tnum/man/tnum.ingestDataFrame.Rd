@@ -4,7 +4,7 @@
 \alias{tnum.ingestDataFrame}
 \title{ingest a data frame as  truenumbers from templates}
 \usage{
-tnum.ingestDataFrame(df, templates = list(), outfile = "")
+tnum.ingestDataFrame(df, templates = list(), outfile = "", nocache = FALSE)
 }
 \arguments{
 \item{df}{the data frame, as returned by read.csv() for example}
@@ -16,6 +16,9 @@ Macros are of the form $funcName(column name), or $(column name).  The column va
 for the macro.  If a function name is present, that function processes the column value before substitution.}
 
 \item{outfile}{if non-empty, causes TNs and tags to be written to a file, not the server.}
+
+\item{nocache}{if TRUE, the server's caching mechanism will not be used.  Every TN will be separately posted instead
+of cached so that 500 TN at a time can be posted in one call.}
 }
 \description{
 ingest a data frame as  truenumbers from templates

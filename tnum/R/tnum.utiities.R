@@ -53,14 +53,18 @@ tnum.loadLibs <- function(){
 #'
 #' @param outfile if non-empty, causes TNs and tags to be written to a file, not the server.
 #'
+#' @param nocache  if TRUE, the server's caching mechanism will not be used.  Every TN will be separately posted instead
+#'                 of cached so that 500 TN at a time can be posted in one call.
+#'
 #' @export
 #'
 
 tnum.ingestDataFrame <- function(df,
                                  templates = list(),
-                                 outfile = ""
+                                 outfile = "",
+                                 nocache = FALSE
 ){
-
+  assign("tnum.var.outfile", NULL, envir = tnum.env)
   ######### local fns
   tkn <- function(val){
     #if value is mode character, quote it as a string
@@ -113,6 +117,8 @@ tnum.ingestDataFrame <- function(df,
   theFile <- NULL
   dfRows <- dim(df)[[1]]
   dfCols <- dim(df)[[2]]
+  dfTemps <- length(templates)
+  doCache <- FALSE
   tnCount <- 0
   verb <- "posted"
   theFile <- tnum.env$tnum.var.outfile
@@ -123,6 +129,14 @@ tnum.ingestDataFrame <- function(df,
       assign("tnum.var.outfile", theFile, envir = tnum.env)
     }
     verb <- "written"
+  }
+
+  if(!is.null(theFile) && !nocache && dfRows*dfTemps > 1500){
+    doCache <- TRUE
+  }
+
+  if(doCache){
+    tnum.startCache()
   }
 
   for(i in 1:dfRows){
@@ -141,11 +155,19 @@ tnum.ingestDataFrame <- function(df,
           tagList <- str_split(str_replace_all(tagT,"\\s+",""), ",")
           tagList <- as.list(tagList[[1]])
         }
-        tnResult <- tnum.postStatement(tnT, tags = tagList)
+        tnResult <- tnum.postStatement(tnT, tags = tagList, noreturn = TRUE)
         tnCount <- tnCount + 1
+        if(doCache && ((tnCount %% 500) == 0)){
+          tnum.finishCache()
+          tnum.startCache()
+        }
 
       }
-    }
+  }
+
+  if(doCache){
+    tnum.finishCache()
+  }
 
   print(paste0(tnCount, " TNs ", verb))
   if(!is.null(theFile))close(theFile)
@@ -153,86 +175,6 @@ tnum.ingestDataFrame <- function(df,
 
 }
 
-#######################################################
-#' @title default ingest a data frame
-#'
-#' @concept For each row in the dataframe, a TN is generated for each columns, of the form
-#'            <root>dataframe/<row number>:row has <tokenized column name> = <cell value>
-#'
-#' @param df  the data frame, as returned by read.csv() for example
-#'
-#' @param root a string used as the root of the subject for all the TNs
-#'
-#' @param tag  a tag to be applied to all the generated TNs
-#'
-#' @param outfile if non-empty, causes TNs and tags to be written to a file, not the server.
-#'
-#' @export
-#'
-
-tnum.ingestDataFrameDefault <- function(df,
-                                 root = "",
-                                 tag = NULL,
-                                 outfile = ""
-){
-
-  ######### local fns
-  tkn <- function(val){
-    #if value is mode character, quote it as a string
-    if(!is.na(val) && is.character(val)){
-      #val <- str_replace_all(val,"â€“", "" )
-      #val <- str_replace_all(val,"â€¦", "" )
-      val <- str_replace_all(val,"\\s+", "_" )
-      val <- str_replace_all(val,"[:/]", "." )
-      val <- str_replace_all(val,"[^a-zA-Z0-9_.]", "" )
-    }
-    return(val)
-  }
-
-  fixValue <- function(val){
-    # interpret value as numeric, string or path
-    if(str_detect(val, "^\\s*[+-]?[0-9]+(,[0-9][0-9][0-9])*(\\.[0-9]+)?\\s*$")){
-      return(str_replace_all(val,",",""))
-    }
-    return(paste0('"',val,'"'))
-  }
-
-
-  ############## end local fns
-
-  theFile <- NULL
-  dfRows <- dim(df)[[1]]
-  dfCols <- dim(df)[[2]]
-  tnCount <- 0
-  verb <- "posted"
-  theFile <- tnum.env$tnum.var.outfile
-
-  if(!is.null(outfile) && outfile != ""){
-    if(is.null(theFile)){
-      theFile <- file(outfile, "w")
-      assign("tnum.var.outfile", theFile, envir = tnum.env)
-    }
-    verb <- "written"
-  }
-
-  for(i in 1:dfRows){
-
-    for(name in names(df)){
-      tn <- paste0(root, "dataframe/",i,":row has ",tkn(name), " = ", fixValue(df[i,][[name]]))
-      taglist <- list()
-      if(!is.null(tag)){
-        taglist <- list(tag)
-      }
-      tnResult <- tnum.postStatement(tn, tags = taglist)
-      tnCount <- tnCount + 1
-
-    }
-  }
-
-  print(paste0(tnCount, " TNs ", verb))
-  if(!is.null(theFile))close(theFile)
-  assign("tnum.var.outfile", NULL, envir = tnum.env)
-}
 
 ########################################################
 #'@title Get length of path

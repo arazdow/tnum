@@ -24,6 +24,7 @@ tnum.callApi <- function(command = "version", params = list()){
       paste0("http://", tnum.env$tnum.var.ip, "/Numberflow/API"),
       query = qr
       )
+  assign("tnum.var.cookies", cookies(result), envir = tnum.env)
   payload <- httr::content(result, as = "text", encoding = "UTF-8")
   jResult = fromJSON(payload)
   return(jResult)
@@ -112,14 +113,16 @@ tnum.getSpace <- function() {
 
 tnum.query <- function(query = "* has *",
                        max = 10,
-                       start = 0) {
+                       start = 0,
+                       fast = FALSE) {
 
   jResult = tnum.callApi("dashboard-search",
                          list(
                            string = "json",
                            qry = query,
                            limit = max,
-                           offset = start
+                           offset = start,
+                           simple = fast
                            )
                          )
   numReturned <- length(jResult$truenumbers$subject)
@@ -371,12 +374,14 @@ tnum.buildStatement <- function(subject = "something",
 #' @param stmt  well-formed truenumber sentence
 #' @param  notes  text description associated with the truenumber
 #' @param tags   a list of tags. Each can be a tag or c("tag","comment"). default is timestamp "R:2022:02:26:12:24:33:EST"
-#' @returns the new truenumber JSON object
+#' @param  noreturn  if TRUE, suppresses return of the created TN
+#' @returns the new truenumber JSON object (or NULL if suppressed)
 #' @export
 #'
 tnum.postStatement <- function(stmt,
                                notes = "",
-                               tags = list(paste0("source:R:",tnum.dateToken()))
+                               tags = list(paste0("source:R:",tnum.dateToken())),
+                               noreturn = FALSE
                                )
 {
   stmt1 <- str_remove_all(stmt,"â€”")
@@ -429,7 +434,10 @@ tnum.postStatement <- function(stmt,
       tnum.addTag(theGuid, tg)
     }
   }
-  theTn <- tnum.callApi("htn-from-guid", list(guid = theGuid, core = "yes"))
+  theTn <- NULL
+  if(!noreturn){
+    theTn <- tnum.callApi("htn-from-guid", list(guid = theGuid, core = "yes"))
+  }
 
   return(theTn)
   }
@@ -452,6 +460,22 @@ tnum.jsonArray <- function(objectList){
   jsonString <- paste0(jsonString,"]")
 
   return(fromJSON(jsonString))
+}
+
+########################################################
+#' @title Start TN write caching in server
+#' @export
+
+tnum.startCache <- function(){
+  tnum.callApi("start-cache", list())
+}
+
+########################################################
+#' @title Stop TN write caching in server
+#' @export
+
+tnum.finishCache <- function(){
+  tnum.callApi("finish-cache", list())
 }
 
 

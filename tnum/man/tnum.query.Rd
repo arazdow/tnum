@@ -4,7 +4,7 @@
 \alias{tnum.query}
 \title{Query the truenumber server}
 \usage{
-tnum.query(query = "* has *", max = 10, start = 0)
+tnum.query(query = "* has *", max = 10, start = 0, fast = FALSE)
 }
 \arguments{
 \item{query}{string in tnum query language}

@@ -7,7 +7,8 @@
 tnum.postStatement(
   stmt,
   notes = "",
-  tags = list(paste0("source:R:", tnum.dateToken()))
+  tags = list(paste0("source:R:", tnum.dateToken())),
+  noreturn = FALSE
 )
 }
 \arguments{
@@ -16,9 +17,11 @@ tnum.postStatement(
 \item{notes}{text description associated with the truenumber}
 
 \item{tags}{a list of tags. Each can be a tag or c("tag","comment"). default is timestamp "R:2022:02:26:12:24:33:EST"}
+
+\item{noreturn}{if TRUE, suppresses return of the created TN}
 }
 \value{
-the new truenumber JSON object
+the new truenumber JSON object (or NULL if suppressed)
 }
 \description{
 Post a truenumber statement
