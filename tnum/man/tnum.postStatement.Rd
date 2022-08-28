@@ -8,7 +8,8 @@ tnum.postStatement(
   stmt,
   notes = "",
   tags = list(paste0("source:R:", tnum.dateToken())),
-  noreturn = FALSE
+  noreturn = FALSE,
+  filedestination = NULL
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ tnum.postStatement(
 \item{tags}{a list of tags. Each can be a tag or c("tag","comment"). default is timestamp "R:2022:02:26:12:24:33:EST"}
 
 \item{noreturn}{if TRUE, suppresses return of the created TN}
+
+\item{filedestination}{if non-NULL, must be an open file to divert posts to}
 }
 \value{
 the new truenumber JSON object (or NULL if suppressed)

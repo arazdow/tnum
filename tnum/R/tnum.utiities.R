@@ -47,7 +47,7 @@ tnum.loadLibs <- function(){
 #'
 #' @param templates a list of string pairs, the first is a TN template, the second is a tag list template
 #'        TN template is a truenumber sentence including "macros" to be replace by row data values
-#'        Tag list template is a comma-separated list of tag paths, inscluding macros as well
+#'        Tag list template is a comma-separated string of tag paths, including macros as well.
 #'        Macros are of the form $funcName(column name), or $(column name).  The column value is substituted
 #'        for the macro.  If a function name is present, that function processes the column value before substitution.
 #'
@@ -61,10 +61,8 @@ tnum.loadLibs <- function(){
 
 tnum.ingestDataFrame <- function(df,
                                  templates = list(),
-                                 outfile = "",
-                                 nocache = FALSE
-){
-  assign("tnum.var.outfile", NULL, envir = tnum.env)
+                                 outfile = ""){
+
   ######### local fns
   tkn <- function(val){
     #if value is mode character, quote it as a string
@@ -120,24 +118,14 @@ tnum.ingestDataFrame <- function(df,
   dfTemps <- length(templates)
   doCache <- FALSE
   tnCount <- 0
-  verb <- "posted"
-  theFile <- tnum.env$tnum.var.outfile
 
-  if(!is.null(outfile) && outfile != ""){
-    if(is.null(theFile)){
+
+  if(is.null(outfile) || outfile == ""){
+    outfile = "temptnfile.txt"
+  }
+
       theFile <- file(outfile, "w")
-      assign("tnum.var.outfile", theFile, envir = tnum.env)
-    }
-    verb <- "written"
-  }
 
-  if(!is.null(theFile) && !nocache && dfRows*dfTemps > 1500){
-    doCache <- TRUE
-  }
-
-  if(doCache){
-    tnum.startCache()
-  }
 
   for(i in 1:dfRows){
 
@@ -155,26 +143,23 @@ tnum.ingestDataFrame <- function(df,
           tagList <- str_split(str_replace_all(tagT,"\\s+",""), ",")
           tagList <- as.list(tagList[[1]])
         }
-        tnResult <- tnum.postStatement(tnT, tags = tagList, noreturn = TRUE)
+        tnResult <- tnum.postStatement(tnT, tags = tagList, noreturn = TRUE, filedestination = theFile)
         tnCount <- tnCount + 1
-        if(doCache && ((tnCount %% 500) == 0)){
-          tnum.finishCache()
-          tnum.startCache()
-        }
 
       }
   }
+    close(theFile)
+    print(paste0(tnCount, " TNs written "))
 
-  if(doCache){
-    tnum.finishCache()
+  if(outfile == "temptnfile.txt"){
+    print("posting to server...")
+    tnum.writeTnFile("temptnfile.txt")
   }
+    print("done.")
 
-  print(paste0(tnCount, " TNs ", verb))
-  if(!is.null(theFile))close(theFile)
-  assign("tnum.var.outfile", NULL, envir = tnum.env)
+
 
 }
-
 
 ########################################################
 #'@title Get length of path

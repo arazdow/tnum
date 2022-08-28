@@ -4,14 +4,14 @@
 \alias{tnum.ingestDataFrame}
 \title{ingest a data frame as  truenumbers from templates}
 \usage{
-tnum.ingestDataFrame(df, templates = list(), outfile = "", nocache = FALSE)
+tnum.ingestDataFrame(df, templates = list(), outfile = "")
 }
 \arguments{
 \item{df}{the data frame, as returned by read.csv() for example}
 
 \item{templates}{a list of string pairs, the first is a TN template, the second is a tag list template
 TN template is a truenumber sentence including "macros" to be replace by row data values
-Tag list template is a comma-separated list of tag paths, inscluding macros as well
+Tag list template is a comma-separated string of tag paths, including macros as well.
 Macros are of the form $funcName(column name), or $(column name).  The column value is substituted
 for the macro.  If a function name is present, that function processes the column value before substitution.}
 

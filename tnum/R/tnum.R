@@ -157,6 +157,21 @@ tnum.getTagsOfTn <- function(id) {
 }
 
 ########################################################
+#'@title Terminate HTTP session
+#'
+#' @export
+
+tnum.terminateSession <- function() {
+
+  jResult <-tnum.callApi("kill-session",
+                         list()
+  )
+  return(jResult)
+
+}
+
+
+########################################################
 #' @title Get all tags
 #'
 #' @return list of all tags in the numberspace
@@ -375,21 +390,23 @@ tnum.buildStatement <- function(subject = "something",
 #' @param  notes  text description associated with the truenumber
 #' @param tags   a list of tags. Each can be a tag or c("tag","comment"). default is timestamp "R:2022:02:26:12:24:33:EST"
 #' @param  noreturn  if TRUE, suppresses return of the created TN
+#' @param filedestination  if non-NULL, must be an open file to divert posts to
 #' @returns the new truenumber JSON object (or NULL if suppressed)
 #' @export
 #'
 tnum.postStatement <- function(stmt,
                                notes = "",
                                tags = list(paste0("source:R:",tnum.dateToken())),
-                               noreturn = FALSE
+                               noreturn = FALSE,
+                               filedestination = NULL
                                )
 {
   stmt1 <- str_remove_all(stmt,"â€”")
 
   # do file write if file open
-  theFile <- tnum.env$tnum.var.outfile
-  if(!is.null(theFile)){
-    writeLines(stmt, theFile)
+
+  if(!is.null(filedestination)){
+    writeLines(stmt, filedestination)
     if(notes != ""){
       writeLines(paste0("$ has description | ", trimws(notes)), theFile)
     }
@@ -402,7 +419,7 @@ tnum.postStatement <- function(stmt,
       if(nchar(tp)>0){
         ts <- paste0(ts, " | ", tp)
       }
-      writeLines(ts, theFile)
+      writeLines(ts, filedestination)
     }
 
   } else {
@@ -441,6 +458,29 @@ tnum.postStatement <- function(stmt,
 
   return(theTn)
   }
+
+}
+
+########################################################
+#'@title Post a TN file to the server
+#'
+#' @param infile   path to the file, usually the same given to the ingest function
+#' @return post result
+#' @export
+
+tnum.writeTnFile <- function(infile) {
+  ur <- paste0(
+    "http://", tnum.env$tnum.var.ip,"/Numberflow/tspeakput.jsp?nsp=",
+    tnum.env$tnum.var.nspace[[1]],
+    "&auth=",
+    ns = tnum.env$tnum.var.auth
+  )
+  result <-
+    httr::POST(url = ur, body = list(y = httr::upload_file(infile)))
+  assign("tnum.var.cookies", cookies(result), envir = tnum.env)
+
+  return(result)
+
 
 }
 
