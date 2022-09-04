@@ -229,7 +229,7 @@ tnum.deleteByQuery <- function(query = "") {
       )
     )
   if(length(jResult) == 0){
-    return("OK")
+    print("OK")
   } else {
     return(jResult)
   }
